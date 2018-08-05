@@ -1,0 +1,231 @@
+{
+  "project_info": {
+    "project_number": "1062180100769",
+    "firebase_url": "https://dogtracker-123.firebaseio.com",
+    "project_id": "dogtracker-123",
+    "storage_bucket": "dogtracker-123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062180100769:android:93ab6e711759138d",
+        "android_client_info": {
+          "package_name": "android.hr.dogtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062180100769-2roetnom7tfuc1jt1hp86dl5a4vuu302.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "android.hr.dogtracker",
+            "certificate_hash": "424f275a634a28471a77a5fc6e63c90d2442a51f"
+          }
+        },
+        {
+          "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuhEO4WSxy3wwpxMWKf28bv9mvkAJQKJs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062180100769:android:d062648cfff20a9e",
+        "android_client_info": {
+          "package_name": "android.hr.dogtrackingrandomize"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062180100769-roj3oej6296r69n740thp7vi7lt3t0ah.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "android.hr.dogtrackingrandomize",
+            "certificate_hash": "424f275a634a28471a77a5fc6e63c90d2442a51f"
+          }
+        },
+        {
+          "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuhEO4WSxy3wwpxMWKf28bv9mvkAJQKJs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062180100769:android:c46c87bf03604538",
+        "android_client_info": {
+          "package_name": "android.hr.tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062180100769-ho4pglms1stgnufc2q4f538uooaumfca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "android.hr.tracker",
+            "certificate_hash": "424f275a634a28471a77a5fc6e63c90d2442a51f"
+          }
+        },
+        {
+          "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuhEO4WSxy3wwpxMWKf28bv9mvkAJQKJs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062180100769:android:290cb0ea94f898f6",
+        "android_client_info": {
+          "package_name": "android.hr.trackmydog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062180100769-qd7ujmnaj4u2fitcqcpj1hgafme5s1gq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "android.hr.trackmydog",
+            "certificate_hash": "424f275a634a28471a77a5fc6e63c90d2442a51f"
+          }
+        },
+        {
+          "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuhEO4WSxy3wwpxMWKf28bv9mvkAJQKJs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062180100769:android:841218fdfc6b3751",
+        "android_client_info": {
+          "package_name": "hr.tvz.trackmydog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062180100769-5peh5lc2h2mc3pkhml4nh75tps9l5b5q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hr.tvz.trackmydog",
+            "certificate_hash": "424f275a634a28471a77a5fc6e63c90d2442a51f"
+          }
+        },
+        {
+          "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuhEO4WSxy3wwpxMWKf28bv9mvkAJQKJs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062180100769-id1ljml59b8onlhb72425mf3d9el30u6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

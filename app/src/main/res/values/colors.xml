@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    -->
+
+    <!-- light orange FF7043 -->
+    <color name="colorPrimary">#00ACC1</color>
+    <color name="colorPrimaryDark">#00838F</color>
+    <color name="colorAccent">#FF5722</color>
+
+    <!-- 0088bc, d83f1f, ff8b00 -->
+    <color name="blue">#007EAC</color>
+    <color name="red">#C8492F</color>
+    <color name="yellow">#F48F00</color>
+    <color name="green">#31AA50</color>
+    <color name="white">#f1f1f1</color>
+
+</resources>

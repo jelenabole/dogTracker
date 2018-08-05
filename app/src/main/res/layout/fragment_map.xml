@@ -1,0 +1,37 @@
+<android.support.constraint.ConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.MapFragment">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/buttonAll"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16px"
+            android:contentDescription="Click to follow all dogs!"
+            android:scaleType="fitCenter"
+            android:src="@drawable/all_dogs_small" />
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:layout="@android:layout/simple_gallery_item"
+        tools:context=".fragments.MapFragment" />
+
+
+</android.support.constraint.ConstraintLayout>
