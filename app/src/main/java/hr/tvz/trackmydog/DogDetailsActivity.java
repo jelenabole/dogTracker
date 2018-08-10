@@ -16,15 +16,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import hr.tvz.trackmydog.dogModel.Dog;
-import hr.tvz.trackmydog.localDB.DbFlowApp;
-import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class DogDetailsActivity extends AppCompatActivity {
 
     // TODO - info from DbFlowApp:
     private String dogLink;
     private DatabaseReference dogRef;
-    private CurrentUser user;
     private Dog dog;
 
     LinearLayout backgroundBanner;
@@ -52,9 +49,8 @@ public class DogDetailsActivity extends AppCompatActivity {
         ageText = (TextView) findViewById(R.id.ageText);
 
         // TODO - get user and get dog index = get their info:
-        user = ((DbFlowApp) getApplication()).getFirebaseUser();
         int dogIndex = getIntent().getIntExtra("dogIndex", -1);
-        dogLink = "users/" + user.getKey() + "/dogs/" + dogIndex;
+        dogLink = "users/" + FBAuth.getCurrentUserFB().getKey() + "/dogs/" + dogIndex;
 
         getDogDetails();
     };

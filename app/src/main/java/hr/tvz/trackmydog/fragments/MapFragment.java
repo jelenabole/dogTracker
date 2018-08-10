@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -41,11 +40,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
-import hr.tvz.trackmydog.localDB.DbFlowApp;
 import hr.tvz.trackmydog.localDB.User;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
@@ -91,11 +90,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         System.out.println("*************** On Create");
 
         // TODO (error) - changed function (current to My)
-        localUser = ((DbFlowApp) getActivity().getApplication()).getMyUser();
+        localUser = FBAuth.getLocalUser();
         System.out.println(localUser);
 
         // TODO - user == null (error):
-        user = ((DbFlowApp) getActivity().getApplication()).getFirebaseUser();
+        user = FBAuth.getCurrentUserFB();
         System.out.println(user);
         dogs = new ArrayList<>();
         defaultThumbs = HelperClass.getDefaultDogPictures();
@@ -191,21 +190,25 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         // za sve pse dohvatiti reference:
         System.out.println("TRACKING STARTED");
         System.out.println(user.getDogs());
-        System.out.println(user.getDogs().size());
+        if (user.getDogs() != null) {
+            System.out.println("number of dogs: " + user.getDogs().size());
+        }
 
         // TODO - get all dogs, and set markers:
         // TODO - error - dohvatiti sve reference posebno (radi promjene pojedinog psa)
         // set dog reference for the marker, or add null (for deleted dog)
         markers = new ArrayList<>();
-        for (int i = 0; i < user.getDogs().size(); i++) {
-            // TODO - null / dog = if dog check
-            if (user.getDogs().get(i) != null) {
-                // set the index on the dog:
-                // user.getDogs().get(i).setIndex(i);
-                setListenerOnDogLocation(i);
+        if (user.getDogs() != null) {
+            for (int i = 0; i < user.getDogs().size(); i++) {
+                // TODO - null / dog = if dog check
+                if (user.getDogs().get(i) != null) {
+                    // set the index on the dog:
+                    // user.getDogs().get(i).setIndex(i);
+                    setListenerOnDogLocation(i);
+                }
+                // TODO - just add null, and change it with marker later:
+                markers.add(null);
             }
-            // TODO - just add null, and change it with marker later:
-            markers.add(null);
         }
 
         // TODO - create on change method for user:

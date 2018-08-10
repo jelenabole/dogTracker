@@ -6,6 +6,7 @@
     tools:context=".fragments.ProfileFragment">
 
 
+    <!-- scroll view can have only one direct child -->
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -16,6 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/layout">
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LOGOUT" />
 
             <ImageView
                 android:id="@+id/header_cover_image"
@@ -54,7 +61,7 @@
                 android:paddingBottom="24dp">
 
                 <ImageView
-                    android:id="@+id/edit"
+                    android:id="@+id/editButton"
                     android:contentDescription="Edit button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -207,9 +214,8 @@
 
 
             </android.support.constraint.ConstraintLayout>
+
         </RelativeLayout>
     </ScrollView>
-
-
 
 </RelativeLayout>

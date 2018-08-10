@@ -1,5 +1,9 @@
 package hr.tvz.trackmydog.firebaseWait;
 
+import android.content.Context;
+
 public interface MyCallback {
-    void onCallback(String value);
+
+    void startIntent(Context context);
+
 }

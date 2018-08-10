@@ -13,21 +13,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.google.firebase.database.DatabaseReference;
-
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.firebaseWait.MyCallback;
 import hr.tvz.trackmydog.fragments.DogsFragment;
 import hr.tvz.trackmydog.fragments.MapFragment;
 import hr.tvz.trackmydog.fragments.ProfileFragment;
-import hr.tvz.trackmydog.localDB.DbFlowApp;
-import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class MainActivity extends AppCompatActivity {
-
-    // TODO - info from DbFlowApp:
-    private DatabaseReference userRef;
-    private CurrentUser user = null;
 
     private static final int PERMISSIONS_REQUEST = 100;
 
@@ -37,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Main - On Create");
         // TODO - need to initialize Fresco before the contectView and using it:
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
 
         // TODO - check if we have GPS provider:
@@ -60,40 +50,18 @@ public class MainActivity extends AppCompatActivity {
                     PERMISSIONS_REQUEST);
         }
 
-
-
-        // TODO - find the user by email (from local)
-        // nakon toga (callback) pozvati fragment
-
-        // set listener to current user
-        // do this:
-        // code is up in callback
-
-        // TODO - (error) get user from FB in Application:
-        System.out.println("KORISNIK check - CALLBACK");
-        System.out.println(userRef);
-        ((DbFlowApp) getApplication()).setListenerToCurrentUserWithCallback(new MyCallback() {
-            @Override
-            public void onCallback(String value) {
-                System.out.println("CALLBACK **** !1");
-                System.out.println(value);
-
-                // TODO - when finished, get userReference:
-                userRef = ((DbFlowApp) getApplication()).getUserReference();
-                System.out.println("KORISNIK check - CALLBACK - drugi (FB link)");
-                System.out.println(userRef);
-
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_layout, MapFragment.newInstance());
-                // TODO - error = Cannot perform this action after onSaveInstanceState
-                transaction.commit();
-            }
-        });
+        // set the first fragment (map fragment):
+        // TODO - on refresh/change orientation = remember current fragment
+        // TODO - this should happen after user is set up (test):
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_layout, MapFragment.newInstance());
+        transaction.commit();
 
         // Set the bottom navigation and onclick listener:
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
+
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

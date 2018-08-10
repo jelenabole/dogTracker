@@ -1,7 +1,6 @@
 package hr.tvz.trackmydog.fragments;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -22,18 +21,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import hr.tvz.trackmydog.DogDetailsActivity;
+import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
-import hr.tvz.trackmydog.localDB.DbFlowApp;
-import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class DogsFragment extends ListFragment {
 
@@ -41,7 +37,6 @@ public class DogsFragment extends ListFragment {
     String dogsLink;
 
     // info about all dogs (get only once, or current or something ??? )
-    CurrentUser user;
     LinearLayout linearLayout;
 
     private List<Dog> dogs;
@@ -50,8 +45,7 @@ public class DogsFragment extends ListFragment {
     List<Integer> defaultThumbs;
 
     public static DogsFragment newInstance() {
-        DogsFragment fragment = new DogsFragment();
-        return fragment;
+        return new DogsFragment();
     }
 
     @Override
@@ -59,8 +53,7 @@ public class DogsFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         System.out.println("*************** On Create");
-        user = ((DbFlowApp) getActivity().getApplication()).getFirebaseUser();
-        dogsLink = "users/" + user.getKey() + "/dogs";
+        dogsLink = "users/" + FBAuth.getCurrentUserFB().getKey() + "/dogs";
 
         // TODO - get list of dogs:
         dogs = new ArrayList<>();
@@ -82,11 +75,6 @@ public class DogsFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         System.out.println("*************** On View Created");
-        // TODO - find all views:
-        // view or getView():
-        // TODO - linear layout = staviti slike:
-        // setAllDogsImages();
-
         // TODO - parent reset:
         linearLayout =  (LinearLayout) view.findViewById(R.id.linearLayout);
         // TODO - nepotrebno: (error)
@@ -370,7 +358,7 @@ public class DogsFragment extends ListFragment {
         // getListView().setOnItemClickListener(this);
 
         // TODO - firebase - get reference:
-        dogsRef = FirebaseDatabase.getInstance().getReference("users/" + user.getKey() + "/dogs");
+        dogsRef = FirebaseDatabase.getInstance().getReference(dogsLink);
         dogsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

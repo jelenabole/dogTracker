@@ -7,16 +7,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.DogDetailsActivity;
+import hr.tvz.trackmydog.FBAuth;
+import hr.tvz.trackmydog.LoginActivity;
 import hr.tvz.trackmydog.ProfileDetailsActivity;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.localDB.DbFlowApp;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class ProfileFragment extends Fragment {
@@ -25,7 +25,8 @@ public class ProfileFragment extends Fragment {
 
     @BindView(R.id.name) TextView name;
     @BindView(R.id.location) TextView location;
-    @BindView(R.id.edit) ImageView edit; // edit button
+    @BindView(R.id.editButton) ImageView editButton; // edit button
+    @BindView(R.id.logoutButton) Button logoutButton;
 
     // TODO - text views:
     @BindView(R.id.email) TextView email;
@@ -51,7 +52,7 @@ public class ProfileFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         // TODO - get user info:
-        user = ((DbFlowApp) getActivity().getApplication()).getFirebaseUser();
+        user = FBAuth.getCurrentUserFB();
         System.out.println("Get user in fragment");
         System.out.println(user);
 
@@ -65,14 +66,38 @@ public class ProfileFragment extends Fragment {
         dob.setText("01/01/1990");
 
         // TODO - edit button listener:
-        edit.setOnClickListener(new View.OnClickListener(){
+        editButton.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View v) {
-                System.out.println("change data");
-                Intent profileDetailsIntent = new Intent(getActivity(), ProfileDetailsActivity.class);
-                startActivity(profileDetailsIntent);
+            System.out.println("change data");
+            Intent profileDetailsIntent = new Intent(getActivity(), ProfileDetailsActivity.class);
+            startActivity(profileDetailsIntent);
+                  }
+    });
+
+        // TODO - logout button listener:
+        logoutButton.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View v) {
+            // TODO - finish doesnt clean the history
+
+            // TODO - set logout - like this: (error)
+            // ((DbFlowApp) getActivity().getApplication()).logout();
+            getActivity().finishAffinity();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+            // TODO - delete history (for back button - )
+            // TODO - remove current user (logout) from current base:
+
+            // getActivity().finish();
+            System.out.println("Lougout");
+            // Intent profileDetailsIntent = new Intent(getActivity(), ProfileDetailsActivity.class);
+            // startActivity(profileDetailsIntent);
             }
         });
+
         return v;
     }
 
+    // TODO - logout current user and return to the logout screen
+    public void logout(View v) {
+        System.out.println("LOGOUT user");
+    }
 }

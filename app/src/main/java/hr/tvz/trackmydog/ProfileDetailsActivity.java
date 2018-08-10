@@ -5,23 +5,9 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.dogModel.Dog;
-import hr.tvz.trackmydog.localDB.DbFlowApp;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class ProfileDetailsActivity extends AppCompatActivity {
@@ -41,14 +27,14 @@ public class ProfileDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("DogDetails - On Create");
+        System.out.println("Profile Details - On Create");
 
         // TODO - need to initialize Fresco before the contectView and using it:
         setContentView(R.layout.activity_profile_details);
         ButterKnife.bind(this);
 
         // TODO - get user and get dog index = get their info:
-        user = ((DbFlowApp) getApplication()).getFirebaseUser();
+        user = FBAuth.getCurrentUserFB();
         userLink = "users/" + user.getKey();
 
         // TODO - set all fields to values
