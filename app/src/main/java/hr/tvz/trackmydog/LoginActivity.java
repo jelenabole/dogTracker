@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.firebaseWait.MyCallback;
 
 /**
  * A login screen that offers login via google.
@@ -34,13 +36,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public GoogleSignInClient mGoogleSignInClient;
 
     @BindView(R.id.status) TextView mStatusTextView;
+    @BindView(R.id.login_layout) LinearLayout loginLayout;
+    @BindView(R.id.loading_layout) LinearLayout loadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google);
         ButterKnife.bind(this);
-
         System.out.println("*** Login = on create (1)");
 
         // Button listeners
@@ -52,11 +55,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         FBAuth.initializeFirebaseAuth();
     }
 
-    // [START on_start_check_user]
     @Override
     public void onStart() {
         super.onStart();
-
         System.out.println("*** Login = on start (2)");
 
         // TODO - check if user is logged in (and check with the local user also):
@@ -65,12 +66,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // TODO - check if FB logged in, and add local user
         // TODO - if not, then show login page to register user
         System.out.println("Login activity - on start - check if user is logged in");
-        FBAuth.checkIfUserIsLoggedIn(this);
+        FBAuth.checkIfUserIsLoggedIn(this, new MyCallback() {
+            @Override
+            public void startIntent(Context context) {
+                loginLayout.setVisibility(View.VISIBLE);
+                loadingLayout.setVisibility(View.GONE);
+            }
+        });
+
+        // TODO - switch screen or show the
     }
 
 
 
-    // [START onactivityresult]
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         System.out.println("*** Login = on activity result (3)");
@@ -87,26 +95,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                // [START_EXCLUDE]
                 // updateUI(null);
-                // [END_EXCLUDE]
             }
         }
     }
-    // [END onactivityresult]
 
 
     /**
      * TODO - check what should be here (except user log in)
-     * Takes google account and get user info
+     * Takes google account and get user info.
+     * Start auth with google.
      * @param acct = Google Account
      */
-    // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
+        // progress dialog:
         showProgressDialog();
-        // [END_EXCLUDE]
 
         // TODO - additional (cause 'this' is from firebase):
         final Context context = this;
@@ -129,19 +133,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         // updateUI(null);
                     }
-                    // [START_EXCLUDE]
                     hideProgressDialog();
-                    // [END_EXCLUDE]
                     }
                 });
     }
-    // [END auth_with_google]
 
 
     // initialize google sign in at the begining:
     public void configureSignIn() {
         System.out.println("*** configure sign in (google)");
-        // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 // TODO - what is this ID:
@@ -153,13 +153,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
 
-    // [START signin]
     private void signIn() {
         System.out.println("*** sign in (google) - open intent (start RC activity)");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    // [END signin]
 
 
     @Override

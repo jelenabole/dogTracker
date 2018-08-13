@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog;
+package hr.tvz.trackmydog.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +15,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import hr.tvz.trackmydog.FBAuth;
+import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.dogModel.Dog;
 
 public class DogDetailsActivity extends AppCompatActivity {

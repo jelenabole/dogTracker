@@ -3,6 +3,7 @@ package hr.tvz.trackmydog;
 // singleton class (check this):
 // https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -42,6 +43,11 @@ public class FBAuth {
         return localUser;
     }
 
+    // get user key (firebase uid):
+    public static String getUserKey() {
+        return currentUserFB.getKey();
+    }
+
     // initialize firebase auth at the beginning:
     public static void initializeFirebaseAuth() {
         // [START initialize_auth]
@@ -51,7 +57,7 @@ public class FBAuth {
     }
 
     // check if user (fb) is logged in - also check locally:
-    public static void checkIfUserIsLoggedIn(Context context) {
+    public static void checkIfUserIsLoggedIn(Context context, MyCallback callback) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             // check current local user, and get firebase user info:
@@ -61,6 +67,8 @@ public class FBAuth {
         } else {
             // TODO - register
             System.out.println("USER NE POSTOJI ***");
+            System.out.println("on callback - hide loading screen and show google sign-in");
+            callback.startIntent(context);
         }
     }
 
@@ -131,7 +139,8 @@ public class FBAuth {
                 // TODO - start intent after everything is set up:
                 Intent intent = new Intent(context, MainActivity.class);
                 context.startActivity(intent);
-
+                // TODO - back button closes the app (doesnt return to login)
+                ((Activity) context).finish();
             }
         }, context);
     }

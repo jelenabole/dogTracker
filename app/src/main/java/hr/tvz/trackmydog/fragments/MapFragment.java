@@ -45,7 +45,6 @@ import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
-import hr.tvz.trackmydog.localDB.User;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
 // TODO:
@@ -66,10 +65,12 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     @BindView(R.id.linearLayout) LinearLayout linearLayout;
     @BindView(R.id.buttonAll) ImageView buttonAll;
 
-    List<Integer> defaultThumbs;
+    private List<Integer> defaultThumbs;
 
     // TODO - marker for the animal:
-    List<Marker> markers;
+    private List<Marker> markers;
+
+    private CurrentUser user;
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -78,24 +79,18 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // TODO - list view for quizzes:
     private List<Dog> dogs;
     private GoogleMap map;
-    private SupportMapFragment mapFragment;
 
-    User localUser;
-    CurrentUser user;
 
     @Override
     // TODO - called on refresh too (changing screen orientation):
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("*************** On Create");
-
-        // TODO (error) - changed function (current to My)
-        localUser = FBAuth.getLocalUser();
-        System.out.println(localUser);
+        System.out.println(" **** On Create");
 
         // TODO - user == null (error):
         user = FBAuth.getCurrentUserFB();
         System.out.println(user);
+        // TODO - error, needed ??
         dogs = new ArrayList<>();
         defaultThumbs = HelperClass.getDefaultDogPictures();
     }
@@ -103,16 +98,21 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("*************** Create View");
-
+        System.out.println(" *** Create View");
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         // TODO - butterknife bind
         ButterKnife.bind(this, v);
+
+        SupportMapFragment mapFragment;
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         // TODO - get dogs:
-        getDogsForThumbList();
+        if (user.getDogs() != null) {
+            getDogsForThumbList();
+        } else {
+            System.out.println(" *** dogs doesnt exist");
+        }
 
         return v;
     }
@@ -120,12 +120,12 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println("*************** Activity created");
+        System.out.println(" *** Activity created");
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        System.out.println("*************** On View Created");
+        System.out.println(" *** On View Created");
     }
 
 
@@ -138,15 +138,14 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        System.out.println("*************** On Map Ready");
-
+        System.out.println("**** On Map Ready");
         map = googleMap;
-        // TODO - remove tilt:
+        // remove tilt and set max zoom level:
         map.getUiSettings().setRotateGesturesEnabled(false);
-        // TODO - set max zoom level:
         map.setMaxZoomPreference(maxZoomLevel);
 
-        // TODO - if map is clicked (zoomed or moved) - stop following:
+        // TODO - set listener (cause of the zoom and follow):
+        // if map is clicked (zoomed or moved) - stop following:
         map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int reason) {
@@ -190,15 +189,13 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         // za sve pse dohvatiti reference:
         System.out.println("TRACKING STARTED");
         System.out.println(user.getDogs());
-        if (user.getDogs() != null) {
-            System.out.println("number of dogs: " + user.getDogs().size());
-        }
 
         // TODO - get all dogs, and set markers:
         // TODO - error - dohvatiti sve reference posebno (radi promjene pojedinog psa)
         // set dog reference for the marker, or add null (for deleted dog)
         markers = new ArrayList<>();
         if (user.getDogs() != null) {
+            System.out.println("number of dogs: " + user.getDogs().size());
             for (int i = 0; i < user.getDogs().size(); i++) {
                 // TODO - null / dog = if dog check
                 if (user.getDogs().get(i) != null) {
@@ -259,7 +256,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // change the location of the dog marker on the map
     // set dog locationa and name/time info on marker
     private void changeMarkerLocation(Dog dog) {
-        System.out.println("GET DOG LOCATION ****");
+        System.out.println("GET DOG LOCATION ***");
         int index = dog.getIndex();
         // TODO - get marker for the dog, change the location:
         int icon = HelperClass.getPawMarker(dog.getColor(), getResources(), getContext());
@@ -291,7 +288,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // TODO - error = prikazati sve na početku, pokrenuti funkciju kad se prati lokacija
     // .. ili kod promjene mjesta psa (kojeg se prati) ili usera (ako ga se prati)
     public void resetMapView() {
-        System.out.println(" \n ******** change the map view");
+        System.out.println(" \n *** change the map view");
 
         // TODO - if map is touched - dont follow anything:
         if (!followEnabled) {
@@ -453,7 +450,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // TODO - firebase - get reference:
         DatabaseReference dogsRef = FirebaseDatabase.getInstance()
-                .getReference("users/" + user.getKey() + "/dogs");
+                .getReference("users/" + FBAuth.getUserKey() + "/dogs");
         dogsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -461,7 +458,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
                 for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
                     Dog dog = dogSnaps.getValue(Dog.class);
-                    System.out.println("DOG *******************");
+                    System.out.println("DOG ***");
                     System.out.println(dog);
 
                     customAdapter.add(dog);
