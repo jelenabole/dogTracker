@@ -44,6 +44,7 @@ public class HelperClass {
 
     // get dog color:
     public static int getColorFromRes(String color, Resources res, Context context) {
+        Log.d(TAG, "get color from resources: " + color);
         return res.getColor(res.getIdentifier(color, "color",
                 context.getPackageName()), context.getTheme());
     }
@@ -145,6 +146,7 @@ public class HelperClass {
         }
     }
 
+    /* CHECK EMPTY STRINGS FOR LABELS */
 
     // for strings in labels (user / dog detail page):
     public static String getAsStringLabel(String str) {

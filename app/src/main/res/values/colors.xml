@@ -25,6 +25,13 @@
     <color name="green_op">#8031AA50</color>
     <color name="white_op">#80f1f1f1</color>
 
+    <!-- text for those colors colors -->
+    <color name="blue_text">#ffffff</color>
+    <color name="red_text">#ffffff</color>
+    <color name="yellow_text">#ffffff</color>
+    <color name="green_text">#ffffff</color>
+    <color name="white_text">#ffffff</color>
+
     <color name="transparent">#50ffffff</color>
     <color name="black">#313131</color>
 

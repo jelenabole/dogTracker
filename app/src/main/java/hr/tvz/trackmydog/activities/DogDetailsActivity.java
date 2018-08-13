@@ -89,9 +89,6 @@ public class DogDetailsActivity extends AppCompatActivity {
         String dogName = HelperClass.getAsStringLabel(dog.getName());
         String dogAge = HelperClass.getAsStringLabel(dog.getAge());
         String dogBreed = HelperClass.getAsStringLabel(dog.getBreed());
-        int dogColor = getResources().getIdentifier(dog.getColor(),
-                "color", getPackageName());
-        int dogColorResource = getResources().getColor(dogColor, null);
         String dogLastLocationTime = dog.getLocation() == null ? "no location detected" :
                 new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(dog.getLocation().getTime()));
 
@@ -100,6 +97,8 @@ public class DogDetailsActivity extends AppCompatActivity {
         }
         breedText.setText(dogBreed);
         ageText.setText(dogAge);
+
+        changeColorTo(dog.getColor());
 
         // TODO - image with fresco:
         /*
@@ -110,27 +109,29 @@ public class DogDetailsActivity extends AppCompatActivity {
             dogImage.setImageURI(uri);
         }
         */
-
-        // dogColor = getResources().getColor(R.color.white, null);
-        changeColorTo(R.color.white, R.color.yellow_op);
     }
 
-    private void changeColorTo(int color, int colorOp) {
+    private void changeColorTo(String colorName) {
+        int color = HelperClass.getColorFromRes(colorName,
+                getResources(), this);
+        int colorOpaque = HelperClass.getColorFromRes(colorName + "_op",
+                getResources(), this);
+        int colorText = HelperClass.getColorFromRes(colorName + "_text",
+                getResources(), this);
 
         // info layout
-        infoLayout.setBackgroundColor(colorOp);
-        sep1.setBackgroundColor(color);
-        sep2.setBackgroundColor(color);
-        // white text:
-        ageText.setTextColor(getResources().getColor(R.color.white, null));
-        weightText.setTextColor(getResources().getColor(R.color.white, null));
-        milesText.setTextColor(getResources().getColor(R.color.white, null));
+        infoLayout.setBackgroundColor(colorOpaque);
+        breedText.setBackgroundColor(colorOpaque);
+        sep1.setBackgroundColor(colorText);
+        sep2.setBackgroundColor(colorText);
 
-        breedText.setBackgroundColor(colorOp);
+        // white text:
+        ageText.setTextColor(colorText);
+        weightText.setTextColor(colorText);
+        milesText.setTextColor(colorText);
+        breedText.setTextColor(colorText);
 
         // label = dogColor
-
-
     }
 
     // TODO - add all info about dogs health, and else
