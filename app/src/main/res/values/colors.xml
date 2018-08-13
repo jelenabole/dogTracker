@@ -18,4 +18,11 @@
     <color name="green">#31AA50</color>
     <color name="white">#f1f1f1</color>
 
+    <!-- 50% opaque colors -->
+    <color name="blue_op">#80007EAC</color>
+    <color name="red_op">#80C8492F</color>
+    <color name="yellow_op">#80F48F00</color>
+    <color name="green_op">#8031AA50</color>
+    <color name="white_op">#80f1f1f1</color>
+
 </resources>

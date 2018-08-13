@@ -1,61 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content" >
 
         <LinearLayout
-            android:id="@+id/backgroundBanner"
+            android:id="@+id/nameBanner"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:weightSum="5"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/dogImage"
-                android:layout_weight="1"
+            <Button
+                android:id="@+id/backButton"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_gravity="bottom|center_horizontal" />
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="BACK" />
 
             <TextView
                 android:id="@+id/nameText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="20sp"
-                android:gravity="center" />
+                android:layout_weight="4"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/editButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="EDIT" />
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/dogImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="dog picture"
+            android:adjustViewBounds="true"
+            android:src="@drawable/default_dog"
+            android:background="@drawable/default_dog"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/breedText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:elevation="2dp"
+            android:background="@color/yellow_op"
+            app:layout_constraintBottom_toBottomOf="@+id/dogImage" />
+
+
+        <LinearLayout
+            android:id="@+id/infoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/yellow_op"
+            android:elevation="2dp"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/breedText">
+
+            <TextView
+                android:id="@+id/ageText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="12 years"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/sep1"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/yellow" />
+
+            <TextView
+                android:id="@+id/weightText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="32 kg"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/sep2"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/yellow" />
+
+            <TextView
+                android:id="@+id/milesText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="Labrador"
+                android:textSize="20sp" />
 
         </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <LinearLayout
             android:id="@+id/generalInfo"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:background="@color/blue"
-            android:orientation="vertical">
+            android:background="@color/white"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/dogImage">
 
 
             <TextView
-                android:id="@+id/breedText"
+                android:id="@+id/nestoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
             <TextView
-                android:id="@+id/ageText"
+                android:id="@+id/nestonesto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-    </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

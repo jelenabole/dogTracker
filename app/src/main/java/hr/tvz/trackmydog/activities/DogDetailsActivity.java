@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,13 +34,18 @@ public class DogDetailsActivity extends AppCompatActivity {
     private DatabaseReference dogRef;
     private Dog dog;
 
-    @BindView(R.id.backgroundBanner) LinearLayout backgroundBanner;
     @BindView(R.id.generalInfo) LinearLayout generalInfo;
 
     @BindView(R.id.nameText) TextView nameText;
     @BindView(R.id.dogImage) ImageView dogImage;
     @BindView(R.id.breedText) TextView breedText;
     @BindView(R.id.ageText) TextView ageText;
+
+    @BindView(R.id.infoLayout) LinearLayout infoLayout;
+    @BindView(R.id.sep1) View sep1;
+    @BindView(R.id.sep2) View sep2;
+    @BindView(R.id.weightText) TextView weightText;
+    @BindView(R.id.milesText) TextView milesText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +97,37 @@ public class DogDetailsActivity extends AppCompatActivity {
         nameText.setText(dogName);
         breedText.setText(dogBreed);
         ageText.setText(dogAge);
-        dogImage.setImageResource(R.drawable.all_dogs);
 
-        backgroundBanner.setBackgroundColor(dogColorResource);
+        // TODO - image with fresco:
+        /*
+        if (dog.getPhotoURL() ==  null) {
+            dogImage.setImageResource(R.drawable.default_dog);
+        } else {
+            Uri uri = Uri.parse(dog.getPhotoURL());
+            dogImage.setImageURI(uri);
+        }
+        */
+
+        // dogColor = getResources().getColor(R.color.white, null);
+        changeColorTo(R.color.white, R.color.yellow_op);
+    }
+
+    private void changeColorTo(int color, int colorOp) {
+
+        // info layout
+        infoLayout.setBackgroundColor(colorOp);
+        sep1.setBackgroundColor(color);
+        sep2.setBackgroundColor(color);
+        // white text:
+        ageText.setTextColor(getResources().getColor(R.color.white, null));
+        weightText.setTextColor(getResources().getColor(R.color.white, null));
+        milesText.setTextColor(getResources().getColor(R.color.white, null));
+
+        breedText.setBackgroundColor(colorOp);
+
+        // label = dogColor
+
+
     }
 
     // TODO - add all info about dogs health, and else

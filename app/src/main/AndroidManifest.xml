@@ -42,7 +42,8 @@
         <activity
             android:name=".activities.DogDetailsActivity"
             android:label="Dog Details"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".activities.ProfileDetailsActivity"
             android:label="Profile Details"

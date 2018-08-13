@@ -317,8 +317,10 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 LocationManager locationManager;
                 locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                builder.include(userLocation);
+                if (location != null) {
+                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    builder.include(userLocation);
+                }
             }
         }
 
