@@ -36,15 +36,18 @@ public class DogDetailsActivity extends AppCompatActivity {
     private DatabaseReference dogRef;
     private Dog dog;
 
-    @BindView(R.id.generalInfo) LinearLayout generalInfo;
 
+
+    @BindView(R.id.infoBanner) LinearLayout infoBanner;
     @BindView(R.id.dogImage) ImageView dogImage;
+    @BindView(R.id.sep1) View sep1;
+    @BindView(R.id.sep2) View sep2;
+    @BindView(R.id.nameText) TextView nameText;
     @BindView(R.id.breedText) TextView breedText;
     @BindView(R.id.ageText) TextView ageText;
 
-    @BindView(R.id.infoLayout) LinearLayout infoLayout;
-    @BindView(R.id.sep1) View sep1;
-    @BindView(R.id.sep2) View sep2;
+    @BindView(R.id.generalInfo) LinearLayout generalInfo;
+    @BindView(R.id.heightText) TextView heightText;
     @BindView(R.id.weightText) TextView weightText;
     @BindView(R.id.milesText) TextView milesText;
 
@@ -87,14 +90,15 @@ public class DogDetailsActivity extends AppCompatActivity {
 
         // TODO - get and prepare dog info:
         String dogName = HelperClass.getAsStringLabel(dog.getName());
-        String dogAge = HelperClass.getAsStringLabel(dog.getAge());
+        String dogAge = HelperClass.getAsStringLabel(dog.getAge()) + "yr";
         String dogBreed = HelperClass.getAsStringLabel(dog.getBreed());
         String dogLastLocationTime = dog.getLocation() == null ? "no location detected" :
                 new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(dog.getLocation().getTime()));
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(dogName);
+            getSupportActionBar().setTitle(dogName.toUpperCase());
         }
+        nameText.setText(dogName);
         breedText.setText(dogBreed);
         ageText.setText(dogAge);
 
@@ -119,17 +123,21 @@ public class DogDetailsActivity extends AppCompatActivity {
         int colorText = HelperClass.getColorFromRes(colorName + "_text",
                 getResources(), this);
 
-        // info layout
-        infoLayout.setBackgroundColor(colorOpaque);
-        breedText.setBackgroundColor(colorOpaque);
+        // BANNER - background and separators:
+        infoBanner.setBackgroundColor(colorOpaque);
         sep1.setBackgroundColor(colorText);
         sep2.setBackgroundColor(colorText);
 
-        // white text:
+        // BANNER - text color:
+        nameText.setTextColor(colorText);
         ageText.setTextColor(colorText);
+        breedText.setTextColor(colorText);
+
+
+        // GENERAL INFO - text colors:
         weightText.setTextColor(colorText);
         milesText.setTextColor(colorText);
-        breedText.setTextColor(colorText);
+
 
         // label = dogColor
     }

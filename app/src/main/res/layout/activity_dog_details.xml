@@ -9,7 +9,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/dogImage"
@@ -22,6 +22,7 @@
             android:src="@drawable/default_dog"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--
         <TextView
             android:id="@+id/breedText"
             android:layout_width="match_parent"
@@ -32,19 +33,31 @@
             android:padding="10dp"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/dogImage" />
-
+           -->
 
         <LinearLayout
-            android:id="@+id/infoLayout"
+            android:id="@+id/infoBanner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@color/yellow_op"
             android:elevation="2dp"
             android:orientation="horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/breedText">
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/dogImage">
+
+            <TextView
+                android:id="@+id/nameText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/sep1"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
 
             <TextView
                 android:id="@+id/ageText"
@@ -52,40 +65,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:gravity="center"
-                android:text="12 years"
-                android:textSize="20sp" />
-
-            <View
-                android:id="@+id/sep1"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/yellow" />
-
-            <TextView
-                android:id="@+id/weightText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:gravity="center"
-                android:text="32 kg"
                 android:textSize="20sp" />
 
             <View
                 android:id="@+id/sep2"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/yellow" />
+                android:background="@color/white" />
 
             <TextView
-                android:id="@+id/milesText"
+                android:id="@+id/breedText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:gravity="center"
-                android:text="Labrador"
                 android:textSize="20sp" />
 
         </LinearLayout>
+
 
 
         <LinearLayout
@@ -93,19 +90,22 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:background="@color/white"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dogImage">
 
-
             <TextView
-                android:id="@+id/nestoText"
+                android:id="@+id/weightText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/nestonesto"
+                android:id="@+id/heightText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/milesText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

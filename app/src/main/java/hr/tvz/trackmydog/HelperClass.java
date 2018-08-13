@@ -2,15 +2,12 @@ package hr.tvz.trackmydog;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.location.Location;
 import android.text.format.DateFormat;
 import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.MonthDay;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +39,7 @@ public class HelperClass {
         }
     }
 
+    /* GET COLOR FROM STRING NAME */
     // get dog color:
     public static int getColorFromRes(String color, Resources res, Context context) {
         Log.d(TAG, "get color from resources: " + color);
@@ -150,12 +148,12 @@ public class HelperClass {
 
     // for strings in labels (user / dog detail page):
     public static String getAsStringLabel(String str) {
-        return str == null ? "-- unknown --" : str;
+        return str == null ? " --- " : str;
     }
 
     // for strings in labels (user / dog detail page) - for int:
     public static String getAsStringLabel(Integer str) {
-        return str == null ? "-- unknown --" : str.toString();
+        return str == null ? " --- " : str.toString();
     }
 
 }
