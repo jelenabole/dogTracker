@@ -14,8 +14,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.LoginActivity;
-import hr.tvz.trackmydog.ProfileDetailsActivity;
+import hr.tvz.trackmydog.activities.ProfileDetailsActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
@@ -78,18 +77,7 @@ public class ProfileFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View v) {
             // TODO - finish doesnt clean the history
-
-            // TODO - set logout - like this: (error)
-            // ((DbFlowApp) getActivity().getApplication()).logout();
-            getActivity().finishAffinity();
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-            // TODO - delete history (for back button - )
-            // TODO - remove current user (logout) from current base:
-
-            // getActivity().finish();
-            System.out.println("Lougout");
-            // Intent profileDetailsIntent = new Intent(getActivity(), ProfileDetailsActivity.class);
-            // startActivity(profileDetailsIntent);
+                FBAuth.logoutUser(getActivity());
             }
         });
 

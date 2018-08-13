@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog;
+package hr.tvz.trackmydog.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
@@ -8,6 +8,8 @@ import android.widget.Button;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.FBAuth;
+import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class ProfileDetailsActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog;
+package hr.tvz.trackmydog.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.BaseActivity;
+import hr.tvz.trackmydog.FBAuth;
+import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseWait.MyCallback;
 
 /**

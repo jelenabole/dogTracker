@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme">
         <!-- full-screen activity (theme) -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
@@ -44,7 +44,7 @@
             android:label="Dog Details"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".ProfileDetailsActivity"
+            android:name=".activities.ProfileDetailsActivity"
             android:label="Profile Details"
             android:parentActivityName=".MainActivity" />
 
@@ -61,7 +61,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
     </application>
 

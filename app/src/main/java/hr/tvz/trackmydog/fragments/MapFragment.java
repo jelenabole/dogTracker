@@ -12,11 +12,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -47,12 +50,9 @@ import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
-// TODO:
-// - camera max zoom level (when there is one dog, or close dogs, zoom is too big)
-// .. but let the user zoom more (so setMaxZoom is not the option)
-// - map layout = preko cijelog ekrana, a linearni iznad njega
-// - linearni layout = samo jedan gumb, a na klik tog da se prošire i ostali
 public class MapFragment extends ListFragment implements OnMapReadyCallback {
+
+    private static final String TAG = "Map fragment";
 
     boolean followEnabled = true; // if button is pressed, map not touched
     int followDogIndex = -1; // follow all dogs
@@ -61,15 +61,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // 1 - world, 5 - continent
     // 10 - city, 15 streets, 20 - buildings (21 - EU,USA, 22-23 max)
 
-    // TODO  - linear layout = dinamično postavljanje slika
-    @BindView(R.id.linearLayout) LinearLayout linearLayout;
-    @BindView(R.id.buttonAll) ImageView buttonAll;
+    @BindView(R.id.dogThumbsLayout) LinearLayout dogThumbsLayout;
+    @BindView(R.id.noDogsLayout) LinearLayout noDogsLayout;
 
     private List<Integer> defaultThumbs;
-
-    // TODO - marker for the animal:
-    private List<Marker> markers;
-
+    private List<Marker> markers; // animal markers
     private CurrentUser user;
 
     public static MapFragment newInstance() {
@@ -80,16 +76,14 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     private List<Dog> dogs;
     private GoogleMap map;
 
-
     @Override
     // TODO - called on refresh too (changing screen orientation):
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println(" **** On Create");
+        Log.d(TAG, "onCreate");
 
-        // TODO - user == null (error):
         user = FBAuth.getCurrentUserFB();
-        System.out.println(user);
+
         // TODO - error, needed ??
         dogs = new ArrayList<>();
         defaultThumbs = HelperClass.getDefaultDogPictures();
@@ -98,9 +92,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        System.out.println(" *** Create View");
+        Log.d(TAG, "onCreateView");
+
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        // TODO - butterknife bind
         ButterKnife.bind(this, v);
 
         SupportMapFragment mapFragment;
@@ -109,24 +103,39 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // TODO - get dogs:
         if (user.getDogs() != null) {
+            showDogsLayout();
             getDogsForThumbList();
         } else {
-            System.out.println(" *** dogs doesnt exist");
+            Log.d(TAG, "user doesn't have dogs");
+            showNoDogsLayout();
         }
 
         return v;
     }
 
+    /* show dogs or no dogs */
+    public void showDogsLayout() {
+        dogThumbsLayout.setVisibility(View.VISIBLE);
+        noDogsLayout.setVisibility(View.GONE);
+    }
+
+    public void showNoDogsLayout() {
+        dogThumbsLayout.setVisibility(View.GONE);
+        noDogsLayout.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println(" *** Activity created");
+        Log.d(TAG, "onActivityCreated");
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        System.out.println(" *** On View Created");
+        Log.d(TAG, "onViewCreated");
     }
+
+
 
 
     /**
@@ -138,7 +147,8 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        System.out.println("**** On Map Ready");
+        Log.d(TAG, "on Map Ready");
+
         map = googleMap;
         // remove tilt and set max zoom level:
         map.getUiSettings().setRotateGesturesEnabled(false);
@@ -152,43 +162,32 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 // TODO - error - only first gesture needed:
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                     // double-tap (zoom) or drag
+                    // changes user made = move, double-tap (zoom)
                     System.out.println("MAP TOUCHED - DISABLE FOLLOW");
                     followEnabled = false;
                     // TODO - error - let the user zoom in as it wants:
-                    map.setMaxZoomPreference(25);
+                    // map.setMaxZoomPreference(25);
                     // map.resetMinMaxZoomPreference();
-
-                    Toast.makeText(getActivity(), "The user gestured on the map.",
-                            Toast.LENGTH_SHORT).show();
                 } else if (reason == GoogleMap.OnCameraMoveStartedListener
                         .REASON_API_ANIMATION) {
-                    // tapped marker on the map or double-tap anywhere
+                    // changes produced by tapping on marker or double-tapping anywhere
                     Toast.makeText(getActivity(), "The user tapped something on the map.",
                             Toast.LENGTH_SHORT).show();
                 } else if (reason == GoogleMap.OnCameraMoveStartedListener
                         .REASON_DEVELOPER_ANIMATION) {
-                    // app changes:
-                    Toast.makeText(getActivity(), "The app moved the camera.",
-                            Toast.LENGTH_SHORT).show();
+                    // changes produced by app
                 }
             }
         });
 
-        // TODO - check if user has permission to access the location:
-        // TODO - Check whether GPS tracking is enabled - to show current user location:
-        // Check whether this app has access to the location permission
-
-        // If the location permission has been granted, then start the TrackerService
-        // TODO - returns -1 when theres no permission:
+        // returns -1 when there's no permission
         if (ContextCompat.checkSelfPermission(getContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != -1) {
+            Log.d(TAG, "location permission enabled - set user location");
             map.setMyLocationEnabled(true);
         }
 
-        // TODO - provjeriti da li postoje svi psi:
-        // za sve pse dohvatiti reference:
-        System.out.println("TRACKING STARTED");
-        System.out.println(user.getDogs());
+        Log.d(TAG, "setting markers for dogs");
 
         // TODO - get all dogs, and set markers:
         // TODO - error - dohvatiti sve reference posebno (radi promjene pojedinog psa)
@@ -211,14 +210,12 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         // TODO - create on change method for user:
         // TODO - error - on each user location change, update map
 
-        /*
-        View mapView = mapFragment.getView();
+        // position maps "my location" button bottom-right
+        View mapView = this.getView();
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);rlp.setMargins(0,0,30,30);
-        */
     }
 
 
@@ -288,12 +285,13 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // TODO - error = prikazati sve na početku, pokrenuti funkciju kad se prati lokacija
     // .. ili kod promjene mjesta psa (kojeg se prati) ili usera (ako ga se prati)
     public void resetMapView() {
-        System.out.println(" \n *** change the map view");
-
         // TODO - if map is touched - dont follow anything:
         if (!followEnabled) {
+            Log.d(TAG, "map view change disabled!");
             return;
         }
+
+        Log.d(TAG, "map view changed!");
 
         // TODO - else follow dog(s) - start building views (markers):
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -314,6 +312,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         // .. simpler way ???
         if (user.isFollow()) {
             // builder.include() = user location
+            Log.d(TAG, "Include user location");
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 LocationManager locationManager;
                 locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -349,7 +348,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
     // TODO - onClick for the "all dogs" button (track all dogs):
     private void showAllDogs() {
-        Toast.makeText(getContext(), "SHOW ALL - not implemented", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "reset map view = show all dogs");
         followDogIndex = -1;
         followEnabled = true;
         resetMapView();
@@ -357,12 +356,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
     // TODO - show only one dog on click:
     private void showOnlyThisDog(Dog dog) {
-        System.out.println("ZOOM IN on that dog: " + dog.getName());
+        Log.d(TAG, "reset map view = ZOOM IN on dog: " + dog.getName());
         followDogIndex = dog.getIndex();
         followEnabled = true;
         resetMapView();
     }
-
 
     // TODO - if map is touched = remove following:
     private void stopFollowing() {
@@ -444,7 +442,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         final CustomDogList customAdapter = new CustomDogList(getActivity(), dogs);
         // listView.setAdapter(customAdapter);
         setListAdapter(customAdapter);
-
         // TODO - set click listener:
         // getListView().setOnItemClickListener(this);
 
@@ -458,13 +455,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
                 for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
                     Dog dog = dogSnaps.getValue(Dog.class);
-                    System.out.println("DOG ***");
-                    System.out.println(dog);
-
+                    Log.d(TAG, "get all dogs - save to custom (thumb) list");
+                    Log.d(TAG, dog.toString());
                     customAdapter.add(dog);
                 }
 
-                // TODO - set thumbnails of a dogs
                 // TODO - error = nakon dohvaćanja svih pasa, postavi view ovisno o orijentaciji:
                 setViewByOrientation();
             }
@@ -479,35 +474,70 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
     // set orientation, and calculate sizes:
     private void setViewByOrientation() {
-        // TODO - error - dodati računanje veličine i paddinga
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            setDogThumbnailsVertical();
-        } else {
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            // setDogThumbnailsVertical();
-            System.out.println("WRONG ORIENTATION");
-        }
+        final View testView = dogThumbsLayout;
+        ViewTreeObserver vto = testView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Log.d("TEST", "Height = " + testView.getHeight() + " Width = " + testView.getWidth());
+                ViewTreeObserver obs = testView.getViewTreeObserver();
+                obs.removeGlobalOnLayoutListener(this);
+
+                // TODO - when view ready, set view depending on the orientation:
+                // TODO - error - dodati računanje veličine i paddinga
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    dogThumbsLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    setDogThumbnailsVertical();
+                } else {
+                    dogThumbsLayout.setOrientation(LinearLayout.VERTICAL);
+                    // setDogThumbnailsVertical();
+                    System.out.println("WRONG ORIENTATION");
+                }
+            }
+        });
     }
 
-    // set dog Thumbnails (calc size) and click listeners:
+    // set dog Thumbnails (calculate size) and click listeners:
     // vertical orientation
-    // set listeners to buttons (follow all or one dog)
     private void setDogThumbnailsVertical() {
         // TODO - size in pixels (instead of dp):
         int size;
         int padding = 16;
         int space = 16;
+        int margin = padding;
 
-        // TODO - calculate w x h (for 5 elements in row):
-        linearLayout.getWidth();
-        size = (linearLayout.getWidth() - (space * dogs.size()) - (padding * 2)) / 5;
+        // calculate w x h (for 5 elements in a row)
+        size = (dogThumbsLayout.getWidth() - (space * dogs.size()) - (padding * 2)) / 5;
+        // TODO - remove all views (if exist, for refresh) - needed ???
+        dogThumbsLayout.removeViews(0, dogThumbsLayout.getChildCount());
 
-        // TODO - Button for "all" dogs:
-        // TODO - nekakva neutralna boja (default "all" gumb)
+        // add "all dogs" button:
+        dogThumbsLayout.addView(addButtonAllDogs(size, padding, margin));
+
+        // add the rest of the dogs buttons
+        int numberOfDogs = dogs.size();
+        for (int i = 0; i < numberOfDogs; i++) {
+            dogThumbsLayout.addView(addButtonForDogs(size, padding, margin, i, numberOfDogs));
+        }
+    }
+
+
+    /** Set "all dogs" button to see/follow all dogs at the same time.
+     * @param size
+     * @param padding
+     * @param margin
+     * @return
+     */
+    private ImageView addButtonAllDogs(int size, int padding, int margin) {
+        ImageView buttonAll = new ImageView(getActivity());
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size, size);
+            layoutParams.setMargins(0,0, margin, 0);
+
         buttonAll.setBackgroundColor(Color.BLACK);
-        buttonAll.getLayoutParams().height = size;
-        buttonAll.getLayoutParams().width = size;
+        buttonAll.setImageResource(R.drawable.all_dogs_small);
+        buttonAll.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        buttonAll.setLayoutParams(layoutParams);
         buttonAll.setPadding(padding, padding, padding, padding);
 
         buttonAll.setOnClickListener(new View.OnClickListener() {
@@ -517,60 +547,66 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             }
         });
 
-        // TODO - remove all images (except the All button):
-        linearLayout.removeViews(1, linearLayout.getChildCount() - 1);
-
-        int number = dogs.size();
-        for (int i = 0; i < number; i++) {
-            // TODO - image with fresco:
-            int position = i;
-            SimpleDraweeView imageView = new SimpleDraweeView(getContext());
-
-            if (dogs.get(position) != null) {
-                if (dogs.get(position).getPhotoURL() ==  null) {
-                    imageView.setImageResource(defaultThumbs.get(position));
-                } else {
-                    Uri uri = Uri.parse(dogs.get(position).getPhotoURL());
-                    imageView.setImageURI(uri);
-                }
-
-                // TODO - check if dog has color (or add random):
-                int color = HelperClass.getColorFromRes(dogs.get(position).getColor(),
-                        getResources(), getContext());
-                imageView.setBackgroundColor(color);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
-                     @Override
-                     public void onClick(View v) {
-                         // get parent, get index of a clicked child:
-                         // -1 = skip the first "all" button
-                         Dog dog = dogs.get(linearLayout.indexOfChild(v) - 1);
-
-                         if (dog != null) {
-                             if (dog.getLocation() != null) {
-                                 showOnlyThisDog(dog);
-                                 Toast.makeText(getContext(), "TRACK: " + dog.getName(),
-                                         Toast.LENGTH_SHORT).show();
-                             } else {
-                                 Toast.makeText(getContext(), "TRACK " + dog.getName()
-                                         + " - failed - NO INFO", Toast.LENGTH_SHORT).show();
-                             }
-                         }
-                     }
-                });
-            }
-
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size,size);
-            // ako nije zadnji, staviti padding-right:
-            if (i < number - 1) {
-                layoutParams.setMargins(0,0, space, 0);
-            }
-            imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(padding, padding, padding, padding);
-
-            linearLayout.addView(imageView);
-        }
+        return buttonAll;
     }
 
+
+    /** Set image for the dog, and onclick listener to follow it.
+     * @param size
+     * @param padding
+     * @param margin
+     * @param position
+     * @param numberOfDogs
+     * @return
+     */
+    private SimpleDraweeView addButtonForDogs(int size, int padding, int margin,
+                                              int position, int numberOfDogs) {
+        // TODO - image with fresco:
+        SimpleDraweeView imageView = new SimpleDraweeView(getContext());
+
+        if (dogs.get(position) != null) {
+            if (dogs.get(position).getPhotoURL() ==  null) {
+                imageView.setImageResource(defaultThumbs.get(position));
+            } else {
+                Uri uri = Uri.parse(dogs.get(position).getPhotoURL());
+                imageView.setImageURI(uri);
+            }
+
+            // TODO - check if dog has color (or add random):
+            int color = HelperClass.getColorFromRes(dogs.get(position).getColor(),
+                    getResources(), getContext());
+            imageView.setBackgroundColor(color);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // get parent, get index of a clicked child:
+                    // -1 = skip the first "all" button
+                    Dog dog = dogs.get(dogThumbsLayout.indexOfChild(v) - 1);
+
+                    if (dog != null) {
+                        if (dog.getLocation() != null) {
+                            showOnlyThisDog(dog);
+                            Toast.makeText(getContext(), "TRACK: " + dog.getName(),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "NO INFO: " + dog.getName(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+        }
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size, size);
+        // ako nije zadnji, staviti margin-right:
+        if (position < numberOfDogs - 1) {
+            layoutParams.setMargins(0,0, margin, 0);
+        }
+        imageView.setLayoutParams(layoutParams);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setPadding(padding, padding, padding, padding);
+
+        return imageView;
+    }
 }

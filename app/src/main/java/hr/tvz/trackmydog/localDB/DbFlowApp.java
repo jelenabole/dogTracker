@@ -32,21 +32,6 @@ public class DbFlowApp extends Application {
     }
 
 
-    // TODO - logout:
-    public void logout() {
-        // Local user, active = false; user = null;
-        removeActiveUserFlag();
-
-    }
-
-    protected void removeActiveUserFlag() {
-        // update active flag as false and delete current user
-        localUser.setActive(false);
-        localUser.update();
-        localUser = null;
-    }
-
-
     private void addUser() {
         System.out.println("ADD NEW USER");
         User user = new User();
@@ -60,6 +45,4 @@ public class DbFlowApp extends Application {
         user.save();
     }
     */
-
-
 }

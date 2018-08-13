@@ -6,21 +6,49 @@
     tools:context=".fragments.MapFragment">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/dogThumbsLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:elevation="2dp"
+        android:orientation="horizontal"
         android:padding="16dp"
-        android:orientation="horizontal">
+        android:visibility="gone"
+        android:weightSum="5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent" >
 
+        <!--
         <ImageView
             android:id="@+id/buttonAll"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16px"
+            android:layout_weight="1"
             android:contentDescription="Click to follow all dogs!"
             android:scaleType="fitCenter"
             android:src="@drawable/all_dogs_small" />
+            -->
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/noDogsLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:elevation="2dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:padding="16dp"
+            android:text="@string/no_dogs_map"
+            android:textSize="20sp"
+            android:textAlignment="center" />
     </LinearLayout>
 
     <fragment
@@ -28,10 +56,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         tools:layout="@android:layout/simple_gallery_item"
         tools:context=".fragments.MapFragment" />
-
 
 </android.support.constraint.ConstraintLayout>

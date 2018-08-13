@@ -29,4 +29,8 @@
     <!-- base activity -->
     <string name="loading">Loading</string>
     <string name="title_activity_maps">Map</string>
+
+
+    <!-- map fragment -->
+    <string name="no_dogs_map">ADD A DOG   =></string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 import hr.tvz.trackmydog.dogModel.CurrentLocation;
 
 public class HelperClass {
+
+    private static final String TAG = "Helper Class";
 
     // get paw icon (map marker) for the dogs:
     public static int getPawMarker(String color, Resources res, Context context) {
@@ -129,7 +132,7 @@ public class HelperClass {
     }
 
     // get formatted day:
-    public static String getNameOfTheDay(long daysDifference, Date date) {
+    private static String getNameOfTheDay(long daysDifference, Date date) {
         // returns today, yesterday, day of the last week, or date:
         if (daysDifference == 0) {
             return "today";
@@ -140,6 +143,17 @@ public class HelperClass {
         } else {
             return new SimpleDateFormat("dd.MM.yyyy").format(date);
         }
+    }
+
+
+    // for strings in labels (user / dog detail page):
+    public static String getAsStringLabel(String str) {
+        return str == null ? "-- unknown --" : str;
+    }
+
+    // for strings in labels (user / dog detail page) - for int:
+    public static String getAsStringLabel(Integer str) {
+        return str == null ? "-- unknown --" : str.toString();
     }
 
 }
