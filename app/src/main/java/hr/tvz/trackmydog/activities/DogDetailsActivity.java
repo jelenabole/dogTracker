@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,7 +38,6 @@ public class DogDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.generalInfo) LinearLayout generalInfo;
 
-    @BindView(R.id.nameText) TextView nameText;
     @BindView(R.id.dogImage) ImageView dogImage;
     @BindView(R.id.breedText) TextView breedText;
     @BindView(R.id.ageText) TextView ageText;
@@ -94,7 +95,9 @@ public class DogDetailsActivity extends AppCompatActivity {
         String dogLastLocationTime = dog.getLocation() == null ? "no location detected" :
                 new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(dog.getLocation().getTime()));
 
-        nameText.setText(dogName);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(dogName);
+        }
         breedText.setText(dogBreed);
         ageText.setText(dogAge);
 
@@ -134,5 +137,24 @@ public class DogDetailsActivity extends AppCompatActivity {
     // TODO - change base (loaction + info)
     // TODO - edit info enabled (add button)
     // TODO - add activity animations (image)
+
+    // create an action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.edit) {
+            Log.d(TAG, "edit dog info");
+            // do something here
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 }

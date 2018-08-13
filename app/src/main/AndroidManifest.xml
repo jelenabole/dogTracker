@@ -42,11 +42,12 @@
         <activity
             android:name=".activities.DogDetailsActivity"
             android:label="Dog Details"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/AppTheme.ActionBar.Transparent"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.ProfileDetailsActivity"
             android:label="Profile Details"
+            android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".MainActivity" />
 
         <!--
