@@ -3,15 +3,24 @@ package hr.tvz.trackmydog.userModel;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @IgnoreExtraProperties
 public class BasicDog implements Serializable {
 
     private int index;
     private String name;
+    private String breed;
     private Integer age;
     private String photoURL;
     private String color;
+
+    // additional info:
+    private Integer height;
+    private Integer weight;
+    private Float miles;
+    private Date dateOfBirth;
+    private String gender;
 
     // TODO - only settings needed for user:
     // TODO - add range of motion:
@@ -38,6 +47,14 @@ public class BasicDog implements Serializable {
         this.name = name;
     }
 
+    public String getBreed() {
+        return breed;
+    }
+
+    public void setBreed(String breed) {
+        this.breed = breed;
+    }
+
     public Integer getAge() {
         return age;
     }
@@ -62,23 +79,45 @@ public class BasicDog implements Serializable {
         this.color = color;
     }
 
-    /*
-    public CurrentLocation getLocation() {
-        return location;
+    public Integer getHeight() {
+        return height;
     }
 
-    public void setLocation(CurrentLocation location) {
-        this.location = location;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
-    public Tracking getTracks() {
-        return tracks;
+    public Integer getWeight() {
+        return weight;
     }
 
-    public void setTracks(Tracking tracks) {
-        this.tracks = tracks;
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
-    */
+
+    public Float getMiles() {
+        return miles;
+    }
+
+    public void setMiles(Float miles) {
+        this.miles = miles;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
     public Settings getSettings() {
         return settings;
@@ -98,8 +137,6 @@ public class BasicDog implements Serializable {
         str += " - " + "photoURL: " + photoURL;
 
         str += " - " + "settings: " + settings;
-
-        // str += " - " + "current location: \n" + location;
 
         return str;
     }

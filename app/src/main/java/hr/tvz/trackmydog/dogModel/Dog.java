@@ -3,6 +3,7 @@ package hr.tvz.trackmydog.dogModel;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import hr.tvz.trackmydog.userModel.Settings;
 
@@ -15,6 +16,13 @@ public class Dog implements Serializable {
     private Integer age;
     private String photoURL;
     private String color;
+
+    // additional info:
+    private Integer height;
+    private Integer weight;
+    private Float miles;
+    private Date dateOfBirth;
+    private String gender;
 
     private CurrentLocation location;
     private Tracking tracks;
@@ -67,6 +75,46 @@ public class Dog implements Serializable {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
+
+    public Float getMiles() {
+        return miles;
+    }
+
+    public void setMiles(Float miles) {
+        this.miles = miles;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public CurrentLocation getLocation() {

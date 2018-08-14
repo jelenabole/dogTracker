@@ -30,6 +30,17 @@ public class FBAuth {
     private static User localUser;
     private static CurrentUser currentUserFB;
 
+    /* ERROR - check if this works */
+    private static Integer currentDogIndex;
+    public static Integer getCurrentDogIndex() {
+        return currentDogIndex;
+    }
+    public static void setCurrentDogIndex(Integer index) {
+        currentDogIndex = index;
+    }
+
+    /* END check */
+
     // get FB user:
     public static CurrentUser getCurrentUserFB() {
         return currentUserFB;

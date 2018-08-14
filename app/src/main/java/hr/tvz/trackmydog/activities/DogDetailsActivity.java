@@ -1,5 +1,6 @@
 package hr.tvz.trackmydog.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,8 +37,7 @@ public class DogDetailsActivity extends AppCompatActivity {
     private String dogLink;
     private DatabaseReference dogRef;
     private Dog dog;
-
-
+    private Integer dogIndex;
 
     @BindView(R.id.infoBanner) LinearLayout infoBanner;
     @BindView(R.id.dogImage) ImageView dogImage;
@@ -60,10 +61,14 @@ public class DogDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // TODO - get user and get dog index = get their info:
-        int dogIndex = getIntent().getIntExtra("dogIndex", -1);
-        dogLink = "users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex;
-
-        getDogDetails();
+        dogIndex = getIntent().getIntExtra("dogIndex", -1);
+        // means the activity has been paused:
+        if (dogIndex != -1) {
+            FBAuth.setCurrentDogIndex(dogIndex);
+            Log.d(TAG, "show details of dog with index: " + dogIndex);
+            dogLink = "users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex;
+            getDogDetails();
+        }
     };
 
     /**
@@ -142,11 +147,6 @@ public class DogDetailsActivity extends AppCompatActivity {
         // label = dogColor
     }
 
-    // TODO - add all info about dogs health, and else
-    // TODO - change base (loaction + info)
-    // TODO - edit info enabled (add button)
-    // TODO - add activity animations (image)
-
     // create an action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,11 +159,37 @@ public class DogDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.edit) {
-            Log.d(TAG, "edit dog info");
-            // do something here
+            Log.d(TAG, "edit dog info: " + dog.getIndex());
+            Intent intent = new Intent(this, DogDetailsEditActivity.class);
+            intent.putExtra("dogIndex", dog.getIndex());
+            startActivityForResult(intent, 0);
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "returned from editing dog info");
+        if (resultCode == RESULT_OK && requestCode == 0) {
+            Toast.makeText(this, "Dog info Saved", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "on pause - dog index: " + dogIndex);
+        FBAuth.setCurrentDogIndex(dogIndex);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        dogIndex = FBAuth.getCurrentDogIndex();
+        Log.d(TAG, "on resume - dog index: " + dogIndex);
+
+        dogLink = "users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex;
+        getDogDetails();
+    }
 
 }
