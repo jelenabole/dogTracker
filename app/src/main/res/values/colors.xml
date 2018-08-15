@@ -33,6 +33,7 @@
     <color name="white_text">#ffffff</color>
 
     <color name="transparent">#50ffffff</color>
+    <color name="grey">#cacaca</color>
     <color name="black">#313131</color>
 
 </resources>

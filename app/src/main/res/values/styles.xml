@@ -43,4 +43,16 @@
         <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
     </style>
 
+    <style name="Header">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@color/grey</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
 </resources>
