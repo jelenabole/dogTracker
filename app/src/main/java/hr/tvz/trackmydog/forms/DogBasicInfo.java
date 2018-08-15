@@ -1,14 +1,18 @@
-package hr.tvz.trackmydog.userModel;
+package hr.tvz.trackmydog.forms;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.userModel.BasicDog;
 
 @IgnoreExtraProperties
-public class BasicDog implements Serializable {
+public class DogBasicInfo implements Serializable {
 
-    private int index;
     private String name;
     private String breed;
     private Integer age;
@@ -18,26 +22,7 @@ public class BasicDog implements Serializable {
     // additional info:
     private Integer height;
     private Integer weight;
-    private Float miles;
-    private Date dateOfBirth;
     private String gender;
-
-    // TODO - only settings needed for user:
-    // TODO - add range of motion:
-    /*
-    private CurrentLocation location;
-    private Tracking tracks;
-    */
-    private Settings settings;
-
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
 
     public String getName() {
         return name;
@@ -95,22 +80,6 @@ public class BasicDog implements Serializable {
         this.weight = weight;
     }
 
-    public Float getMiles() {
-        return miles;
-    }
-
-    public void setMiles(Float miles) {
-        this.miles = miles;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     public String getGender() {
         return gender;
     }
@@ -119,19 +88,33 @@ public class BasicDog implements Serializable {
         this.gender = gender;
     }
 
-    public Settings getSettings() {
-        return settings;
+    // just fields that we are updating:
+    public void mapDog(BasicDog dog) {
+        // map all fields:
+        name = dog.getName();
+        breed = dog.getBreed();
+        age = dog.getAge();
+        height = dog.getHeight();
+        weight = dog.getWeight();
+        gender = dog.getGender();
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", name);
+        result.put("breed", breed);
+        result.put("age", age);
+        result.put("height", height);
+        result.put("weight", weight);
+        result.put("gender", gender);
+
+        return result;
     }
 
     @Override
     public String toString() {
         String str = "********** \n";
 
-        str += "\n " + "index: " + index;
         str += " - " + "name: " + name;
         str += " - " + "breed: " + breed;
         str += " - " + "age: " + age;
@@ -141,10 +124,6 @@ public class BasicDog implements Serializable {
         str += "\n - " + "height: " + height;
         str += " - " + "weight: " + weight;
         str += " - " + "gender: " + gender;
-        str += " - " + "miles: " + miles;
-        str += " - " + "dateOfBirth: " + dateOfBirth;
-
-        str += "\n - " + "settings: " + settings;
 
         return str;
     }

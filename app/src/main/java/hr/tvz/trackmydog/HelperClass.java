@@ -156,4 +156,30 @@ public class HelperClass {
         return str == null ? " --- " : str.toString();
     }
 
+
+    /* STRINGS FOR EDIT FIELDS
+        used: DogDetailsEditActivity
+    */
+
+    public static String getStringForEdit(String str) {
+        return str == null ? "" : str;
+    }
+
+    public static String getStringForEdit(Integer str) {
+        return str == null ? "" : str.toString();
+    }
+
+    public static String getStringForEdit(Date str) {
+        // TODO - format:
+        return str == null ? "" : str.toString();
+    }
+
+    // check if field is empty
+    public static boolean isFieldEmpty(String str) {
+        if (str != null && !str.equals("")) {
+            return true;
+        }
+        return false;
+    }
+
 }

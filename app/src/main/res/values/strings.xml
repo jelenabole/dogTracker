@@ -46,4 +46,11 @@
 
     <string name="dog_weight">Weight</string>
     <string name="dog_height">Height</string>
+
+    <!-- arrays -->
+    <string name="dog_gender_female">Female</string>
+    <string name="dog_gender_male">Male</string>
+
+    <!-- buttons -->
+    <string name="save_button">SAVE</string>
 </resources>

@@ -12,26 +12,16 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:elevation="4dp"
         android:padding="10dp"
         android:paddingBottom="24dp">
 
-        <!--
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="USER PROFILE"
-            android:textSize="20dp" />
-        -->
-
+        <!-- center vertically in RelativeLayout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/saveButton"
-            android:layout_below="@id/header"
-            android:gravity="center"
+            android:layout_centerVertical="true"
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
@@ -44,6 +34,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/dog_name"
+                    android:inputType="text"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
@@ -57,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/dog_breed"
+                    android:inputType="text"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
@@ -70,22 +62,86 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/dog_age"
+                    android:inputType="number"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="true"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="10dp">
+
+                    <!-- added action next = next field isnt recognized -->
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/height"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/dog_height"
+                        android:inputType="number"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/dog_weight"
+                        android:inputType="number"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp">
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/gender"
+                <TextView
+                    style="@style/InputLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/dog_gender"
-                    android:singleLine="true" />
+                    android:text="@string/dog_gender" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/dog_gender_female" />
+
+                    <RadioButton
+                        android:id="@+id/male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/dog_gender_male" />
+                </RadioGroup>
+
             </android.support.design.widget.TextInputLayout>
 
+            <!--
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,44 +154,19 @@
                     android:hint="@string/dog_date_of_birth"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
+            -->
 
-            <android.support.design.widget.TextInputLayout
+            <Button
+                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp">
+                android:layout_marginTop="30dp"
+                android:background="@color/colorAccent"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:text="@string/save_button" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/height"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/dog_height"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/weight"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/dog_weight"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
-
-
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorAccent"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:text="SAVE" />
 
     </RelativeLayout>
 

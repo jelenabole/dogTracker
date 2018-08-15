@@ -6,4 +6,8 @@
     <dimen name="space_between_images">16dp</dimen>
 
     <integer name="between_pics">16</integer>
+
+    <!-- input hint text -->
+    <dimen name="input_label_vertical_spacing">8dp</dimen>
+    <dimen name="input_label_horizontal_spacing">4dp</dimen>
 </resources>

@@ -83,8 +83,6 @@
 
         </LinearLayout>
 
-
-
         <LinearLayout
             android:id="@+id/generalInfo"
             android:layout_width="match_parent"

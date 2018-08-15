@@ -35,7 +35,6 @@ public class DogDetailsActivity extends AppCompatActivity {
 
     // TODO - info from DbFlowApp:
     private String dogLink;
-    private DatabaseReference dogRef;
     private Dog dog;
     private Integer dogIndex;
 
@@ -75,18 +74,18 @@ public class DogDetailsActivity extends AppCompatActivity {
      * Get current dog info (listener).
      */
     protected void getDogDetails() {
-        dogRef = FirebaseDatabase.getInstance().getReference(dogLink);
-        dogRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dog = dataSnapshot.getValue(Dog.class);
-                setDogInfo(dog);
-            }
+        FirebaseDatabase.getInstance().getReference(dogLink)
+            .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    dog = dataSnapshot.getValue(Dog.class);
+                    setDogInfo(dog);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
         });
     }
 
@@ -95,7 +94,7 @@ public class DogDetailsActivity extends AppCompatActivity {
 
         // TODO - get and prepare dog info:
         String dogName = HelperClass.getAsStringLabel(dog.getName());
-        String dogAge = HelperClass.getAsStringLabel(dog.getAge()) + "yr";
+        String dogAge = HelperClass.getAsStringLabel(dog.getAge()) + " yr";
         String dogBreed = HelperClass.getAsStringLabel(dog.getBreed());
         String dogLastLocationTime = dog.getLocation() == null ? "no location detected" :
                 new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(dog.getLocation().getTime()));
@@ -138,11 +137,9 @@ public class DogDetailsActivity extends AppCompatActivity {
         ageText.setTextColor(colorText);
         breedText.setTextColor(colorText);
 
-
         // GENERAL INFO - text colors:
         weightText.setTextColor(colorText);
         milesText.setTextColor(colorText);
-
 
         // label = dogColor
     }
