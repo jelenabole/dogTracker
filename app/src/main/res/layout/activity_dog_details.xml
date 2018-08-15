@@ -83,8 +83,12 @@
 
         </LinearLayout>
 
+
+
+
+
         <LinearLayout
-            android:id="@+id/generalInfo"
+            android:id="@+id/restOfInfo"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
@@ -92,20 +96,66 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dogImage">
 
-            <TextView
-                android:id="@+id/weightText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <!-- basic info -->
 
-            <TextView
-                android:id="@+id/heightText"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/milesText"
+                <TextView
+                    android:text="BASIC INFO"
+                    style="@style/Header" />
+
+                <TextView
+                    android:id="@+id/weightText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/heightText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+
+            <!-- medical info -->
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:text="MEDICAL INFO"
+                    style="@style/Header" />
+
+                <ImageView
+                    android:id="@+id/addMedical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:contentDescription="plus"
+                    android:src="@drawable/add_button" />
+
+            </LinearLayout>
+
+
+
+
+            <!-- activity -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:text="LAST WEEK ACTIVITY"
+                    style="@style/Header" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

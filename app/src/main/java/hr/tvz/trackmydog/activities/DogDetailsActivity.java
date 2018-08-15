@@ -46,10 +46,10 @@ public class DogDetailsActivity extends AppCompatActivity {
     @BindView(R.id.breedText) TextView breedText;
     @BindView(R.id.ageText) TextView ageText;
 
-    @BindView(R.id.generalInfo) LinearLayout generalInfo;
-    @BindView(R.id.heightText) TextView heightText;
+    // basic info:
     @BindView(R.id.weightText) TextView weightText;
-    @BindView(R.id.milesText) TextView milesText;
+    @BindView(R.id.heightText) TextView heightText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +106,10 @@ public class DogDetailsActivity extends AppCompatActivity {
         breedText.setText(dogBreed);
         ageText.setText(dogAge);
 
+        // basic info:
+        weightText.setText(HelperClass.getAsStringLabel(dog.getWeight()));
+        heightText.setText(HelperClass.getAsStringLabel(dog.getHeight()));
+
         changeColorTo(dog.getColor());
 
         // TODO - image with fresco:
@@ -136,10 +140,6 @@ public class DogDetailsActivity extends AppCompatActivity {
         nameText.setTextColor(colorText);
         ageText.setTextColor(colorText);
         breedText.setTextColor(colorText);
-
-        // GENERAL INFO - text colors:
-        weightText.setTextColor(colorText);
-        milesText.setTextColor(colorText);
 
         // label = dogColor
     }
