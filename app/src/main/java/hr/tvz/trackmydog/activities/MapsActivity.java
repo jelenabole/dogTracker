@@ -2,6 +2,7 @@ package hr.tvz.trackmydog.activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,6 +15,7 @@ import hr.tvz.trackmydog.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "Maps Activity";
     private GoogleMap mMap;
 
     @Override
@@ -38,6 +40,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "on map ready");
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera

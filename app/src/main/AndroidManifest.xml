@@ -57,6 +57,13 @@
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".MainActivity" />
 
+        <activity
+            android:name=".activities.MapRangeActivity"
+            android:label="Map Address"
+            android:theme="@style/AppTheme.ActionBar.Transparent"
+            android:parentActivityName=".activities.ProfileDetailsActivity" />
+
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
