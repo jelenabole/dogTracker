@@ -2,7 +2,6 @@ package hr.tvz.trackmydog.activities;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -17,26 +16,26 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.R;
+import hr.tvz.trackmydog.userModel.SafeZone;
 
 public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -46,6 +45,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
     @BindView(R.id.searchButton) ImageButton searchButton;
     @BindView(R.id.saveButton) Button saveButton;
     private GoogleMap map;
+    Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +129,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                     Log.d(TAG, "location permission enabled (3) - location exists");
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     // set draggable marker
-                    Marker marker = map.addMarker(new MarkerOptions()
+                    marker = map.addMarker(new MarkerOptions()
                             .position(userLocation)
                             .title("current location"));
                     marker.setDraggable(true);
@@ -157,7 +157,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                 Log.d(TAG, "lat-long: " + lat + "......." + lon);
                 final LatLng mark = new LatLng(lat, lon);
 
-                Marker marker = map.addMarker(new MarkerOptions()
+                marker = map.addMarker(new MarkerOptions()
                         .position(mark)
                         .title(addressName));
 
@@ -175,8 +175,21 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
 
+    // save location to user FB and close the activity
     private void saveLocationToUser() {
-        // save location to user FB
-        // close view, go back
+        SafeZone safeZone = new SafeZone();
+        LatLng position = marker.getPosition();
+
+        // TODO - set name for the place
+        safeZone.setName("location name");
+        safeZone.setLatitude(position.latitude);
+        safeZone.setLongitude(position.longitude);
+
+        DatabaseReference safeZones = FirebaseDatabase.getInstance()
+            .getReference("users/" + FBAuth.getUserKey() + "/safeZones");
+
+        safeZones.push().setValue(safeZone.toMap());
+        Log.d(TAG, "range added successfully");
+        finish();
     }
 }

@@ -3,6 +3,7 @@ package hr.tvz.trackmydog.userModel;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 @IgnoreExtraProperties
@@ -16,6 +17,7 @@ public class CurrentUser implements Serializable {
     private boolean follow;
 
     private List<BasicDog> dogs;
+    private HashMap<String, SafeZone> safeZones;
 
 
 
@@ -75,6 +77,14 @@ public class CurrentUser implements Serializable {
         this.follow = follow;
     }
 
+    public HashMap<String, SafeZone> getSafeZones() {
+        return safeZones;
+    }
+
+    public void setSafeZones(HashMap<String, SafeZone> safeZones) {
+        this.safeZones = safeZones;
+    }
+
     @Override
     public String toString() {
         String str = "********** \n";
@@ -87,6 +97,7 @@ public class CurrentUser implements Serializable {
         str += " - " + "follow user: " + follow;
 
         str += " - " + "dogs: \n" + dogs;
+        str += " - " + "safe zones: \n" + safeZones;
 
         return str;
     }
