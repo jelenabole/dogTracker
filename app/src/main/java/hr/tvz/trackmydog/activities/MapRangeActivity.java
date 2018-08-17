@@ -44,6 +44,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
 
     @BindView(R.id.address) EditText address;
     @BindView(R.id.searchButton) ImageButton searchButton;
+    @BindView(R.id.saveButton) Button saveButton;
     private GoogleMap map;
 
     @Override
@@ -74,6 +75,14 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                 }
 
                 findPlaceOnMap(address.getText().toString());
+            }
+        });
+
+        // add location (safe zone) button listener:
+        saveButton.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View v) {
+                Log.d(TAG, "save location and close view (???)");
+                saveLocationToUser();
             }
         });
     };
@@ -163,7 +172,11 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         {
             e.printStackTrace();
         }
-
     }
 
+
+    private void saveLocationToUser() {
+        // save location to user FB
+        // close view, go back
+    }
 }

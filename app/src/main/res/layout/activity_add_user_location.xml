@@ -14,6 +14,7 @@
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:paddingTop="70dp"
+        android:background="@color/transparent"
         android:weightSum="10"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -52,5 +53,28 @@
         android:layout_height="wrap_content"
         tools:layout="@android:layout/simple_gallery_item"
         tools:context=".fragments.MapFragment" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/transparent"
+        android:weightSum="10"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="2"
+            android:background="@color/colorPrimary"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:text="@string/save_button" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
