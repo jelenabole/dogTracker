@@ -53,4 +53,8 @@
 
     <!-- buttons -->
     <string name="save_button">SAVE</string>
+
+    <!-- add location activity -->
+    <string name="location_address">Location Address</string>
+
 </resources>

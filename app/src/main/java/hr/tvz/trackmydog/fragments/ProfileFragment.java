@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +15,22 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.FBAuth;
+import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.activities.MapRangeActivity;
 import hr.tvz.trackmydog.activities.ProfileDetailsActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class ProfileFragment extends Fragment {
 
+    private static final String TAG = "Profile Fragment";
     CurrentUser user;
 
     @BindView(R.id.name) TextView name;
     @BindView(R.id.location) TextView location;
     @BindView(R.id.editButton) ImageView editButton; // edit button
     @BindView(R.id.logoutButton) Button logoutButton;
+    @BindView(R.id.addLocationButton) Button addLocationButton;
 
     // TODO - text views:
     @BindView(R.id.email) TextView email;
@@ -34,8 +39,7 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.dob) TextView dob;
 
     public static ProfileFragment newInstance() {
-        ProfileFragment fragment = new ProfileFragment();
-        return fragment;
+        return new ProfileFragment();
     }
 
     @Override
@@ -52,40 +56,49 @@ public class ProfileFragment extends Fragment {
 
         // TODO - get user info:
         user = FBAuth.getCurrentUserFB();
-        System.out.println("Get user in fragment");
-        System.out.println(user);
 
         // TODO - set all text views:
-        name.setText(user.getDisplayName());
-        location.setText("lokacija");
+        setAllFields();
 
-        email.setText(user.getEmail());
-        mobileNumber.setText("099 1902 950");
-        gender.setText(user.getCode());
-        dob.setText("01/01/1990");
-
-        // TODO - edit button listener:
+        // edit button listener:
         editButton.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View v) {
-            System.out.println("change data");
-            Intent profileDetailsIntent = new Intent(getActivity(), ProfileDetailsActivity.class);
-            startActivity(profileDetailsIntent);
-                  }
-    });
+                Log.d(TAG, "edit user: " + user.getDisplayName());
+                Intent profileDetailsIntent = new Intent(getActivity(), ProfileDetailsActivity.class);
+                startActivity(profileDetailsIntent);
+            }
+        });
 
-        // TODO - logout button listener:
+        // logout button listener:
         logoutButton.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View v) {
-            // TODO - finish doesnt clean the history
+                // TODO - finish doesnt clean the history
+                Log.d(TAG, "logout user: " + user.getDisplayName());
                 FBAuth.logoutUser(getActivity());
+            }
+        });
+
+        // add location (safe zone) button listener:
+        addLocationButton.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View v) {
+                Log.d(TAG, "open AddLocation Activity");
+                Intent addLocationIntent = new Intent(getActivity(), MapRangeActivity.class);
+                startActivity(addLocationIntent);
             }
         });
 
         return v;
     }
 
-    // TODO - logout current user and return to the logout screen
-    public void logout(View v) {
-        System.out.println("LOGOUT user");
+    // TODO - add all user info, delete code (?)
+    private void setAllFields() {
+        name.setText(HelperClass.getAsStringLabel(user.getDisplayName()));
+        location.setText("Zagreb");
+
+        email.setText(HelperClass.getAsStringLabel(user.getEmail()));
+        mobileNumber.setText("099 1235 846");
+        gender.setText(user.getCode());
+        dob.setText("01/01/1990");
     }
+
 }

@@ -59,7 +59,7 @@
 
         <activity
             android:name=".activities.MapRangeActivity"
-            android:label="Map Address"
+            android:label="Add safe zone"
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".activities.ProfileDetailsActivity" />
 
