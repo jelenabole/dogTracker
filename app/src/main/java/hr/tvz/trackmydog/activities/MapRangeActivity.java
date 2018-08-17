@@ -87,26 +87,46 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         // remove tilt and set max zoom level:
         map.getUiSettings().setRotateGesturesEnabled(false);
 
+        // set drag listener (to animate camera when marker is moved):
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker arg0) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onMarkerDragEnd(Marker arg0) {
+                map.animateCamera(CameraUpdateFactory.newLatLng(arg0.getPosition()));
+            }
+            @Override
+            public void onMarkerDrag(Marker arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
+
         // returns -1 when there's no permission
         if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != -1) {
-            Log.d(TAG, "location permission enabled - set user location");
+                Manifest.permission.ACCESS_FINE_LOCATION) != -1) {
+            Log.d(TAG, "location permission enabled (1)");
             // map.setMyLocationEnabled(true);
 
             // TODO - get current user location
-            // builder.include() = user location
-            Log.d(TAG, "Include user location");
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "location permission enabled (2) - permission granted");
                 LocationManager locationManager;
                 locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
+                    Log.d(TAG, "location permission enabled (3) - location exists");
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    map.animateCamera(CameraUpdateFactory
-                            .newLatLng(userLocation));
+                    // set draggable marker
+                    Marker marker = map.addMarker(new MarkerOptions()
+                            .position(userLocation)
+                            .title("current location"));
+                    marker.setDraggable(true);
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
                 }
             }
-
         }
     }
 
@@ -132,10 +152,11 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                         .position(mark)
                         .title(addressName));
 
-                // Move the camera instantly to hamburg with a zoom of 15.
+                // set marker to be draggable
+                marker.setDraggable(true);
+
+                // Move the camera to location with a zoom of 15 (buildings)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(mark, 15));
-                // Zoom in, animating the camera.
-                // map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
             }
         }
         catch (IOException e)
