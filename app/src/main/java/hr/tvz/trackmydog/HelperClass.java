@@ -39,6 +39,21 @@ public class HelperClass {
         }
     }
 
+    // get drawable icon (e.g., home marker):
+    public static int getDrawableIcon(String name, Resources res, Context context) {
+        return res.getIdentifier(name, "drawable", context.getPackageName());
+    }
+
+
+    // get string from resources (dynamic translations):
+    public static String getTextFromResource(String name, Resources res, Context context) {
+        return res.getString(res.getIdentifier(name, "string", context.getPackageName()));
+    }
+
+
+
+
+
     /* GET COLOR FROM STRING NAME */
     // get dog color:
     public static int getColorFromRes(String color, Resources res, Context context) {

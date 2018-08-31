@@ -21,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,18 +35,20 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.FBAuth;
+import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.userModel.SafeZone;
 
 public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private static final String TAG = "Dog Details Activity";
+    private static final String TAG = "Map Range Activity";
 
-    @BindView(R.id.address) EditText address;
+    @BindView(R.id.address) EditText enteredAddress;
     @BindView(R.id.searchButton) ImageButton searchButton;
     @BindView(R.id.saveButton) Button saveButton;
+
     private GoogleMap map;
-    Marker marker;
+    private Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,62 +64,74 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
 
         // add location (safe zone) button listener:
-        searchButton.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View v) {
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Log.d(TAG, "hide keyboard and search");
+
+                String addressName = enteredAddress.getText().toString();
+                if (addressName == null || addressName.equals("")) {
+                    return;
+                }
 
                 // hide keyboard:
                 try {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 } catch (Exception e) {
                     // TODO: handle exception
                     // when keyboard is not opened - ignore
                 }
 
-                findPlaceOnMap(address.getText().toString());
+                changeMarkerLocation(enteredAddress.getText().toString());
             }
         });
 
         // add location (safe zone) button listener:
-        saveButton.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View v) {
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Log.d(TAG, "save location and close view (???)");
                 saveLocationToUser();
             }
         });
-    };
+    }
+
+    ;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "on Map Ready");
-
         map = googleMap;
 
-        // remove tilt and set max zoom level:
+        // TODO - remove map buttons and disable tilt:
+        // remove tilt
         map.getUiSettings().setRotateGesturesEnabled(false);
+        // disable map toolbar
+        map.getUiSettings().setMapToolbarEnabled(false);
+        // disable zoom buttons
+        map.getUiSettings().setZoomControlsEnabled(false);
+
+        // initialize marker:
+        initMarker();
 
         // set drag listener (to animate camera when marker is moved):
         map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-            @Override
-            public void onMarkerDragStart(Marker arg0) {
+            @Override public void onMarkerDragStart(Marker arg0) {
                 // TODO Auto-generated method stub
             }
             @Override
             public void onMarkerDragEnd(Marker arg0) {
-                map.animateCamera(CameraUpdateFactory.newLatLng(arg0.getPosition()));
+                // TODO - get new address:
+                changeMarkerLocation();
             }
-            @Override
-            public void onMarkerDrag(Marker arg0) {
-                // TODO Auto-generated method stub
-            }
+            @Override public void onMarkerDrag(Marker arg0) {}
         });
 
         // returns -1 when there's no permission
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != -1) {
             Log.d(TAG, "location permission enabled (1)");
-            // map.setMyLocationEnabled(true);
 
             // TODO - get current user location
             if (ContextCompat.checkSelfPermission(this,
@@ -128,51 +143,117 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                 if (location != null) {
                     Log.d(TAG, "location permission enabled (3) - location exists");
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    // set draggable marker
-                    marker = map.addMarker(new MarkerOptions()
-                            .position(userLocation)
-                            .title("current location"));
-                    marker.setDraggable(true);
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+
+                    // TODO - current location string - ERROR
+                    changeMarkerLocation(userLocation, "current location");
+                    zoomToMarker();
                 }
             }
         }
     }
 
+    public void zoomToMarker() {
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15));
+    }
 
-    private void findPlaceOnMap(String addressName) {
-        if (addressName == null || addressName.equals("")) {
-            return;
-        }
+    // init marker on Zagreb
+    public void initMarker() {
+        LatLng initLocation = new LatLng(45.800007, 15.979110);
+        int icon = HelperClass.getDrawableIcon("home", getResources(), this);
+
+        marker = map.addMarker(new MarkerOptions()
+                .position(initLocation)
+                .icon(BitmapDescriptorFactory.fromResource(icon))
+                .title("Zagreb, Croatia")
+                .draggable(true)
+        );
+        marker.showInfoWindow();
+
+        zoomToMarker();
+    }
+
+    // change marker location and title (user location, or location search)
+    public void changeMarkerLocation(LatLng location, String title) {
+        marker.setPosition(location);
+        marker.setTitle(title);
+        // this needed for title to refresh:
+        marker.showInfoWindow();
+
+        // TODO - in "current user location" case, double code:
+        zoomToMarker();
+    }
+
+
+    // change marker location and title by DRAGGING (find name):
+    public void changeMarkerLocation() {
+
+        // TODO - marker is already dragged (location changed)
+        // TODO - change the title (find the address)
+
+        marker.setTitle(getAddressForMarker());
+        marker.showInfoWindow();
+
+
+        // TODO - in "current user location" case, double code:
+        zoomToMarker();
+    }
+
+
+    // change marker location by address name (search bar)
+    private void changeMarkerLocation(String addressName) {
         Log.d(TAG, "search for address: " + addressName);
 
         Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
-        try
-        {
+        try {
             List<Address> addresses = geoCoder.getFromLocationName(addressName, 5);
             if (addresses.size() > 0) {
                 Double lat = (double) addresses.get(0).getLatitude();
                 Double lon = (double) addresses.get(0).getLongitude();
 
                 Log.d(TAG, "lat-long: " + lat + "......." + lon);
-                final LatLng mark = new LatLng(lat, lon);
+                LatLng mark = new LatLng(lat, lon);
 
-                marker = map.addMarker(new MarkerOptions()
-                        .position(mark)
-                        .title(addressName));
-
-                // set marker to be draggable
-                marker.setDraggable(true);
-
-                // Move the camera to location with a zoom of 15 (buildings)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(mark, 15));
+                changeMarkerLocation(mark, addressName);
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    // for dragging marker (changing address name - marker title):
+    private String getAddressForMarker() {
+        double latitude = marker.getPosition().latitude;
+        double longitude = marker.getPosition().longitude;
+
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+
+                // TODO - delete unnecessary info:
+                String addressLine = address.getAddressLine(0);
+
+                return addressLine.substring(0, addressLine.indexOf(","));
+            }
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return "- not found -";
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
     // save location to user FB and close the activity
@@ -181,15 +262,51 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         LatLng position = marker.getPosition();
 
         // TODO - set name for the place
-        safeZone.setName("location name");
+        safeZone.setName(getAddress(position, enteredAddress.getText().toString()));
         safeZone.setLatitude(position.latitude);
         safeZone.setLongitude(position.longitude);
 
         DatabaseReference safeZones = FirebaseDatabase.getInstance()
-            .getReference("users/" + FBAuth.getUserKey() + "/safeZones");
+                .getReference("users/" + FBAuth.getUserKey() + "/safeZones");
 
         safeZones.push().setValue(safeZone.toMap());
         Log.d(TAG, "range added successfully");
         finish();
     }
+
+
+    // fallback = string that the user wrote, in case full address isn't found:
+    private String getAddress(LatLng location, String fallbackString) {
+        double latitude = location.latitude;
+        double longitude = location.longitude;
+
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+
+                // TODO - delete unnecessary info:
+                String addressLine = address.getAddressLine(0);
+                String city = address.getLocality();
+                String state = address.getAdminArea();
+                String country = address.getCountryName();
+                String postalCode = address.getPostalCode();
+                String knownName = address.getFeatureName(); // street number, or name of something
+
+                return addressLine;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        // TODO - if no address was found, or if there is an error:
+        // TODO - if theres an error, return whatever the user wrote:
+        if (fallbackString.length() < 1) {
+            return "(location name)";
+        }
+        return fallbackString;
+    }
+
 }
