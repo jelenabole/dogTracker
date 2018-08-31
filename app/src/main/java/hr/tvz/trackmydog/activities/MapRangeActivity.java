@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,6 +47,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
     @BindView(R.id.address) EditText enteredAddress;
     @BindView(R.id.searchButton) ImageButton searchButton;
     @BindView(R.id.saveButton) Button saveButton;
+    @BindView(R.id.rangeSeekbar) SeekBar rangeSeekbar;
 
     private GoogleMap map;
     private Marker marker;
@@ -94,6 +96,18 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                 Log.d(TAG, "save location and close view (???)");
                 saveLocationToUser();
             }
+        });
+
+
+        // seekbar = range
+        rangeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.d(TAG, "value: " + progress + " -- from user: " + fromUser);
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
     }
 
@@ -265,12 +279,13 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         safeZone.setName(getAddress(position, enteredAddress.getText().toString()));
         safeZone.setLatitude(position.latitude);
         safeZone.setLongitude(position.longitude);
+        safeZone.setRange(rangeSeekbar.getProgress());
 
         DatabaseReference safeZones = FirebaseDatabase.getInstance()
                 .getReference("users/" + FBAuth.getUserKey() + "/safeZones");
 
         safeZones.push().setValue(safeZone.toMap());
-        Log.d(TAG, "range added successfully");
+        Log.d(TAG, "safe location added successfully");
         finish();
     }
 

@@ -61,7 +61,7 @@
         android:orientation="horizontal"
         android:padding="16dp"
         android:background="@color/transparent"
-        android:weightSum="10"
+        android:weightSum="6"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
@@ -74,6 +74,15 @@
             android:padding="10dp"
             android:textSize="20sp"
             android:text="@string/save_button" />
+
+        <SeekBar
+            android:id="@+id/rangeSeekbar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:max="1000"
+            android:padding="10dp" />
 
     </LinearLayout>
 
