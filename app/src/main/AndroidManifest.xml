@@ -63,6 +63,13 @@
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".activities.ProfileDetailsActivity" />
 
+        <!-- firebase messaging service -->
+        <service
+            android:name=".localDB.FirebaseTokenService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

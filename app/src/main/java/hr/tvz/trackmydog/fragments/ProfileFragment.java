@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment {
             @Override public void onClick(View v) {
                 // TODO - finish doesnt clean the history
                 Log.d(TAG, "logout user: " + user.getDisplayName());
-                FBAuth.logoutUser(getActivity());
+                FBAuth.logoutUser();
             }
         });
 

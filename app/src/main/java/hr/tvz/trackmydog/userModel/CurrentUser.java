@@ -16,6 +16,7 @@ public class CurrentUser implements Serializable {
     private String photoURL;
     private boolean follow;
 
+    private String token; // fb messaging token
     private List<BasicDog> dogs;
     private HashMap<String, SafeZone> safeZones;
 
@@ -53,14 +54,6 @@ public class CurrentUser implements Serializable {
         this.email = email;
     }
 
-    public List<BasicDog> getDogs() {
-        return dogs;
-    }
-
-    public void setDogs(List<BasicDog> dogs) {
-        this.dogs = dogs;
-    }
-
     public String getCode() {
         return code;
     }
@@ -75,6 +68,22 @@ public class CurrentUser implements Serializable {
 
     public void setFollow(boolean follow) {
         this.follow = follow;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public List<BasicDog> getDogs() {
+        return dogs;
+    }
+
+    public void setDogs(List<BasicDog> dogs) {
+        this.dogs = dogs;
     }
 
     public HashMap<String, SafeZone> getSafeZones() {

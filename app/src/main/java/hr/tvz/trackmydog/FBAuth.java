@@ -19,6 +19,8 @@ import java.util.List;
 
 import hr.tvz.trackmydog.activities.LoginActivity;
 import hr.tvz.trackmydog.firebaseWait.MyCallback;
+import hr.tvz.trackmydog.localDB.DbFlowApp;
+import hr.tvz.trackmydog.localDB.FirebaseTokenService;
 import hr.tvz.trackmydog.localDB.User;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
@@ -38,7 +40,6 @@ public class FBAuth {
     public static void setCurrentDogIndex(Integer index) {
         currentDogIndex = index;
     }
-
     /* END check */
 
     // get FB user:
@@ -74,8 +75,6 @@ public class FBAuth {
         }
     }
 
-
-
     /**
      * Makes a new user from CurrentUser (got from firebase listener).
      * Infos are saved locally so that they can be grabbed when needed.
@@ -90,27 +89,6 @@ public class FBAuth {
         user.setKey(currentUserFB.getKey());
 
         user.save();
-    }
-
-    /**
-     * Set FB listener on user, so that the info is updated accordingly.
-     */
-    private static void setUserListener() {
-        if (localUser.getKey() != null) {
-            FirebaseDatabase.getInstance().getReference("users/" + localUser.getKey())
-                    .addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    // TODO - na svaku promjenu namapirati usera:
-                    currentUserFB = dataSnapshot.getValue(CurrentUser.class);
-                    currentUserFB.setKey(dataSnapshot.getKey());
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
     }
 
 
@@ -135,26 +113,28 @@ public class FBAuth {
         }, context);
     }
 
-    public static void logoutUser(Context context) {
+    // deletes backstack (all) and starts Login activity
+    // called from a user-listener (user deleted) and on Logout button pressed
+    public static void logoutUser() {
         Log.d(TAG, "sign out user and return to Login Activity");
         // firebase - signout
         mAuth.signOut();
+        currentUserFB = null;
 
         // deactivate local user
         localUser.setActive(false);
         localUser.save();
-
-        // delete all user related stuff
         localUser = null;
-        currentUserFB = null;
 
-        // callback (or not?):
+        Context context = DbFlowApp.getContext();
         Intent intent = new Intent(context, LoginActivity.class);
+        // flags = everything is cleared (new task) before the activity started (new root)
+        // .. old activities are finished.
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
         // back button closes the app (doesnt return to main activity)
-        ((Activity) context).finish();
+        // ((Activity) context).finish();
     }
-
 
     /**
      * Get the user (detailed) info from the firebase and write the user info locally if it
@@ -186,9 +166,10 @@ public class FBAuth {
 
                     // if user is not found:
                     if (!found) {
-                        Log.d(TAG, "user not found fB = set new one");
+                        Log.d(TAG, "user not found fB = register new one");
                         currentUserFB = new CurrentUser();
                         currentUserFB.setEmail(user.getEmail());
+                        currentUserFB.setToken(FirebaseTokenService.getAppToken());
                         currentUserFB.setFollow(true);
                         // save that user to firebase and get back the key:
                         usersRef.child(user.getUid()).setValue(currentUserFB);
@@ -207,21 +188,37 @@ public class FBAuth {
             });
     }
 
+    /**
+     * Set FB listener on user, so that the info is updated accordingly.
+     * If user is deleted (on FB), remove the listener and return to Login Activity.
+     */
     private static void setListenerToCurrentUser() {
         Log.d(TAG, "set FB listener to current user");
         if (currentUserFB.getKey() != null) {
-            FirebaseDatabase.getInstance().getReference("users/" + currentUserFB.getKey())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            final DatabaseReference userRef = FirebaseDatabase.getInstance()
+                    .getReference("users/" + currentUserFB.getKey());
+
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        // data not found (eg user deleted from firebase)
+                        Log.e(TAG, " *** user Ref Listener - user not found");
+                        // TODO - notify the user about the error
+
+                        // sign out the user and delete listener
+                        userRef.removeEventListener(this);
+                        logoutUser();
+                    } else {
                         currentUserFB = dataSnapshot.getValue(CurrentUser.class);
                         currentUserFB.setKey(dataSnapshot.getKey());
                     }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 

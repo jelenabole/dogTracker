@@ -1,6 +1,8 @@
 package hr.tvz.trackmydog.localDB;
 
 import android.app.Application;
+import android.content.Context;
+import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -8,41 +10,27 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 
 public class DbFlowApp extends Application {
 
+    private static final String TAG = "Application";
+
+    private static DbFlowApp instance;
+    
+    public static Context getContext(){
+        return instance.getApplicationContext();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
+
+        Log.d(TAG, " *** DbFlowApp - on create");
+        // getAllLocalUsers();
+
         Fresco.initialize(getApplicationContext());
         FlowManager.init(new FlowConfig.Builder(this).build());
 
-        System.out.println(" *** DbFlowApp - on create");
-        // getAllLocalUsers();
+        // get the app token
+        FirebaseTokenService.retrieveApplicationToken();
     }
 
-    // TODO - (delete) check all current users:
-    // saving user to global variable
-    /*
-    public void getAllLocalUsers() {
-        List<User> users = SQLite.select().from(User.class).queryList();
-        for (User user : users) {
-            System.out.println(user);
-            if (user.isActive()) {
-                localUser = user;
-            }
-        }
-    }
-
-
-    private void addUser() {
-        System.out.println("ADD NEW USER");
-        User user = new User();
-
-        user.setActive(true);
-        user.setCode("123");
-        user.setDisplayName("jelena");
-        user.setEmail("jelenabole@gmail.com");
-        user.setKey("user123");
-
-        user.save();
-    }
-    */
 }
