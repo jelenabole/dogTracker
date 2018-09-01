@@ -3,6 +3,7 @@ package hr.tvz.trackmydog.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,12 +18,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -44,13 +48,17 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
 
     private static final String TAG = "Map Range Activity";
 
-    @BindView(R.id.address) EditText enteredAddress;
+    @BindView(R.id.addressText) EditText addressText;
     @BindView(R.id.searchButton) ImageButton searchButton;
     @BindView(R.id.saveButton) Button saveButton;
     @BindView(R.id.rangeSeekbar) SeekBar rangeSeekbar;
+    @BindView(R.id.rangeText) TextView rangeText;
+
+    private final int rangeStep = 100;
 
     private GoogleMap map;
     private Marker marker;
+    private Circle circle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +68,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         setContentView(R.layout.activity_add_user_location);
         ButterKnife.bind(this);
 
-        // needed to call onMapReady:
+        // this is needed to call onMapReady:
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -71,7 +79,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View v) {
                 Log.d(TAG, "hide keyboard and search");
 
-                String addressName = enteredAddress.getText().toString();
+                String addressName = addressText.getText().toString();
                 if (addressName == null || addressName.equals("")) {
                     return;
                 }
@@ -85,7 +93,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                     // when keyboard is not opened - ignore
                 }
 
-                changeMarkerLocation(enteredAddress.getText().toString());
+                changeMarkerLocation(addressText.getText().toString());
             }
         });
 
@@ -98,12 +106,23 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-
         // seekbar = range
         rangeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.d(TAG, "value: " + progress + " -- from user: " + fromUser);
+                if (fromUser) {
+                    // minimum allowed = 1 (100)
+                    if (progress < 1) {
+                        seekBar.setProgress(1);
+                        progress = 1;
+                    }
+                    // interval = range step (100)
+                    String str = (progress * rangeStep) + " m";
+                    rangeText.setText(str);
+
+                    // change radius on map:
+                    circle.setRadius(progress * rangeStep);
+                }
             }
 
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -131,13 +150,13 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
 
         // set drag listener (to animate camera when marker is moved):
         map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-            @Override public void onMarkerDragStart(Marker arg0) {
-                // TODO Auto-generated method stub
-            }
             @Override
             public void onMarkerDragEnd(Marker arg0) {
                 // TODO - get new address:
                 changeMarkerLocation();
+            }
+            @Override public void onMarkerDragStart(Marker arg0) {
+                // TODO Auto-generated method stub
             }
             @Override public void onMarkerDrag(Marker arg0) {}
         });
@@ -167,7 +186,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void zoomToMarker() {
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 16));
     }
 
     // init marker on Zagreb
@@ -183,35 +202,38 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         );
         marker.showInfoWindow();
 
+        // TODO - default values hardcoded = ERROR
+        // range circle:
+        circle = map.addCircle(new CircleOptions()
+                .center(initLocation)
+                .radius(100)
+                .fillColor(0x30ff0000)
+                .strokeColor(Color.TRANSPARENT)
+                .strokeWidth(2)
+        );
+
         zoomToMarker();
     }
 
     // change marker location and title (user location, or location search)
     public void changeMarkerLocation(LatLng location, String title) {
         marker.setPosition(location);
+        circle.setCenter(location);
+
         marker.setTitle(title);
-        // this needed for title to refresh:
+        // TODO - this needed for title to refresh:
         marker.showInfoWindow();
 
         // TODO - in "current user location" case, double code:
         zoomToMarker();
     }
 
-
-    // change marker location and title by DRAGGING (find name):
+    // change marker title after DRAGGING (find name):
     public void changeMarkerLocation() {
-
-        // TODO - marker is already dragged (location changed)
-        // TODO - change the title (find the address)
-
         marker.setTitle(getAddressForMarker());
         marker.showInfoWindow();
-
-
-        // TODO - in "current user location" case, double code:
         zoomToMarker();
     }
-
 
     // change marker location by address name (search bar)
     private void changeMarkerLocation(String addressName) {
@@ -245,10 +267,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
 
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-
-                // TODO - delete unnecessary info:
                 String addressLine = address.getAddressLine(0);
-
                 return addressLine.substring(0, addressLine.indexOf(","));
             }
         } catch (IOException e) {
@@ -276,10 +295,10 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         LatLng position = marker.getPosition();
 
         // TODO - set name for the place
-        safeZone.setName(getAddress(position, enteredAddress.getText().toString()));
+        safeZone.setName(getAddress(position, addressText.getText().toString()));
         safeZone.setLatitude(position.latitude);
         safeZone.setLongitude(position.longitude);
-        safeZone.setRange(rangeSeekbar.getProgress());
+        safeZone.setRange(rangeSeekbar.getProgress() * rangeStep);
 
         DatabaseReference safeZones = FirebaseDatabase.getInstance()
                 .getReference("users/" + FBAuth.getUserKey() + "/safeZones");
