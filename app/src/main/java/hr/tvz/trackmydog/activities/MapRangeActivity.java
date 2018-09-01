@@ -152,8 +152,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragEnd(Marker arg0) {
-                // TODO - get new address:
-                changeMarkerLocation();
+                refreshMarkerInfoOnDrag();
             }
             @Override public void onMarkerDragStart(Marker arg0) {
                 // TODO Auto-generated method stub
@@ -229,10 +228,18 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     // change marker title after DRAGGING (find name):
-    public void changeMarkerLocation() {
-        marker.setTitle(getAddressForMarker());
+    // title and circle fixes
+    public void refreshMarkerInfoOnDrag() {
+        circle.setCenter(marker.getPosition());
+        String addressName = getAddressForMarker();
+
+        marker.setTitle(addressName);
         marker.showInfoWindow();
         zoomToMarker();
+
+        // TODO - maybe delete text bar
+        // replace text from search bar:
+        addressText.setText(addressName);
     }
 
     // change marker location by address name (search bar)
