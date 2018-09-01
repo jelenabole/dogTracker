@@ -93,7 +93,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                     // when keyboard is not opened - ignore
                 }
 
-                changeMarkerLocation(addressText.getText().toString());
+                repositionMarkerByAddress(addressText.getText().toString());
             }
         });
 
@@ -152,7 +152,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragEnd(Marker arg0) {
-                refreshMarkerInfoOnDrag();
+                refreshMarkerInfo();
             }
             @Override public void onMarkerDragStart(Marker arg0) {
                 // TODO Auto-generated method stub
@@ -177,8 +177,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
                     // TODO - current location string - ERROR
-                    changeMarkerLocation(userLocation, "current location");
-                    zoomToMarker();
+                    repositionMarkerByLocation(userLocation);
                 }
             }
         }
@@ -214,49 +213,56 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         zoomToMarker();
     }
 
-    // change marker location and title (user location, or location search)
-    public void changeMarkerLocation(LatLng location, String title) {
-        marker.setPosition(location);
-        circle.setCenter(location);
-
-        marker.setTitle(title);
-        // TODO - this needed for title to refresh:
-        marker.showInfoWindow();
-
-        // TODO - in "current user location" case, double code:
-        zoomToMarker();
-    }
-
     // change marker title after DRAGGING (find name):
     // title and circle fixes
-    public void refreshMarkerInfoOnDrag() {
+    public void refreshMarkerInfo() {
         circle.setCenter(marker.getPosition());
-        String addressName = getAddressForMarker();
 
+        String addressName = getAddressOfLocation();
         marker.setTitle(addressName);
         marker.showInfoWindow();
-        zoomToMarker();
 
+        zoomToMarker();
         // TODO - maybe delete text bar
         // replace text from search bar:
-        addressText.setText(addressName);
+        addressText.setText("");
+        // addressText.setText(addressName);
     }
 
+
+
+
+
+
+    /* functions for re-positioning of the marker */
+
+
+    // change marker location and title (user location, or location search)
+    public void repositionMarkerByLocation(LatLng location) {
+        Log.d(TAG, "reposition marker - location: "
+                + location.latitude + " - " + location.longitude);
+        marker.setPosition(location);
+        refreshMarkerInfo();
+    }
+
+
+    // TODO - dohvatiti addresu iz ovoga, ne dohvaćati ponovno tamo ???
     // change marker location by address name (search bar)
-    private void changeMarkerLocation(String addressName) {
-        Log.d(TAG, "search for address: " + addressName);
+    private void repositionMarkerByAddress(String addressName) {
+        Log.d(TAG, "reposition marker - address: " + addressName);
 
         Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> addresses = geoCoder.getFromLocationName(addressName, 5);
             if (addresses.size() > 0) {
                 Double lat = (double) addresses.get(0).getLatitude();
-                Double lon = (double) addresses.get(0).getLongitude();
+                Double lng = (double) addresses.get(0).getLongitude();
 
-                Log.d(TAG, "lat-long: " + lat + "......." + lon);
-                LatLng mark = new LatLng(lat, lon);
+                Log.d(TAG, "address: "
+                        + getAddressOnly(addresses.get(0).getAddressLine(0)));
 
-                changeMarkerLocation(mark, addressName);
+                // TODO - traženje adrese ispočetka - error:
+                repositionMarkerByLocation(new LatLng(lat, lng));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -264,7 +270,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     // for dragging marker (changing address name - marker title):
-    private String getAddressForMarker() {
+    private String getAddressOfLocation() {
         double latitude = marker.getPosition().latitude;
         double longitude = marker.getPosition().longitude;
 
@@ -273,9 +279,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
             if (addresses.size() > 0) {
-                Address address = addresses.get(0);
-                String addressLine = address.getAddressLine(0);
-                return addressLine.substring(0, addressLine.indexOf(","));
+                return getAddressOnly(addresses.get(0).getAddressLine(0));
             }
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
@@ -283,6 +287,16 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
 
         return "- not found -";
     }
+
+    // additional function for cropping the address lines:
+    public String getAddressOnly(String str) {
+        return str.substring(0, str.indexOf(","));
+    }
+
+
+
+
+
 
 
 
@@ -316,6 +330,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
 
+    // TODO - not in use - check all getters:
     // fallback = string that the user wrote, in case full address isn't found:
     private String getAddress(LatLng location, String fallbackString) {
         double latitude = location.latitude;
