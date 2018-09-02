@@ -27,7 +27,6 @@ public class FirebaseTokenService extends FirebaseMessagingService {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 token = instanceIdResult.getToken();
-                String newToken = instanceIdResult.getToken();
                 Log.e(TAG, "Application token: " + token);
             }
         });
@@ -39,15 +38,22 @@ public class FirebaseTokenService extends FirebaseMessagingService {
         Log.d(TAG, " *** NEW TOKEN: " + newToken);
 
         token = newToken;
-
         // save token on server, for notifications
         sendRegistrationToServer(newToken);
     }
 
     private void sendRegistrationToServer(String newToken) {
+        // TODO - send reg token to firebase
     }
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
+        Log.d(TAG, " *** Message from: " + remoteMessage.getFrom());
+
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, " *** Message Notification Title: " + remoteMessage.getNotification().getTitle());
+            Log.d(TAG, " *** Message Notification Body: " + remoteMessage.getNotification().getBody());
+        }
     }
+
 }
