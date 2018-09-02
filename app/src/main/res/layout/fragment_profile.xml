@@ -15,7 +15,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/layout">
 
             <Button
@@ -71,7 +71,6 @@
                     android:layout_marginTop="16dp"
                     android:clickable="true"
                     android:focusable="true"
-
                     android:src="@android:drawable/ic_menu_edit" />
 
                 <TextView
@@ -129,11 +128,9 @@
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:text="Email: "
+                    android:text="Email:"
                     android:textStyle="bold"
-                    android:layout_margin="5dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="@dimen/textview_margin_side"
                     app:layout_constraintTop_toBottomOf="@+id/addLocationButton"
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:layout_marginTop="8dp" />
@@ -142,38 +139,45 @@
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:clickable="true"
-                    android:text="Mobile number:"
+                    android:text="Random info:"
                     android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@+id/textView11"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_side"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
                     android:id="@+id/textView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:clickable="true"
-                    android:text="Gender:"
+                    android:text="Mobile number:"
                     android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@+id/textView12"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_side"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
                     android:id="@+id/textView14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:clickable="true"
-                    android:text="Date of birth: "
+                    android:text="Gender:"
                     android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@+id/textView13"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_side"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date of birth: "
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@+id/textView14"
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_side"
+                    app:layout_constraintLeft_toLeftOf="parent" />
 
                 <!-- info fields -->
 
@@ -181,48 +185,51 @@
                     android:id="@+id/email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
                     android:text="email@email.com"
-                    app:layout_constraintTop_toBottomOf="@+id/addLocationButton"
-                    app:layout_constraintLeft_toRightOf="@+id/textView11"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="0dp" />
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_start"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
+                    app:layout_constraintLeft_toRightOf="@+id/textView11" />
+
+                <TextView
+                    android:id="@+id/randomInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="from here"
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_start"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
+                    app:layout_constraintLeft_toRightOf="@+id/textView12" />
 
                 <TextView
                     android:id="@+id/mobileNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
                     android:text="9876543210"
-                    android:layout_margin="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/email"
-                    app:layout_constraintLeft_toRightOf="@+id/textView12" />
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_start"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
+                    app:layout_constraintLeft_toRightOf="@+id/textView13" />
 
                 <TextView
                     android:id="@+id/gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
                     android:text="Male"
-                    app:layout_constraintLeft_toRightOf="@+id/textView13"
-                    android:layout_margin="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/mobileNumber" />
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_start"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView14"
+                    app:layout_constraintLeft_toRightOf="@+id/textView14" />
 
                 <TextView
                     android:id="@+id/dob"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:text="01/01/2017"
-                    android:layout_margin="5dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/gender"
-                    app:layout_constraintLeft_toRightOf="@+id/textView14" />
+                    android:text="28/03/1994"
+                    android:layout_marginTop="@dimen/textview_margin_top"
+                    android:layout_marginStart="@dimen/textview_margin_start"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView15"
+                    app:layout_constraintLeft_toRightOf="@+id/textView15" />
 
 
             </android.support.constraint.ConstraintLayout>

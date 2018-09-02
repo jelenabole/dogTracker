@@ -3,6 +3,12 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
 
+    <!-- user profile -->
+    <dimen name="textview_margin_top">5dp</dimen>
+    <dimen name="textview_margin_side">16dp</dimen>
+    <dimen name="textview_margin_start">6dp</dimen>
+
+
     <dimen name="space_between_images">16dp</dimen>
 
     <integer name="between_pics">16</integer>

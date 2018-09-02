@@ -16,11 +16,12 @@ public class CurrentUser implements Serializable {
     private String photoURL;
     private boolean follow;
 
+    // additional info:
+    private String location;
+
     private String token; // fb messaging token
     private List<BasicDog> dogs;
     private HashMap<String, SafeZone> safeZones;
-
-
 
     public String getKey() {
         return key;
@@ -36,14 +37,6 @@ public class CurrentUser implements Serializable {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getPhotoURL() {
-        return photoURL;
-    }
-
-    public void setPhotoURL(String photoURL) {
-        this.photoURL = photoURL;
     }
 
     public String getEmail() {
@@ -62,12 +55,28 @@ public class CurrentUser implements Serializable {
         this.code = code;
     }
 
+    public String getPhotoURL() {
+        return photoURL;
+    }
+
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
+    }
+
     public boolean isFollow() {
         return follow;
     }
 
     public void setFollow(boolean follow) {
         this.follow = follow;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        location = location;
     }
 
     public String getToken() {
@@ -101,6 +110,7 @@ public class CurrentUser implements Serializable {
         str += " - " + "key: " + key;
         str += " - " + "displayName: " + displayName;
         str += " - " + "email: " + email;
+        str += " - " + "location: " + location;
         str += " - " + "code: " + code;
         str += " - " + "photoURL: " + photoURL;
         str += " - " + "follow user: " + follow;

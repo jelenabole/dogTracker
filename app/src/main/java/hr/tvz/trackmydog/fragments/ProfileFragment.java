@@ -34,9 +34,10 @@ public class ProfileFragment extends Fragment {
 
     // TODO - text views:
     @BindView(R.id.email) TextView email;
+    /*
     @BindView(R.id.mobileNumber) TextView mobileNumber;
     @BindView(R.id.gender) TextView gender;
-    @BindView(R.id.dob) TextView dob;
+    */
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -51,10 +52,10 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        // TODO - butterknife bind
+        // butterknife bind
         ButterKnife.bind(this, v);
 
-        // TODO - get user info:
+        // get user info:
         user = FBAuth.getCurrentUserFB();
 
         // TODO - set all text views:
@@ -72,7 +73,6 @@ public class ProfileFragment extends Fragment {
         // logout button listener:
         logoutButton.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View v) {
-                // TODO - finish doesnt clean the history
                 Log.d(TAG, "logout user: " + user.getDisplayName());
                 FBAuth.logoutUser();
             }
@@ -90,15 +90,11 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
-    // TODO - add all user info, delete code (?)
+    // set all shown fields:
     private void setAllFields() {
         name.setText(HelperClass.getAsStringLabel(user.getDisplayName()));
-        location.setText("Zagreb");
-
+        location.setText(HelperClass.getAsStringLabel(user.getLocation()));
         email.setText(HelperClass.getAsStringLabel(user.getEmail()));
-        mobileNumber.setText("099 1235 846");
-        gender.setText(user.getCode());
-        dob.setText("01/01/1990");
     }
 
 }
