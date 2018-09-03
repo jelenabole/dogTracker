@@ -32,7 +32,7 @@
 
 
     <!-- map fragment -->
-    <string name="no_dogs_map">ADD A DOG   =></string>
+    <string name="no_dogs_map">No Dogs</string>
 
     <!-- action bar menu = buttons -->
     <string name="action_edit">Edit</string>

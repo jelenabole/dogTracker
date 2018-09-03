@@ -1,15 +1,20 @@
 package hr.tvz.trackmydog.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,23 +29,28 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.DogDetailsActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
+import hr.tvz.trackmydog.dog.ReplacedDog;
 import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
 
 public class DogsFragment extends ListFragment {
 
+    private static final String TAG = "Dogs List fragment";
+
     // Firebase links:
     String dogsLink;
 
     // info about all dogs (get only once, or current or something ??? )
-    LinearLayout linearLayout;
+    @BindView(R.id.linearLayout) LinearLayout linearLayout;
+    @BindView(R.id.addButton) FloatingActionButton addButton;
 
     private List<Dog> dogs;
-
     DatabaseReference dogsRef;
     List<Integer> defaultThumbs;
 
@@ -52,29 +62,39 @@ public class DogsFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("*************** On Create");
+        Log.d(TAG, " *** on Create");
         dogsLink = "users/" + FBAuth.getCurrentUserFB().getKey() + "/dogs";
 
         // TODO - get list of dogs:
         dogs = new ArrayList<>();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
+
         View v = inflater.inflate(R.layout.fragment_dogs, container, false);
+        ButterKnife.bind(this, v);
         // get all dogs, and set FB reference:
         // getDogsOnce();
+
+        // add dog floating button
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAddDogDialog();
+            }
+        });
 
         defaultThumbs = HelperClass.getDefaultDogPictures();
         return v;
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        System.out.println("*************** On View Created");
+        Log.d(TAG, " *** On View Created");
+
         // TODO - parent reset:
         linearLayout =  (LinearLayout) view.findViewById(R.id.linearLayout);
         // TODO - nepotrebno: (error)
@@ -82,6 +102,76 @@ public class DogsFragment extends ListFragment {
         // TODO - put listener on dogs:
         getDogs();
     }
+
+    // floating button = add new dog by code:
+    private void openAddDogDialog() {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Add new dog");
+        final EditText input = new EditText(getContext());
+        input.setHint("Dog Code");
+        alert.setView(input);
+
+        alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString().trim();
+                if (!checkIfDogExists(value)) {
+                    // TODO - dog wasnt found
+                    // TODO - dont close the window, show error message
+                } else {
+                    Toast.makeText(getContext().getApplicationContext(), value,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
+    }
+
+    // add new dog - find it by code and add data
+    // add data to dog (user input)
+    // find dog by code (single event) - add new dog to user
+    private boolean checkIfDogExists(String code) {
+        final String dogCode = code;
+
+        FirebaseDatabase.getInstance().getReference("dogs")
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean found = false;
+                for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
+                    if (dogSnaps.child("code").getValue().equals(dogCode)) {
+                        // if dog is found:
+                        found = true;
+
+                        ReplacedDog dog = dogSnaps.getValue(ReplacedDog.class);
+                        dog.setKey(dogSnaps.getKey());
+                    }
+                }
+
+                // if dog is not found, send error message and prevent dialog closing
+                if (!found) {
+                    // TODO - dog is not found
+                    // errorText.setVisibility(View.VISIBLE);
+                    // errorText.setText("dog code wrong");
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Toast.makeText(this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+        return false;
+    }
+
+
+
+    /* OTHER FUNCTIONS */
+
 
     protected void getDogs() {
         dogsRef = FirebaseDatabase.getInstance().getReference(dogsLink);
