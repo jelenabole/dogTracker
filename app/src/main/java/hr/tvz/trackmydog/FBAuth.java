@@ -210,6 +210,8 @@ public class FBAuth {
                         userRef.removeEventListener(this);
                         logoutUser();
                     } else {
+                        Log.w(TAG, " *** listener = user changed");
+                        Log.d(TAG, currentUserFB.toString());
                         currentUserFB = dataSnapshot.getValue(CurrentUser.class);
                         currentUserFB.setKey(dataSnapshot.getKey());
                     }

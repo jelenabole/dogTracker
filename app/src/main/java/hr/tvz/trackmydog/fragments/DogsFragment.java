@@ -15,13 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,22 +26,17 @@ import hr.tvz.trackmydog.activities.DogDetailsActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.dogModel.CustomDogList;
-import hr.tvz.trackmydog.dogModel.Dog;
+import hr.tvz.trackmydog.userModel.BasicDog;
 
 public class DogsFragment extends ListFragment {
 
     private static final String TAG = "Dogs List fragment";
 
-    // Firebase links:
-    String dogsLink;
-
     // info about all dogs (get only once, or current or something ??? )
     @BindView(R.id.linearLayout) LinearLayout linearLayout;
     @BindView(R.id.addButton) FloatingActionButton addButton;
 
-    private List<Dog> dogs;
-    DatabaseReference dogsRef;
+    private List<BasicDog> dogs;
     List<Integer> defaultThumbs;
 
     public static DogsFragment newInstance() {
@@ -58,9 +46,7 @@ public class DogsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d(TAG, " *** on Create");
-        dogsLink = "users/" + FBAuth.getCurrentUserFB().getKey() + "/dogs";
 
         // TODO - get list of dogs:
         dogs = new ArrayList<>();
@@ -73,8 +59,6 @@ public class DogsFragment extends ListFragment {
 
         View v = inflater.inflate(R.layout.fragment_dogs, container, false);
         ButterKnife.bind(this, v);
-        // get all dogs, and set FB reference:
-        // getDogsOnce();
 
         // add dog floating button - starts activity
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -99,46 +83,46 @@ public class DogsFragment extends ListFragment {
         super.onStart();
         Log.d(TAG, " *** On Start");
 
-        // TODO - nepotrebno: (error)
-        linearLayout.removeViews(0, linearLayout.getChildCount());
-
         // get dogs on start (after activity is created)
         getDogs();
     }
 
+    /* GET DOGS - over user, not firebase listener */
+
+    protected void getDogs() {
+        List<BasicDog> basicDogs = FBAuth.getCurrentUserFB().getDogs();
+
+        // TODO - nepotrebno (???)
+        linearLayout.removeViews(0, linearLayout.getChildCount());
+
+        // clear list of dogs - not needed (not changing on listener):
+        dogs.clear();
+
+        // if there are dogs:
+        if (basicDogs != null) {
+            // add all dogs to list (if theyre not null = deleted):
+            for (BasicDog dog : basicDogs) {
+                if (dog != null) {
+                    // add each dog
+                    dogs.add(dog);
+                    Log.d(TAG, "add dogs to list - dog found: " + dog.getName());
+
+                    // add it to linear layout
+                    setDogFrame(dog);
+                } else {
+                    Log.d(TAG, "add dogs to list - dog missing");
+                }
+            }
+        }
+    }
 
 
 
     /* OTHER FUNCTIONS */
 
 
-    protected void getDogs() {
-        dogsRef = FirebaseDatabase.getInstance().getReference(dogsLink);
-        dogsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // TODO - delete dogs and get new list:
-                dogs.clear();
-
-                for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
-                    Dog dog = dogSnaps.getValue(Dog.class);
-                    dogs.add(dog);
-                    // System.out.println("DOG FOUND: " + dog.getName());
-                    // setAllDogsImages();
-                    // TODO - add dog to linear layout
-                    setDogFrame(dog);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     // TODO - set one by one dog (linear views with pic and info):
-    private void setDogFrame(Dog dog) {
+    private void setDogFrame(BasicDog dog) {
         int padding = 16;
 
         // TODO - calculate boxes with width = for normal Orientation:
@@ -156,7 +140,10 @@ public class DogsFragment extends ListFragment {
         String dogBreed = dog.getBreed() == null ? "-- unknown --" : dog.getBreed();
         // TODO - context needed (sometimes fails)
         int dogColor = HelperClass.getDogColor(dog.getColor(), getResources(), getActivity());
-        String dogLastLocationTime = HelperClass.getLastLocationTime(dog.getLocation());
+
+        // TODO - get location currently deleted (not in BasicDog):
+        // String dogLastLocationTime = HelperClass.getLastLocationTime(dog.getLocation());
+        String dogLastLocationTime = HelperClass.getLastLocationTime(null);
 
         // set all linear views (box, pic and info):
         LinearLayout dogFrame = new LinearLayout(getContext());
@@ -171,11 +158,11 @@ public class DogsFragment extends ListFragment {
         dogFrame.setLayoutParams(boxParams);
         dogFrame.setBackgroundColor(Color.LTGRAY);
 
-        // TODO - setOnClickListener
+        // setOnClickListener for dog details:
         dogFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(" ****** kliknut pas");
+                Log.d(TAG, " *** dog clicked");
 
                 // TODO - get index of a child (error - find better way):
                 int dogIndex = dogs.get(((ViewGroup) v.getParent()).indexOfChild(v)).getIndex();
@@ -240,175 +227,6 @@ public class DogsFragment extends ListFragment {
         locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
         locationTextView.setLayoutParams(textParams);
         dogDescription.addView(locationTextView);
-    }
-
-    // set dog Thumbnails (calc size) and click listeners:
-    private void setAllDogsImages() {
-        // dohvati veličinu ekrana ???
-        // TODO - calculate w x h (for 5 elements in row):
-        /*
-        layout.getWidth();
-        int padding = 15;
-        int space = 15;
-        int size = (layout.getWidth() - (space * dogs.size()) - (padding * 2)) / 5;
-
-        ConstraintSet set = new ConstraintSet();
-        ImageView view = new ImageView(getContext());
-        layout.addView(view,0);
-        */
-
-
-        /*
-        view.setMinimumHeight(500);
-        view.setMinimumWidth(500);
-        */
-
-        /*
-        view.setBackgroundColor(Color.RED);
-        set.clone(layout);
-        view.setId(View.generateViewId());
-        set.connect(view.getId(), ConstraintSet.TOP, layout.getId(), ConstraintSet.TOP, 60);
-        set.applyTo(layout);
-        */
-
-        /*
-        // postaviti linearni layout za svakog psa
-        // TODO - remove child first ???
-        linearLayout.removeViews(0, linearLayout.getChildCount());
-        linearLayout.setMinimumHeight(300);
-
-        LinearLayout dogBox = new LinearLayout(getContext());
-        dogBox.setOrientation(LinearLayout.VERTICAL);
-        dogBox.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 200));
-
-        dogBox.setBackgroundColor(Color.RED);
-        */
-        /*
-        dogBox.getLayoutParams().height = 200;
-        dogBox.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
-        */
-
-
-
-        /*
-        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        TextView titleView = new TextView(getContext());
-        titleView.setLayoutParams(lparams);
-        // titleView.setTextAppearance(getContext(), android.R.attr.textAppearanceLarge);
-        titleView.setText("Hellooooo!");
-
-        // getContext().setContentView(layout);
-        linearLayout.addView(titleView);
-        */
-
-
-        /*
-        // TODO - Button for "all" dogs:
-        // TODO - nekakva neutralna boja (default "all" gumb)
-
-        buttonAll.setPadding(padding, padding, padding, padding);
-
-        buttonAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAllDogs();
-            }
-        });
-
-        // TODO - remove all images (except the All button):
-        linearLayout.removeViews(1, linearLayout.getChildCount() - 1);
-
-        int number = dogs.size();
-        for (int i = 0; i < number; i++) {
-            // TODO - image with fresco:
-            int position = i;
-            SimpleDraweeView imageView = new SimpleDraweeView(getContext());
-
-            if (dogs.get(position) != null) {
-                if (dogs.get(position).getPhotoURL() ==  null) {
-                    imageView.setImageResource(defaultThumbs.get(position));
-                } else {
-                    Uri uri = Uri.parse(dogs.get(position).getPhotoURL());
-                    imageView.setImageURI(uri);
-                }
-
-                // TODO - check if dog has color (or add random):
-                int color = res.getColor(
-                        res.getIdentifier(dogs.get(position).getColor(), "color",
-                                getContext().getPackageName()),
-                        getContext().getTheme());
-                imageView.setBackgroundColor(color);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
-                                                 @Override
-                                                 public void onClick(View v) {
-                         // get parent, get index of a clicked child:
-                         // -1 = skip the first "all" button
-                         Dog dog = dogs.get(linearLayout.indexOfChild(v) - 1);
-
-                         if (dog != null) {
-                             if (dog.getLocation() != null) {
-                                 showOnlyThisDog(dog);
-                                 Toast.makeText(getContext(), "TRACK: " + dog.getName(),
-                                         Toast.LENGTH_SHORT).show();
-                             } else {
-                                 Toast.makeText(getContext(), "TRACK " + dog.getName()
-                                         + " - not successful - NO INFO", Toast.LENGTH_SHORT).show();
-                             }
-                         }
-                     }
-                     }
-                );
-            }
-
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size,size);
-            // ako nije zadnji, staviti padding-right:
-            if (i < number - 1) {
-                layoutParams.setMargins(0,0, space, 0);
-            }
-            imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(padding, padding, padding, padding);
-
-            linearLayout.addView(imageView);
-            */
-    }
-
-
-    protected void getDogsOnce() {
-        // TODO - make custom list adapter:
-        final CustomDogList customAdapter = new CustomDogList(getActivity(), dogs);
-        // listView.setAdapter(customAdapter);
-        setListAdapter(customAdapter);
-
-        // TODO - set click listener:
-        // getListView().setOnItemClickListener(this);
-
-        // TODO - firebase - get reference:
-        dogsRef = FirebaseDatabase.getInstance().getReference(dogsLink);
-        dogsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                customAdapter.clear();
-
-                for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
-                    Dog dog = dogSnaps.getValue(Dog.class);
-                    System.out.println("DOG *******************");
-                    System.out.println(dog);
-
-                    customAdapter.add(dog);
-                    // TODO - set thumbnails of a dogs
-                    // setAllDogsImages();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
 }
