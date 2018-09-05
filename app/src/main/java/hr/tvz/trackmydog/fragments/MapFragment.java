@@ -200,7 +200,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 if (user.getDogs().get(i) != null) {
                     // set the index on the dog:
                     // user.getDogs().get(i).setIndex(i);
-                    setListenerOnDogLocation(i);
+
+                    // TODO - (error) = changed database structure:
+                    // setListenerOnDogLocation(i);
+                    setListenerOnDogLocation(user.getDogs().get(i).getKey());
+
                 }
                 // TODO - just add null, and change it with marker later:
                 markers.add(null);
@@ -229,10 +233,12 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // set dog listener (map location)
     // on change, change the marker on the map
     // recalculate the zoom level and position (same as for the user change)
-    protected void setListenerOnDogLocation(int dogIndex) {
+    // TODO - (error) = changed database structure (sending key not index)
+    protected void setListenerOnDogLocation(String dogKey) {
         // TODO - firebase - get reference:
+        // TODO - (error) = changed database structure
         DatabaseReference dogRef = FirebaseDatabase.getInstance()
-                .getReference("users/" + user.getKey() + "/dogs/" + dogIndex);
+                .getReference("dogs/" + dogKey);
         dogRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
