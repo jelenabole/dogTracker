@@ -11,7 +11,8 @@
     <color name="colorPrimaryDark">#00838F</color>
     <color name="colorAccent">#FF5722</color>
 
-    <!-- 0088bc, d83f1f, ff8b00 -->
+    <!-- deafult-black, 0088bc, d83f1f, ff8b00 -->
+    <color name="black">#313131</color>
     <color name="blue">#007EAC</color>
     <color name="red">#C8492F</color>
     <color name="yellow">#F48F00</color>
@@ -19,6 +20,7 @@
     <color name="white">#f1f1f1</color>
 
     <!-- 50% opaque colors -->
+    <color name="black_op">#80313131</color>
     <color name="blue_op">#80007EAC</color>
     <color name="red_op">#80C8492F</color>
     <color name="yellow_op">#80F48F00</color>
@@ -26,6 +28,7 @@
     <color name="white_op">#80f1f1f1</color>
 
     <!-- text for those colors colors -->
+    <color name="black_text">#ffffff</color>
     <color name="blue_text">#ffffff</color>
     <color name="red_text">#ffffff</color>
     <color name="yellow_text">#ffffff</color>
@@ -34,6 +37,5 @@
 
     <color name="transparent">#50ffffff</color>
     <color name="grey">#cacaca</color>
-    <color name="black">#313131</color>
 
 </resources>

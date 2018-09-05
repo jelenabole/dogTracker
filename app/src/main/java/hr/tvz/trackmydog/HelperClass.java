@@ -14,9 +14,12 @@ import java.util.concurrent.TimeUnit;
 
 import hr.tvz.trackmydog.dogModel.CurrentLocation;
 
+// TODO - default color is black = check this for paws and colors (border, text)
 public class HelperClass {
 
     private static final String TAG = "Helper Class";
+
+    private static final String FALLBACK_COLOR = "black";
 
     // get paw icon (map marker) for the dogs:
     public static int getPawMarker(String color, Resources res, Context context) {
@@ -24,6 +27,10 @@ public class HelperClass {
         // yellow:  #F48F00        rgb(244, 143, 0)
         // red:     #C8492F        rgb(200, 73, 47)
         // green:   #31AA50        rgb(49, 170, 80)
+        if (color == null) {
+            color = FALLBACK_COLOR;
+        }
+
         switch (color) {
             case "blue":
                 return res.getIdentifier("paw_blue", "drawable", context.getPackageName());
@@ -51,13 +58,19 @@ public class HelperClass {
     }
 
 
-
-
-
     /* GET COLOR FROM STRING NAME */
     // get dog color:
-    public static int getColorFromRes(String color, Resources res, Context context) {
+    // used: DogDetailsActivity
+    public static int getColorFromRes(String color, String additional, Resources res, Context context) {
         Log.d(TAG, "get color from resources: " + color);
+        if (color == null) {
+            color = FALLBACK_COLOR;
+        }
+        // additional info about color (opaque, text, ...)
+        if (additional != null) {
+            color += additional;
+        }
+
         return res.getColor(res.getIdentifier(color, "color",
                 context.getPackageName()), context.getTheme());
     }
@@ -65,11 +78,13 @@ public class HelperClass {
     // get dog color:
     // TODO - function for DogsFragment:
     public static int getDogColor(String color, Resources res, Context context) {
-        int dogColor = res.getIdentifier(color, "color", context.getPackageName());
+        if (color == null) {
+            color = FALLBACK_COLOR;
+        }
 
+        int dogColor = res.getIdentifier(color, "color", context.getPackageName());
         return res.getColor(dogColor, null);
     }
-
 
 
     // get default pictures for dogs (if there are no dog pics)
@@ -190,11 +205,43 @@ public class HelperClass {
     }
 
     // check if field is empty
+    // used in AddNewDog (deleted), and EditDog
     public static boolean isFieldEmpty(String str) {
         if (str != null && !str.equals("")) {
             return true;
         }
         return false;
+    }
+
+
+
+    /* Add new dog = check text fields */
+
+    // Add new dog = return string or null
+    public static String getTextOrNull(String str) {
+        if (str != null && !str.equals("")) {
+            // pretvoti u broj i vrati broj
+            return str;
+        }
+        return null;
+    }
+
+    // Add new dog = return string or unknown (for info that is shown)
+    public static String getTextOrUnknown(String str) {
+        if (str != null && !str.equals("")) {
+            // pretvoti u broj i vrati broj
+            return str;
+        }
+        return "-- unknown --";
+    }
+
+    // Add new dog = return integer or null
+    public static Integer getIntegerOrNull(String str) {
+        if (str != null && !str.equals("")) {
+            // pretvoti u broj i vrati broj
+            return Integer.valueOf(str);
+        }
+        return null;
     }
 
 }

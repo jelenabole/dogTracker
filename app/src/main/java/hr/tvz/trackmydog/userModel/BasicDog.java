@@ -8,7 +8,8 @@ import java.util.Date;
 @IgnoreExtraProperties
 public class BasicDog implements Serializable {
 
-    private int index;
+    private String key;
+    private Integer index;
     private String name;
     private String breed;
     private Integer age;
@@ -30,12 +31,19 @@ public class BasicDog implements Serializable {
     */
     private Settings settings;
 
+    public String getKey() {
+        return key;
+    }
 
-    public int getIndex() {
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Integer getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(Integer index) {
         this.index = index;
     }
 

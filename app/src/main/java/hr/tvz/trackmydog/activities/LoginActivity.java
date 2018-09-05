@@ -34,7 +34,7 @@ import hr.tvz.trackmydog.firebaseWait.MyCallback;
  */
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
-    private static final String TAG = "GoogleActivity";
+    private static final String TAG = "Login Activity";
     private static final int RC_SIGN_IN = 9001;
     public GoogleSignInClient mGoogleSignInClient;
 
@@ -98,6 +98,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
+                // TODO - show an error message:
+                mStatusTextView.setText("Google sign in failed");
+                mStatusTextView.setTextColor(getResources().getColor(R.color.colorAccent, null));
                 // updateUI(null);
             }
         }

@@ -124,11 +124,11 @@ public class DogDetailsActivity extends AppCompatActivity {
     }
 
     private void changeColorTo(String colorName) {
-        int color = HelperClass.getColorFromRes(colorName,
+        int color = HelperClass.getColorFromRes(colorName, null,
                 getResources(), this);
-        int colorOpaque = HelperClass.getColorFromRes(colorName + "_op",
+        int colorOpaque = HelperClass.getColorFromRes(colorName, "_op",
                 getResources(), this);
-        int colorText = HelperClass.getColorFromRes(colorName + "_text",
+        int colorText = HelperClass.getColorFromRes(colorName,"_text",
                 getResources(), this);
 
         // BANNER - background and separators:

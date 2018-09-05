@@ -575,7 +575,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             }
 
             // TODO - check if dog has color (or add random):
-            int color = HelperClass.getColorFromRes(dogs.get(position).getColor(),
+            int color = HelperClass.getColorFromRes(dogs.get(position).getColor(), null,
                     getResources(), getContext());
             imageView.setBackgroundColor(color);
 

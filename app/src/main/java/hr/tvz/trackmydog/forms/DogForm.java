@@ -11,18 +11,37 @@ import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.userModel.BasicDog;
 
 @IgnoreExtraProperties
-public class DogBasicInfo implements Serializable {
+public class DogForm implements Serializable {
 
+    private String key;
+    private Integer index;
     private String name;
-    private String breed;
-    private Integer age;
-    private String photoURL;
     private String color;
 
     // additional info:
+    private String breed;
+    private Integer age;
+    private String photoURL;
+
     private Integer height;
     private Integer weight;
     private String gender;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
 
     public String getName() {
         return name;
@@ -88,22 +107,17 @@ public class DogBasicInfo implements Serializable {
         this.gender = gender;
     }
 
-    // just fields that we are updating:
-    public void mapDog(BasicDog dog) {
-        // map all fields:
-        name = dog.getName();
-        breed = dog.getBreed();
-        age = dog.getAge();
-        height = dog.getHeight();
-        weight = dog.getWeight();
-        gender = dog.getGender();
-    }
-
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("key", key);
+        result.put("index", index);
         result.put("name", name);
+        result.put("color", color);
+
         result.put("breed", breed);
         result.put("age", age);
+        result.put("photoURL", photoURL);
+
         result.put("height", height);
         result.put("weight", weight);
         result.put("gender", gender);
@@ -115,10 +129,12 @@ public class DogBasicInfo implements Serializable {
     public String toString() {
         String str = "********** \n";
 
+        str += " - " + "key: " + key;
         str += " - " + "name: " + name;
-        str += " - " + "breed: " + breed;
-        str += " - " + "age: " + age;
         str += " - " + "color: " + color;
+
+        str += "\n - " + "breed: " + breed;
+        str += " - " + "age: " + age;
         str += " - " + "photoURL: " + photoURL;
 
         str += "\n - " + "height: " + height;

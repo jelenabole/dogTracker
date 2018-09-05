@@ -1,6 +1,5 @@
 package hr.tvz.trackmydog.fragments;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -8,13 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,11 +28,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.activities.AddNewDogActivity;
 import hr.tvz.trackmydog.activities.DogDetailsActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.dog.ReplacedDog;
 import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
 
@@ -79,11 +76,12 @@ public class DogsFragment extends ListFragment {
         // get all dogs, and set FB reference:
         // getDogsOnce();
 
-        // add dog floating button
+        // add dog floating button - starts activity
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAddDogDialog();
+                Intent intent = new Intent(getContext(), AddNewDogActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -94,79 +92,20 @@ public class DogsFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         Log.d(TAG, " *** On View Created");
+    }
 
-        // TODO - parent reset:
-        linearLayout =  (LinearLayout) view.findViewById(R.id.linearLayout);
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, " *** On Start");
+
         // TODO - nepotrebno: (error)
         linearLayout.removeViews(0, linearLayout.getChildCount());
-        // TODO - put listener on dogs:
+
+        // get dogs on start (after activity is created)
         getDogs();
     }
 
-    // floating button = add new dog by code:
-    private void openAddDogDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-        alert.setTitle("Add new dog");
-        final EditText input = new EditText(getContext());
-        input.setHint("Dog Code");
-        alert.setView(input);
-
-        alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String value = input.getText().toString().trim();
-                if (!checkIfDogExists(value)) {
-                    // TODO - dog wasnt found
-                    // TODO - dont close the window, show error message
-                } else {
-                    Toast.makeText(getContext().getApplicationContext(), value,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.cancel();
-            }
-        });
-        alert.show();
-    }
-
-    // add new dog - find it by code and add data
-    // add data to dog (user input)
-    // find dog by code (single event) - add new dog to user
-    private boolean checkIfDogExists(String code) {
-        final String dogCode = code;
-
-        FirebaseDatabase.getInstance().getReference("dogs")
-            .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                boolean found = false;
-                for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
-                    if (dogSnaps.child("code").getValue().equals(dogCode)) {
-                        // if dog is found:
-                        found = true;
-
-                        ReplacedDog dog = dogSnaps.getValue(ReplacedDog.class);
-                        dog.setKey(dogSnaps.getKey());
-                    }
-                }
-
-                // if dog is not found, send error message and prevent dialog closing
-                if (!found) {
-                    // TODO - dog is not found
-                    // errorText.setVisibility(View.VISIBLE);
-                    // errorText.setText("dog code wrong");
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Toast.makeText(this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-        return false;
-    }
 
 
 
@@ -215,9 +154,9 @@ public class DogsFragment extends ListFragment {
             dogName += " (" + dog.getAge() + ")";
         }
         String dogBreed = dog.getBreed() == null ? "-- unknown --" : dog.getBreed();
-        int dogColor = HelperClass.getDogColor(dog.getColor(), getResources(), getContext());
+        // TODO - context needed (sometimes fails)
+        int dogColor = HelperClass.getDogColor(dog.getColor(), getResources(), getActivity());
         String dogLastLocationTime = HelperClass.getLastLocationTime(dog.getLocation());
-
 
         // set all linear views (box, pic and info):
         LinearLayout dogFrame = new LinearLayout(getContext());
@@ -471,7 +410,5 @@ public class DogsFragment extends ListFragment {
             }
         });
     }
-
-
 
 }

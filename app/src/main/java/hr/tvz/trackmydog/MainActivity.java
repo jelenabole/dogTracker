@@ -8,11 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.fragments.DogsFragment;
 import hr.tvz.trackmydog.fragments.MapFragment;
@@ -22,11 +24,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST = 100;
 
+    @BindView(R.id.navigation) BottomNavigationView navigation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("Main - On Create");
-        // TODO - need to initialize Fresco before the contectView and using it:
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -52,13 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
         // set the first fragment (map fragment):
         // TODO - on refresh/change orientation = remember current fragment
-        // TODO - this should happen after user is set up (test):
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_layout, MapFragment.newInstance());
-        transaction.commit();
+        // if savedInstance exists, don't inflate the beginning fragment (already exists):
+        if (savedInstanceState == null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_layout, MapFragment.newInstance()).commit();
+        }
 
         // Set the bottom navigation and onclick listener:
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 

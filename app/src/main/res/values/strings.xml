@@ -37,13 +37,18 @@
     <!-- action bar menu = buttons -->
     <string name="action_edit">Edit</string>
 
-    <!-- edit dog activity = hints -->
+    <!-- add dog activity = hints -->
+    <string name="chip_number_mandatory">Chip Number *</string>
+    <string name="dog_name_mandatory">Name *</string>
+
+    <!-- add/edit dog activity = hints -->
+    <string name="chip_number">Chip Number</string>
     <string name="dog_name">Name</string>
+
     <string name="dog_breed">Breed</string>
     <string name="dog_age">Age</string>
     <string name="dog_gender">Gender</string>
     <string name="dog_date_of_birth">Date Of Birth</string>
-
     <string name="dog_weight">Weight</string>
     <string name="dog_height">Height</string>
 

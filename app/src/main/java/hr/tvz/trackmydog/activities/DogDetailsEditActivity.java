@@ -19,31 +19,29 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.forms.DogBasicInfo;
-import hr.tvz.trackmydog.userModel.BasicDog;
+import hr.tvz.trackmydog.dog.DogMapper;
+import hr.tvz.trackmydog.forms.DogForm;
 
 public class DogDetailsEditActivity extends AppCompatActivity {
 
     private static final String TAG = "Dog Details Edit Activity";
 
-    // TODO - info from DbFlowApp:
-    private BasicDog dog;
-    private DatabaseReference dogRef;
+    private Integer dogIndex;
+    DogForm dog; // get the existing dog info
+
+    // @BindView(R.id.error) TextView error;
 
     // @BindView(R.id.dogImage) ImageView dogImage;
     @BindView(R.id.name) TextView name;
     @BindView(R.id.breed) TextView breed;
     @BindView(R.id.age) TextView age;
-
     @BindView(R.id.height) TextView height;
     @BindView(R.id.weight) TextView weight;
-
-    // @BindView(R.id.dateOfBirth) TextInputEditText dateOfBirth;
-    @BindView(R.id.saveButton) Button saveButton;
-
     @BindView(R.id.female) RadioButton female;
     @BindView(R.id.male) RadioButton male;
 
+    // @BindView(R.id.dateOfBirth) TextInputEditText dateOfBirth;
+    @BindView(R.id.saveButton) Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +51,9 @@ public class DogDetailsEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dog_details_edit);
         ButterKnife.bind(this);
 
-        int dogIndex = getIntent().getIntExtra("dogIndex", -1);
+        dogIndex = getIntent().getIntExtra("dogIndex", -1);
         // TODO - spojiti u jednu klasu (dog / user-dog)
-        dog = FBAuth.getCurrentUserFB().getDogs().get(dogIndex);
+        dog = DogMapper.mapBasicDogToForm(FBAuth.getCurrentUserFB().getDogs().get(dogIndex));
 
         // set all fields to values
         setFieldValues();
@@ -91,26 +89,16 @@ public class DogDetailsEditActivity extends AppCompatActivity {
     // save dog and finish activity
     private void saveDog() {
         Log.d(TAG, "save dog info");
-        DogBasicInfo info = new DogBasicInfo();
 
+        // save dog:
+        // TODO - add dog index (needed ??):
+        // refresh fields (only the ones that are changed (that can be changed by user)
+        dog.setName(name.getText().toString());
+        dog.setBreed(HelperClass.getTextOrUnknown(breed.getText().toString()));
 
-        // check if all info is filled, save and quit
-        if (HelperClass.isFieldEmpty(name.getText().toString())) {
-            dog.setName(name.getText().toString());
-        }
-        if (HelperClass.isFieldEmpty(breed.getText().toString())) {
-            dog.setBreed(breed.getText().toString());
-        }
-        if (HelperClass.isFieldEmpty(age.getText().toString())) {
-            dog.setAge(Integer.valueOf(age.getText().toString()));
-        }
-
-        if (HelperClass.isFieldEmpty(height.getText().toString())) {
-            dog.setHeight(Integer.valueOf(height.getText().toString()));
-        }
-        if (HelperClass.isFieldEmpty(weight.getText().toString())) {
-            dog.setWeight(Integer.valueOf(weight.getText().toString()));
-        }
+        dog.setAge(HelperClass.getIntegerOrNull(age.getText().toString()));
+        dog.setHeight(HelperClass.getIntegerOrNull(height.getText().toString()));
+        dog.setWeight(HelperClass.getIntegerOrNull(weight.getText().toString()));
 
         // gender:
         if (female.isChecked()) {
@@ -120,12 +108,11 @@ public class DogDetailsEditActivity extends AppCompatActivity {
         }
 
         // save dog:
-        info.mapDog(dog);
-        Log.d(TAG, info.toString());
+        Log.d(TAG, "save dog: " + dog.toString());
 
         FirebaseDatabase.getInstance()
             .getReference("users/" + FBAuth.getUserKey() + "/dogs/" + dog.getIndex())
-            .updateChildren(info.toMap(), new DatabaseReference.CompletionListener() {
+            .updateChildren(dog.toMap(), new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError,
                                        @NonNull DatabaseReference databaseReference) {

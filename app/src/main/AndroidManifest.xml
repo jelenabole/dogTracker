@@ -40,6 +40,12 @@
             android:label="@string/main_activity"
             android:launchMode="singleTop" />
 
+        <!-- add / edit dog activities -->
+        <activity
+            android:name=".activities.AddNewDogActivity"
+            android:label="Add new dog"
+            android:theme="@style/AppTheme.ActionBar.Transparent"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.DogDetailsActivity"
             android:label="Dog Details"
