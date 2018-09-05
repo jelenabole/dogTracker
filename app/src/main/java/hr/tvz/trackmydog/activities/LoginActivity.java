@@ -80,8 +80,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // TODO - switch screen or show the
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         System.out.println("*** Login = on activity result (3)");

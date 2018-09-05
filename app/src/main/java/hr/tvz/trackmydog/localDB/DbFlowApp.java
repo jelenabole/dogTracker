@@ -21,16 +21,16 @@ public class DbFlowApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
-
         Log.d(TAG, " *** DbFlowApp - on create");
-        // getAllLocalUsers();
+
+        // TODO - check if needed (??)
+        instance = this;
 
         Fresco.initialize(getApplicationContext());
         FlowManager.init(new FlowConfig.Builder(this).build());
 
-        // get the app token
-        NotificationService.retrieveApplicationToken();
+        // prepare app token
+        NotificationService.retriveLocalToken();
     }
 
 }
