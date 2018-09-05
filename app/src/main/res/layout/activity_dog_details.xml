@@ -16,10 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:background="@drawable/default_dog"
+            android:background="@drawable/default_dog_long"
             android:contentDescription="dog picture"
             android:scaleType="fitCenter"
-            android:src="@drawable/default_dog"
+            android:src="@drawable/default_dog_long"
             app:layout_constraintTop_toTopOf="parent" />
 
         <!--
@@ -99,13 +99,13 @@
             <View style="@style/HorizontalSeparator" />
 
             <TextView
-                android:text="Location options"
+                android:text="Location options: \nVrbik 8a, Zagreb"
                 style="@style/OptionButton" />
 
             <View style="@style/HorizontalSeparator" />
 
             <TextView
-                android:text="Medical info"
+                android:text="Location interval: \n10 seconds"
                 style="@style/OptionButton" />
 
             <View style="@style/HorizontalSeparator" />

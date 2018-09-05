@@ -176,10 +176,10 @@ public class DogsFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 System.out.println(" ****** kliknut pas");
-                System.out.println(v);
-                // TODO - get index of a child (error - find better way):
 
+                // TODO - get index of a child (error - find better way):
                 int dogIndex = dogs.get(((ViewGroup) v.getParent()).indexOfChild(v)).getIndex();
+                Log.d(TAG, "show dog details - index: " + dogIndex);
 
                 Intent dogDetailsIntent = new Intent(getActivity(), DogDetailsActivity.class);
                 dogDetailsIntent.putExtra("dogIndex", dogIndex);
@@ -213,7 +213,7 @@ public class DogsFragment extends ListFragment {
         LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         ImageView dogImageView = new ImageView(getContext());
-        dogImageView.setImageResource(R.drawable.all_dogs);
+        dogImageView.setImageResource(R.drawable.default_dog);
         dogImageView.setLayoutParams(imageParams);
         dogPicture.addView(dogImageView);
 

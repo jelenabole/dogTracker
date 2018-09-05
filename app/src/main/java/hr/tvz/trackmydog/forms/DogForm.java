@@ -3,12 +3,8 @@ package hr.tvz.trackmydog.forms;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import hr.tvz.trackmydog.HelperClass;
-import hr.tvz.trackmydog.userModel.BasicDog;
 
 @IgnoreExtraProperties
 public class DogForm implements Serializable {
@@ -109,8 +105,9 @@ public class DogForm implements Serializable {
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("key", key);
+
         result.put("index", index);
+        result.put("key", key);
         result.put("name", name);
         result.put("color", color);
 
@@ -129,6 +126,7 @@ public class DogForm implements Serializable {
     public String toString() {
         String str = "********** \n";
 
+        str += " - " + "index: " + index;
         str += " - " + "key: " + key;
         str += " - " + "name: " + name;
         str += " - " + "color: " + color;

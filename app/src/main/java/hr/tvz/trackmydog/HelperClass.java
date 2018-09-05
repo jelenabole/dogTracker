@@ -226,15 +226,6 @@ public class HelperClass {
         return null;
     }
 
-    // Add new dog = return string or unknown (for info that is shown)
-    public static String getTextOrUnknown(String str) {
-        if (str != null && !str.equals("")) {
-            // pretvoti u broj i vrati broj
-            return str;
-        }
-        return "-- unknown --";
-    }
-
     // Add new dog = return integer or null
     public static Integer getIntegerOrNull(String str) {
         if (str != null && !str.equals("")) {

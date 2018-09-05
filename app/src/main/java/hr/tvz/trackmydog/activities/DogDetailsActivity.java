@@ -75,7 +75,7 @@ public class DogDetailsActivity extends AppCompatActivity {
      */
     protected void getDogDetails() {
         FirebaseDatabase.getInstance().getReference(dogLink)
-            .addValueEventListener(new ValueEventListener() {
+            .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     dog = dataSnapshot.getValue(Dog.class);
@@ -115,7 +115,7 @@ public class DogDetailsActivity extends AppCompatActivity {
         // TODO - image with fresco:
         /*
         if (dog.getPhotoURL() ==  null) {
-            dogImage.setImageResource(R.drawable.default_dog);
+            dogImage.setImageResource(R.drawable.default_dog_long);
         } else {
             Uri uri = Uri.parse(dog.getPhotoURL());
             dogImage.setImageURI(uri);

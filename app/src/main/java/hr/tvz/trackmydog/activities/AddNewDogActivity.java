@@ -144,7 +144,7 @@ public class AddNewDogActivity extends AppCompatActivity {
         dog.setIndex(dogIndex);
         dog.setKey(dogKey);
         dog.setName(name.getText().toString());
-        dog.setBreed(HelperClass.getTextOrUnknown(breed.getText().toString()));
+        dog.setBreed(HelperClass.getTextOrNull(breed.getText().toString()));
 
         dog.setAge(HelperClass.getIntegerOrNull(age.getText().toString()));
         dog.setHeight(HelperClass.getIntegerOrNull(height.getText().toString()));

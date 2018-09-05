@@ -94,7 +94,7 @@ public class DogDetailsEditActivity extends AppCompatActivity {
         // TODO - add dog index (needed ??):
         // refresh fields (only the ones that are changed (that can be changed by user)
         dog.setName(name.getText().toString());
-        dog.setBreed(HelperClass.getTextOrUnknown(breed.getText().toString()));
+        dog.setBreed(HelperClass.getTextOrNull(breed.getText().toString()));
 
         dog.setAge(HelperClass.getIntegerOrNull(age.getText().toString()));
         dog.setHeight(HelperClass.getIntegerOrNull(height.getText().toString()));
