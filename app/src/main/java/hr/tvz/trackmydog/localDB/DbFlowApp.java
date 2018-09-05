@@ -30,7 +30,7 @@ public class DbFlowApp extends Application {
         FlowManager.init(new FlowConfig.Builder(this).build());
 
         // get the app token
-        FirebaseTokenService.retrieveApplicationToken();
+        NotificationService.retrieveApplicationToken();
     }
 
 }

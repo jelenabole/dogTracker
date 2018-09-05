@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.dog;
+package hr.tvz.trackmydog.mappers;
 
 import java.io.Serializable;
 

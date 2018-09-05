@@ -20,7 +20,7 @@ import java.util.List;
 import hr.tvz.trackmydog.activities.LoginActivity;
 import hr.tvz.trackmydog.firebaseWait.MyCallback;
 import hr.tvz.trackmydog.localDB.DbFlowApp;
-import hr.tvz.trackmydog.localDB.FirebaseTokenService;
+import hr.tvz.trackmydog.localDB.NotificationService;
 import hr.tvz.trackmydog.localDB.User;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
@@ -169,7 +169,7 @@ public class FBAuth {
                         Log.d(TAG, "user not found fB = register new one");
                         currentUserFB = new CurrentUser();
                         currentUserFB.setEmail(user.getEmail());
-                        currentUserFB.setToken(FirebaseTokenService.getAppToken());
+                        currentUserFB.setToken(NotificationService.getAppToken());
                         currentUserFB.setFollow(true);
                         // save that user to firebase and get back the key:
                         usersRef.child(user.getUid()).setValue(currentUserFB);

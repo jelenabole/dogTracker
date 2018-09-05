@@ -71,7 +71,7 @@
 
         <!-- firebase messaging service -->
         <service
-            android:name=".localDB.FirebaseTokenService">
+            android:name=".localDB.NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

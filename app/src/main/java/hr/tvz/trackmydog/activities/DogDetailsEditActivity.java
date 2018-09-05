@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.dog.DogMapper;
+import hr.tvz.trackmydog.mappers.DogMapper;
 import hr.tvz.trackmydog.forms.DogForm;
 
 public class DogDetailsEditActivity extends AppCompatActivity {
