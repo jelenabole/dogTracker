@@ -108,9 +108,6 @@ public class AddNewDogActivity extends AppCompatActivity {
                            break;
                        }
 
-                       // save notification token to dog
-                       dogsRef.child(dogKey).child("token").setValue(userToken);
-
                        saveDogInfo();
                        break;
                    }
@@ -160,20 +157,27 @@ public class AddNewDogActivity extends AppCompatActivity {
         // TODO - add random color to dog:
         dog.setColor(addColorBasedOnIndex());
 
+        final String dogColor = dog.getColor();
+
         Log.d(TAG, "save dog: " + dog.toString());
         // add dog to user:
-        FirebaseDatabase.getInstance()
-                .getReference("users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex)
-                .setValue(dog.toMap(), new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError databaseError,
-                                   @NonNull DatabaseReference databaseReference) {
-                if (databaseError == null) {
-                    Log.d(TAG, "dog successfully added to user");
+        final FirebaseDatabase db = FirebaseDatabase.getInstance();
+        db.getReference("users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex)
+            .setValue(dog.toMap(), new DatabaseReference.CompletionListener() {
+        @Override
+        public void onComplete(@Nullable DatabaseError databaseError,
+                               @NonNull DatabaseReference databaseReference) {
+            if (databaseError == null) {
+                Log.d(TAG, "dog successfully added to user");
 
-                    // close the activity
-                    finish();
-                }
+                // save notification token to dog
+                // TODO - find better way to save color and token number
+                db.getReference("dogs").child(dogKey).child("token").setValue(userToken);
+                db.getReference("dogs").child(dogKey).child("color").setValue(dogColor);
+
+                // close the activity
+                finish();
+            }
             }
         });
     }
