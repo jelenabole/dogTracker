@@ -18,9 +18,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import java.util.List;
 
 import hr.tvz.trackmydog.activities.LoginActivity;
-import hr.tvz.trackmydog.firebaseWait.MyCallback;
-import hr.tvz.trackmydog.localDB.DbFlowApp;
-import hr.tvz.trackmydog.localDB.NotificationService;
+import hr.tvz.trackmydog.services.MyCallback;
+import hr.tvz.trackmydog.services.NotificationService;
 import hr.tvz.trackmydog.localDB.User;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
@@ -126,7 +125,7 @@ public class FBAuth {
         localUser.save();
         localUser = null;
 
-        Context context = DbFlowApp.getContext();
+        Context context = MyApplication.getContext();
         Intent intent = new Intent(context, LoginActivity.class);
         // flags = everything is cleared (new task) before the activity started (new root)
         // .. old activities are finished.

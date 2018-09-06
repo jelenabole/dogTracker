@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.firebaseWait;
+package hr.tvz.trackmydog.services;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.localDB;
+package hr.tvz.trackmydog.services;
 
 import android.content.Context;
 import android.os.Handler;
@@ -13,7 +13,10 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import hr.tvz.trackmydog.localDB.Token;
+
 // TODO - token is same for multiple users on the same device
+// TODO - in case the local token is not defined = maybe wait during sign in process
 public class NotificationService extends FirebaseMessagingService {
 
     private static final String TAG = "FB Notification Service";
@@ -34,7 +37,8 @@ public class NotificationService extends FirebaseMessagingService {
         }
     }
 
-    // get token on app start
+    // TODO - instalirat ovo na usera :D
+    // get token - if there are differences on user/locally
     public static void retrieveApplicationToken() {
         // TODO - token is changed when ...
         // .. app deletes it's instance ID, when it is restored on new device,
@@ -64,6 +68,8 @@ public class NotificationService extends FirebaseMessagingService {
                 } else {
                     Log.d(TAG, "Token is the same as the local one");
                 }
+                // TODO - ako postoji razlika, promijeni u firebaseu (??)
+                // TODO - test user with wrong token
             }
         });
     }
@@ -119,7 +125,7 @@ public class NotificationService extends FirebaseMessagingService {
             public void run() {
                 // TODO - check with context (this in service)
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                // Toast.makeText(DbFlowApp.getContext().getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                // Toast.makeText(MyApplication.getContext().getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
         });
     }

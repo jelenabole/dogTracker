@@ -33,7 +33,7 @@ public class DogDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "Dog Details Activity";
 
-    // TODO - info from DbFlowApp:
+    // TODO - info from MyApplication:
     private String dogLink;
     private Dog dog;
     private Integer dogIndex;

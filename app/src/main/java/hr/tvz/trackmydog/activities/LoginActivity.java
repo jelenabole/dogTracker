@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.firebaseWait.MyCallback;
+import hr.tvz.trackmydog.services.MyCallback;
 
 /**
  * A login screen that offers login via google.
@@ -35,6 +35,7 @@ import hr.tvz.trackmydog.firebaseWait.MyCallback;
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "Login Activity";
+
     private static final int RC_SIGN_IN = 9001;
     public GoogleSignInClient mGoogleSignInClient;
 
@@ -47,7 +48,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google);
         ButterKnife.bind(this);
-        System.out.println("*** Login = on create (1)");
+        Log.d(TAG, "on create");
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -61,30 +62,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void onStart() {
         super.onStart();
-        System.out.println("*** Login = on start (2)");
+        Log.d(TAG, "on start - check if user is logged in");
 
         // TODO - check if user is logged in (and check with the local user also):
         // Check if user is signed in (non-null) and update UI accordingly.
 
         // TODO - check if FB logged in, and add local user
         // TODO - if not, then show login page to register user
-        System.out.println("Login activity - on start - check if user is logged in");
         FBAuth.checkIfUserIsLoggedIn(this, new MyCallback() {
             @Override
             public void startIntent(Context context) {
                 loginLayout.setVisibility(View.VISIBLE);
+                // loading layout (dog image):
                 loadingLayout.setVisibility(View.GONE);
             }
         });
-
-        // TODO - switch screen or show the
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("*** Login = on activity result (3)");
-
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "on activity result ***");
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {

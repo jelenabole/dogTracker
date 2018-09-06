@@ -14,7 +14,7 @@ import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class ProfileDetailsActivity extends AppCompatActivity {
 
-    // TODO - info from DbFlowApp:
+    // TODO - info from MyApplication:
     private String userLink;
     private CurrentUser user;
 
