@@ -23,7 +23,7 @@ import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.forms.DogForm;
 
-public class AddNewDogActivity extends AppCompatActivity {
+public class DogAddNewActivity extends AppCompatActivity {
 
     private static final String TAG = "Add New Dog Activity";
 
@@ -32,6 +32,7 @@ public class AddNewDogActivity extends AppCompatActivity {
     private String userToken;
 
     @BindView(R.id.error) TextView error;
+    @BindView(R.id.saveButton) Button saveButton;
 
     // @BindView(R.id.dogImage) ImageView dogImage;
     @BindView(R.id.chipNumber) TextView chipNumber;
@@ -43,14 +44,13 @@ public class AddNewDogActivity extends AppCompatActivity {
     @BindView(R.id.female) RadioButton female;
     @BindView(R.id.male) RadioButton male;
 
-    @BindView(R.id.saveButton) Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "on Create");
 
-        setContentView(R.layout.activity_add_dog);
+        setContentView(R.layout.activity_dog_add);
         ButterKnife.bind(this);
 
         // TODO - get user notification token:
@@ -89,6 +89,7 @@ public class AddNewDogActivity extends AppCompatActivity {
         Log.d(TAG, "get dog from firebase - by code: " + dogCode);
         final DatabaseReference dogsRef = FirebaseDatabase.getInstance().getReference("dogs");
 
+        // check if chip is already in use:
         dogsRef.addListenerForSingleValueEvent(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -129,8 +130,6 @@ public class AddNewDogActivity extends AppCompatActivity {
            }
         });
     }
-
-
 
     // save dog and finish activity
     private void saveDogInfo() {

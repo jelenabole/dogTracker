@@ -206,8 +206,9 @@ public class HelperClass {
 
     // check if field is empty
     // used in AddNewDog (deleted), and EditDog
+    // TODO - used only in UserDetails:
     public static boolean isFieldEmpty(String str) {
-        if (str != null && !str.equals("")) {
+        if (str == null || str.equals("")) {
             return true;
         }
         return false;
@@ -217,10 +218,11 @@ public class HelperClass {
 
     /* Add new dog = check text fields */
 
+    // return new string or null
     // Add new dog = return string or null
+    // used: Add new user / edit
     public static String getTextOrNull(String str) {
         if (str != null && !str.equals("")) {
-            // pretvoti u broj i vrati broj
             return str;
         }
         return null;

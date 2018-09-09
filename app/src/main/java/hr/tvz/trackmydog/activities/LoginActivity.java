@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.services.MyCallback;
 
 /**
  * A login screen that offers login via google.
@@ -64,19 +63,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         super.onStart();
         Log.d(TAG, "on start - check if user is logged in");
 
-        // TODO - check if user is logged in (and check with the local user also):
-        // Check if user is signed in (non-null) and update UI accordingly.
-
-        // TODO - check if FB logged in, and add local user
-        // TODO - if not, then show login page to register user
-        FBAuth.checkIfUserIsLoggedIn(this, new MyCallback() {
-            @Override
-            public void startIntent(Context context) {
-                loginLayout.setVisibility(View.VISIBLE);
-                // loading layout (dog image):
-                loadingLayout.setVisibility(View.GONE);
-            }
-        });
+        FirebaseUser currentUser = FBAuth.mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Log.d(TAG, "user logged in - get info and show main activity");
+            FBAuth.getFirebaseUser(currentUser, this);
+        } else {
+            Log.d(TAG, "user isn't logged - show google sign-in option");
+            loginLayout.setVisibility(View.VISIBLE);
+            // loading layout (dog image):
+            loadingLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -126,7 +122,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = FBAuth.mAuth.getCurrentUser();
-                        FBAuth.loginUser(user, context);
+                        FBAuth.getFirebaseUser(user, context);
                         // updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.

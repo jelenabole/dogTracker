@@ -42,7 +42,7 @@
 
         <!-- add / edit dog activities -->
         <activity
-            android:name=".activities.AddNewDogActivity"
+            android:name=".activities.DogAddNewActivity"
             android:label="Add new dog"
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".MainActivity" />
@@ -57,8 +57,14 @@
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".activities.DogDetailsActivity" />
 
+        <!-- user details -->
         <activity
-            android:name=".activities.ProfileDetailsActivity"
+            android:name=".activities.UserAddNewActivity"
+            android:label="Profile Details"
+            android:theme="@style/AppTheme.ActionBar.Transparent"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".activities.UserDetailsEditActivity"
             android:label="Profile Details"
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".MainActivity" />
@@ -67,7 +73,7 @@
             android:name=".activities.MapRangeActivity"
             android:label="Add safe zone"
             android:theme="@style/AppTheme.ActionBar.Transparent"
-            android:parentActivityName=".activities.ProfileDetailsActivity" />
+            android:parentActivityName=".activities.UserDetailsEditActivity" />
 
         <!-- firebase messaging service -->
         <service
