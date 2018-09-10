@@ -3,7 +3,6 @@ package hr.tvz.trackmydog.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,12 +17,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.forms.DogForm;
 
-public class DogAddNewActivity extends AppCompatActivity {
+public class DogAddNewActivity extends BaseActivity {
 
     private static final String TAG = "Add New Dog Activity";
 
@@ -85,6 +85,8 @@ public class DogAddNewActivity extends AppCompatActivity {
 
         final String dogCode = chipNumber.getText().toString();
         Log.d(TAG, "get dog from firebase - by code: " + dogCode);
+        showProgressDialog();
+
         final DatabaseReference dogsRef = FirebaseDatabase.getInstance().getReference("dogs");
 
         // check if chip is already in use:
@@ -101,6 +103,7 @@ public class DogAddNewActivity extends AppCompatActivity {
                        // check if chip is already in use:
                        if (dogSnaps.child("token").getValue() != null) {
                            Log.d(TAG, "chip already added to user");
+                           hideProgressDialog();
                            error.setText(getString(R.string.error_chip_has_user));
                            error.setVisibility(View.VISIBLE);
 
@@ -115,6 +118,7 @@ public class DogAddNewActivity extends AppCompatActivity {
                // if dog is not found, send error message
                if (!found) {
                    Log.d(TAG, "dog not found FB");
+                   hideProgressDialog();
                    error.setText(getString(R.string.error_wrong_chip_number));
                    error.setVisibility(View.VISIBLE);
                }
@@ -123,6 +127,7 @@ public class DogAddNewActivity extends AppCompatActivity {
            @Override
            public void onCancelled(@NonNull DatabaseError databaseError) {
                // Toast.makeText(this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
+               hideProgressDialog();
                error.setText(getString(R.string.error_while_saving));
                error.setVisibility(View.VISIBLE);
            }
@@ -153,7 +158,6 @@ public class DogAddNewActivity extends AppCompatActivity {
 
         // add random color to dog:
         dog.setColor(addColorBasedOnIndex());
-
         final String dogColor = dog.getColor();
 
         Log.d(TAG, "save dog: " + dog.toString());
@@ -164,6 +168,8 @@ public class DogAddNewActivity extends AppCompatActivity {
         @Override
         public void onComplete(@Nullable DatabaseError databaseError,
                                @NonNull DatabaseReference databaseReference) {
+            hideProgressDialog();
+
             if (databaseError == null) {
                 Log.d(TAG, "dog successfully added to user");
 

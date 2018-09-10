@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,12 +15,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.forms.UserForm;
 
-public class UserAddNewActivity extends AppCompatActivity {
+public class UserAddNewActivity extends BaseActivity {
 
     private static final String TAG = "Add User Activity";
 
@@ -66,6 +66,7 @@ public class UserAddNewActivity extends AppCompatActivity {
             return;
         }
         Log.d(TAG, "save user info: " + name.getText().toString());
+        showProgressDialog();
 
         UserForm user = new UserForm();
 
@@ -81,6 +82,7 @@ public class UserAddNewActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError,
                                        @NonNull DatabaseReference databaseReference) {
+                    hideProgressDialog();
                     if (databaseError == null) {
                         Log.d(TAG, "user saved successfully");
                         finish();

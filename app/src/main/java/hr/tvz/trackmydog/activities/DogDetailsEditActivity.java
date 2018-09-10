@@ -3,7 +3,6 @@ package hr.tvz.trackmydog.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,13 +15,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.mappers.DogMapper;
 import hr.tvz.trackmydog.forms.DogForm;
 
-public class DogDetailsEditActivity extends AppCompatActivity {
+public class DogDetailsEditActivity extends BaseActivity {
 
     private static final String TAG = "Dog Details Edit Activity";
 
@@ -95,6 +95,7 @@ public class DogDetailsEditActivity extends AppCompatActivity {
             return;
         }
         Log.d(TAG, "save dog info: " + name.getText().toString());
+        showProgressDialog();
 
         // get info from fields:
         dog.setName(name.getText().toString());
@@ -119,6 +120,7 @@ public class DogDetailsEditActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError,
                                        @NonNull DatabaseReference databaseReference) {
+                    hideProgressDialog();
                     if (databaseError == null) {
                         Log.d(TAG, "dog updated successfully");
                         finish();
