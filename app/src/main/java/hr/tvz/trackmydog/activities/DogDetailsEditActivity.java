@@ -69,8 +69,8 @@ public class DogDetailsEditActivity extends AppCompatActivity {
         Log.d(TAG, "set field values - prepare for edit");
 
         Log.d(TAG, "dog: " + dog.toString());
-        name.setText(HelperClass.getStringForEdit(dog.getName()));
-        breed.setText(HelperClass.getStringForEdit(dog.getBreed()));
+        name.setText(dog.getName());
+        breed.setText(dog.getBreed());
         age.setText(HelperClass.getStringForEdit(dog.getAge()));
 
         height.setText(HelperClass.getStringForEdit(dog.getHeight()));
