@@ -26,10 +26,10 @@ public class DogDetailsEditActivity extends AppCompatActivity {
 
     private static final String TAG = "Dog Details Edit Activity";
 
-    private Integer dogIndex;
     DogForm dog; // get the existing dog info
 
-    // @BindView(R.id.error) TextView error;
+    @BindView(R.id.error) TextView error;
+    @BindView(R.id.saveButton) Button saveButton;
 
     // @BindView(R.id.dogImage) ImageView dogImage;
     @BindView(R.id.name) TextView name;
@@ -40,9 +40,6 @@ public class DogDetailsEditActivity extends AppCompatActivity {
     @BindView(R.id.female) RadioButton female;
     @BindView(R.id.male) RadioButton male;
 
-    // @BindView(R.id.dateOfBirth) TextInputEditText dateOfBirth;
-    @BindView(R.id.saveButton) Button saveButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +48,9 @@ public class DogDetailsEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dog_details_edit);
         ButterKnife.bind(this);
 
-        dogIndex = getIntent().getIntExtra("dogIndex", -1);
-        // TODO - spojiti u jednu klasu (dog / user-dog)
+        Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
         dog = DogMapper.mapBasicDogToForm(FBAuth.getCurrentUserFB().getDogs().get(dogIndex));
+        Log.d(TAG, "Dog index: " + dogIndex);
 
         // set all fields to values
         setFieldValues();
@@ -63,19 +60,19 @@ public class DogDetailsEditActivity extends AppCompatActivity {
                 saveDog();
             }
         });
-    };
+    }
 
     private void setFieldValues() {
         Log.d(TAG, "set field values - prepare for edit");
-
         Log.d(TAG, "dog: " + dog.toString());
+
         name.setText(dog.getName());
         breed.setText(dog.getBreed());
-        age.setText(HelperClass.getStringForEdit(dog.getAge()));
 
+        // can't return null for int:
+        age.setText(HelperClass.getStringForEdit(dog.getAge()));
         height.setText(HelperClass.getStringForEdit(dog.getHeight()));
         weight.setText(HelperClass.getStringForEdit(dog.getWeight()));
-        // dateOfBirth.setText(getStringForEdit(dog.getDateOfBirth()));
 
         if (dog.getGender() != null) {
             if (dog.getGender().equals("F")) {
@@ -86,13 +83,20 @@ public class DogDetailsEditActivity extends AppCompatActivity {
         }
     }
 
-    // save dog and finish activity
+    // on button click
     private void saveDog() {
-        Log.d(TAG, "save dog info");
+        error.setVisibility(View.GONE);
 
-        // save dog:
-        // TODO - add dog index (needed ??):
-        // refresh fields (only the ones that are changed (that can be changed by user)
+        // check if mandatory fields are entered:
+        if (name.getText().length() < 1) {
+            Log.w(TAG, "error - empty 'name' field!");
+            error.setText(getString(R.string.error_empty_fields));
+            error.setVisibility(View.VISIBLE);
+            return;
+        }
+        Log.d(TAG, "save dog info: " + name.getText().toString());
+
+        // get info from fields:
         dog.setName(name.getText().toString());
         dog.setBreed(HelperClass.getTextOrNull(breed.getText().toString()));
 
@@ -109,7 +113,6 @@ public class DogDetailsEditActivity extends AppCompatActivity {
 
         // save dog:
         Log.d(TAG, "save dog: " + dog.toString());
-
         FirebaseDatabase.getInstance()
             .getReference("users/" + FBAuth.getUserKey() + "/dogs/" + dog.getIndex())
             .updateChildren(dog.toMap(), new DatabaseReference.CompletionListener() {
@@ -123,5 +126,4 @@ public class DogDetailsEditActivity extends AppCompatActivity {
                 }
             });
     }
-
 }

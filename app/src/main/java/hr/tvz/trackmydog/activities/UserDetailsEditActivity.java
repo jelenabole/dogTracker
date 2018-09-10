@@ -20,14 +20,14 @@ import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.forms.UserForm;
-import hr.tvz.trackmydog.userModel.CurrentUser;
+import hr.tvz.trackmydog.mappers.UserMapper;
 
 public class UserDetailsEditActivity extends AppCompatActivity {
 
     private static final String TAG = "Edit User Details Activity";
 
     private String userLink;
-    private CurrentUser currentUser;
+    private UserForm user;
 
     @BindView(R.id.error) TextView error;
     @BindView(R.id.saveButton) Button saveButton;
@@ -45,9 +45,9 @@ public class UserDetailsEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_details_edit);
         ButterKnife.bind(this);
 
-        currentUser = FBAuth.getCurrentUserFB();
-        userLink = "users/" + currentUser.getKey();
-        Log.d(TAG, "user: " + currentUser.toString());
+        userLink = "users/" + FBAuth.getCurrentUserFB().getKey();
+        Log.d(TAG, "user link: " + userLink);
+        user = UserMapper.mapCurretUserToForm(FBAuth.getCurrentUserFB());
 
         // set all fields:
         setFieldValues();
@@ -57,15 +57,15 @@ public class UserDetailsEditActivity extends AppCompatActivity {
                 saveUser();
             }
         });
-    };
+    }
 
     private void setFieldValues() {
         Log.d(TAG, "set field values - prepare for edit");
 
-        name.setText(currentUser.getName());
-        city.setText(currentUser.getCity());
-        phoneNumber.setText(currentUser.getPhoneNumber());
-        gender.setText(currentUser.getGender());
+        name.setText(user.getName());
+        city.setText(user.getCity());
+        phoneNumber.setText(user.getPhoneNumber());
+        gender.setText(user.getGender());
     }
 
     public void saveUser() {
@@ -74,14 +74,13 @@ public class UserDetailsEditActivity extends AppCompatActivity {
         // check if mandatory fields are entered:
         if (name.getText().length() < 1) {
             Log.w(TAG, "error - empty 'name' field!");
-            error.setText("Some fields are empty!");
+            error.setText(getString(R.string.error_empty_fields));
             error.setVisibility(View.VISIBLE);
             return;
         }
         Log.d(TAG, "save user info: " + name.getText().toString());
 
-        UserForm user = new UserForm();
-
+        // get info from fields:
         user.setName(name.getText().toString());
         user.setCity(HelperClass.getTextOrNull(city.getText().toString()));
         user.setPhoneNumber(HelperClass.getTextOrNull(phoneNumber.getText().toString()));

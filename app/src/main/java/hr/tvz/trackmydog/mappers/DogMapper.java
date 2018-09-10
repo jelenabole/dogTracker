@@ -1,11 +1,9 @@
 package hr.tvz.trackmydog.mappers;
 
-import java.io.Serializable;
-
 import hr.tvz.trackmydog.forms.DogForm;
 import hr.tvz.trackmydog.userModel.BasicDog;
 
-public class DogMapper implements Serializable {
+public class DogMapper {
 
     public static DogForm mapBasicDogToForm(BasicDog dog) {
         DogForm form = new DogForm();

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,7 +23,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/colorAccent"
-            android:text="Error while saving"
+            android:text="@string/error_while_saving"
             android:visibility="gone" />
 
         <android.support.design.widget.TextInputLayout
@@ -36,7 +35,8 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="User name *"
+                android:hint="@string/user_name_mandatory"
+                android:inputType="text"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
@@ -49,7 +49,8 @@
                 android:id="@+id/city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="City"
+                android:hint="@string/user_city"
+                android:inputType="text"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
@@ -62,7 +63,8 @@
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Phone number"
+                android:hint="@string/user_phone_number"
+                android:inputType="text"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
@@ -75,12 +77,12 @@
                 android:id="@+id/gender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Gender"
+                android:hint="@string/user_gender"
+                android:inputType="text"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
-
 
     <Button
         android:id="@+id/saveButton"
@@ -90,6 +92,6 @@
         android:background="@color/colorAccent"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:text="SAVE" />
+        android:text="@string/save_button" />
 
 </RelativeLayout>

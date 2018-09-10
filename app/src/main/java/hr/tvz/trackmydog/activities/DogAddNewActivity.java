@@ -53,10 +53,8 @@ public class DogAddNewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dog_add);
         ButterKnife.bind(this);
 
-        // TODO - get user notification token:
+        // get user notification token and dog index (number of dogs):
         userToken = FBAuth.getCurrentUserFB().getToken();
-
-        // TODO - get new dog index - number of dogs:
         if (FBAuth.getCurrentUserFB().getDogs() != null) {
             dogIndex = FBAuth.getCurrentUserFB().getDogs().size();
         } else {
@@ -70,7 +68,7 @@ public class DogAddNewActivity extends AppCompatActivity {
                 saveDog();
             }
         });
-    };
+    }
 
     // on button clicked
     private void saveDog() {
@@ -80,7 +78,7 @@ public class DogAddNewActivity extends AppCompatActivity {
         if (chipNumber.getText().toString().length() < 2 || name.getText().length() < 1) {
             Log.w(TAG, "error - empty fields: ("
                     + chipNumber.getText() + ") - (" + name.getText() + ")");
-            error.setText("Some fields are empty!");
+            error.setText(getString(R.string.error_empty_fields));
             error.setVisibility(View.VISIBLE);
             return;
         }
@@ -103,7 +101,7 @@ public class DogAddNewActivity extends AppCompatActivity {
                        // check if chip is already in use:
                        if (dogSnaps.child("token").getValue() != null) {
                            Log.d(TAG, "chip already added to user");
-                           error.setText("Chip already added to user!");
+                           error.setText(getString(R.string.error_chip_has_user));
                            error.setVisibility(View.VISIBLE);
 
                            break;
@@ -117,7 +115,7 @@ public class DogAddNewActivity extends AppCompatActivity {
                // if dog is not found, send error message
                if (!found) {
                    Log.d(TAG, "dog not found FB");
-                   error.setText("Wrong chip number!");
+                   error.setText(getString(R.string.error_wrong_chip_number));
                    error.setVisibility(View.VISIBLE);
                }
            }
@@ -125,7 +123,7 @@ public class DogAddNewActivity extends AppCompatActivity {
            @Override
            public void onCancelled(@NonNull DatabaseError databaseError) {
                // Toast.makeText(this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
-               error.setText("Error while saving!");
+               error.setText(getString(R.string.error_while_saving));
                error.setVisibility(View.VISIBLE);
            }
         });
@@ -153,7 +151,7 @@ public class DogAddNewActivity extends AppCompatActivity {
             dog.setGender("M");
         }
 
-        // TODO - add random color to dog:
+        // add random color to dog:
         dog.setColor(addColorBasedOnIndex());
 
         final String dogColor = dog.getColor();
@@ -181,6 +179,7 @@ public class DogAddNewActivity extends AppCompatActivity {
         });
     }
 
+    // TODO - move to helper class:
     private String addColorBasedOnIndex() {
         switch (dogIndex % 4) {
             case 0:

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerVertical="true"
-    android:elevation="4dp"
     android:padding="10dp"
     android:paddingBottom="24dp"
     tools:context=".activities.DogDetailsEditActivity">
@@ -24,7 +22,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/colorAccent"
-            android:text="Error while saving"
+            android:text="@string/error_while_saving"
             android:visibility="gone" />
 
         <android.support.design.widget.TextInputLayout
@@ -36,7 +34,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/dog_name"
+                android:hint="@string/dog_name_mandatory"
                 android:inputType="text"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>

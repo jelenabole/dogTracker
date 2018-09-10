@@ -5,9 +5,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import hr.tvz.trackmydog.HelperClass;
 
 @IgnoreExtraProperties
 public class CurrentUser implements Serializable {
@@ -15,14 +12,11 @@ public class CurrentUser implements Serializable {
     private String key; // email
     private String name;
     private String email;
-    private String code;
     private String photoURL;
     private boolean follow;
 
     // additional info:
     private String city;
-    // TODO - location = always null ??
-    private String location;
     private String phoneNumber;
     private String gender;
 
@@ -54,14 +48,6 @@ public class CurrentUser implements Serializable {
         this.email = email;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public String getPhotoURL() {
         return photoURL;
     }
@@ -84,14 +70,6 @@ public class CurrentUser implements Serializable {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getPhoneNumber() {
@@ -139,12 +117,10 @@ public class CurrentUser implements Serializable {
         String str = "********** \n";
 
         str += " - " + "key: " + key;
+        str += " - " + "name: " + name;
         str += " - " + "email: " + email;
-        str += " - " + "code: " + code;
 
         str += "\n - " + "city: " + city;
-        str += " - " + "location: " + location;
-        str += "\n - " + "name: " + name;
         str += " - " + "gender: " + gender;
         str += " - " + "phone number: " + phoneNumber;
 
@@ -157,16 +133,4 @@ public class CurrentUser implements Serializable {
 
         return str;
     }
-
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-
-        result.put("name", name);
-        result.put("city", city);
-        result.put("phoneNumber", phoneNumber);
-        result.put("gender", gender);
-
-        return result;
-    }
-
 }

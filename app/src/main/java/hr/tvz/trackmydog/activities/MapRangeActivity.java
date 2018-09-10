@@ -65,7 +65,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         Log.d(TAG, "On Create");
 
-        setContentView(R.layout.activity_add_user_location);
+        setContentView(R.layout.activity_location_add);
         ButterKnife.bind(this);
 
         // this is needed to call onMapReady:

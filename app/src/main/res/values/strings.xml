@@ -3,33 +3,29 @@
     <string name="app_name">TrackMyDog</string>
     <string name="main_activity">TrackMyDog</string>
 
-    <!-- Main Activity -->
-    <string name="desc_google_sign_in">Desc google sign in</string>
+    <string name="label_login">Login</string>
+    <string name="label_main_activity">Track My Pet</string>
+    <string name="label_dog_add_new">New Dog</string>
+    <string name="label_dog_details">Dog Details</string>
+    <string name="label_dog_details_edit">Edit Dog</string>
+    <string name="label_user_add_new">New User</string>
+    <string name="label_user_details_edit">Edit User</string>
+    <string name="label_location_add">Add Safe Zone</string>
+    <!-- check if needed -->
+    <string name="label_activity_maps">Map</string>
 
     <!-- menu/navigation.xml -->
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notification</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_dogs">Dogs</string>
+    <string name="menu_user">User</string>
 
-    <!-- manifest -->
-    <string name="label_custom_auth">Custom Auth</string>
-    <string name="label_google_sign_in">Google SignIn</string>
-    <string name="label_passwordless">Passwordless Signin</string>
-
-    <!-- google sign in -->
-    <string name="google_status_fmt">Google status fmt</string>
-    <string name="firebase_status_fmt">Firebase</string>
-    <string name="signed_out">Signed out</string>
-
-    <!-- activity_google -->
+    <!-- activity_google = google sign in -->
     <string name="google_title_text">Google title text</string>
+    <string name="signed_out">Signed out</string>
     <string name="sign_out">Sign out</string>
-    <string name="disconnect">Disconnect</string>
 
     <!-- base activity -->
     <string name="loading">Loading</string>
-    <string name="title_activity_maps">Map</string>
-
 
     <!-- map fragment -->
     <string name="no_dogs_map">No Dogs</string>
@@ -37,14 +33,15 @@
     <!-- action bar menu = buttons -->
     <string name="action_edit">Edit</string>
 
-    <!-- add dog activity = hints -->
-    <string name="chip_number_mandatory">Chip Number *</string>
-    <string name="dog_name_mandatory">Name *</string>
+    <!-- add/edit user activity = hints -->
+    <string name="user_name_mandatory">Name *</string>
+    <string name="user_city">City</string>
+    <string name="user_phone_number">Phone Number</string>
+    <string name="user_gender">Gender</string>
 
     <!-- add/edit dog activity = hints -->
-    <string name="chip_number">Chip Number</string>
-    <string name="dog_name">Name</string>
-
+    <string name="chip_number_mandatory">Chip Number *</string>
+    <string name="dog_name_mandatory">Name *</string>
     <string name="dog_breed">Breed</string>
     <string name="dog_age">Age</string>
     <string name="dog_gender">Gender</string>
@@ -55,6 +52,12 @@
     <!-- arrays -->
     <string name="dog_gender_female">Female</string>
     <string name="dog_gender_male">Male</string>
+
+    <!-- errors while saving dog/user -->
+    <string name="error_while_saving">Error while saving!</string>
+    <string name="error_empty_fields">Some fields are empty!</string>
+    <string name="error_wrong_chip_number">Wrong chip number!</string>
+    <string name="error_chip_has_user">Chip already added to user!</string>
 
     <!-- buttons -->
     <string name="save_button">SAVE</string>

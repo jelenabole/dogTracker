@@ -20,14 +20,12 @@ import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.forms.UserForm;
-import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class UserAddNewActivity extends AppCompatActivity {
 
     private static final String TAG = "Add User Activity";
 
     private String userLink;
-    private CurrentUser currentUser;
 
     @BindView(R.id.error) TextView error;
     @BindView(R.id.saveButton) Button saveButton;
@@ -45,9 +43,8 @@ public class UserAddNewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_add);
         ButterKnife.bind(this);
 
-        currentUser = FBAuth.getCurrentUserFB();
-        userLink = "users/" + currentUser.getKey();
-        Log.d(TAG, "user: " + currentUser.toString());
+        userLink = "users/" + FBAuth.getCurrentUserFB().getKey();
+        Log.d(TAG, "user link: " + userLink);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +52,7 @@ public class UserAddNewActivity extends AppCompatActivity {
                 saveUser();
             }
         });
-    };
+    }
 
     // on button clicked
     public void saveUser() {
@@ -64,7 +61,7 @@ public class UserAddNewActivity extends AppCompatActivity {
         // check if mandatory fields are entered:
         if (name.getText().length() < 1) {
             Log.w(TAG, "error - empty 'name' field!");
-            error.setText("Some fields are empty!");
+            error.setText(getString(R.string.error_empty_fields));
             error.setVisibility(View.VISIBLE);
             return;
         }

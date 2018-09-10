@@ -71,7 +71,6 @@ public class FBAuth {
         User user = new User();
 
         user.setActive(true);
-        user.setCode(currentUserFB.getCode());
         user.setDisplayName(currentUserFB.getName());
         user.setEmail(currentUserFB.getEmail());
         user.setKey(currentUserFB.getKey());

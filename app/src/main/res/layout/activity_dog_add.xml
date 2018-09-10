@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerVertical="true"
-    android:elevation="4dp"
     android:padding="10dp"
     android:paddingBottom="24dp"
     tools:context=".activities.DogAddNewActivity">
@@ -23,7 +22,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/colorAccent"
-            android:text="Error while saving"
+            android:text="@string/error_while_saving"
             android:visibility="gone" />
 
         <android.support.design.widget.TextInputLayout
