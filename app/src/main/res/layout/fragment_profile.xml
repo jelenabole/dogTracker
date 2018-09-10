@@ -1,239 +1,229 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.ProfileFragment">
 
-
     <!-- scroll view can have only one direct child -->
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/layout">
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/logout_button" />
+
+        <ImageView
+            android:id="@+id/header_cover_image"
+            android:contentDescription="@string/desc_cover_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerCrop"
+            android:src="@drawable/nav_menu_header_bg"
+            app:srcCompat="@drawable/nav_menu_header_bg" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:clickable="true"
+            android:focusable="true"
+
+            app:civ_border_width="3dp"
+            app:civ_border_color="#FFFFFFFF"
+            android:id="@+id/profile"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_below="@+id/header_cover_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-130dp"
+            android:elevation="5dp"
+            android:padding="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/man" />
 
         <RelativeLayout
+            android:id="@+id/profile_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/layout">
-
-            <Button
-                android:id="@+id/logoutButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/logout_button" />
+            android:layout_below="@+id/header_cover_image"
+            android:background="#ebca0707"
+            android:elevation="4dp"
+            android:paddingBottom="24dp">
 
             <ImageView
-                android:id="@+id/header_cover_image"
-                android:contentDescription="@string/desc_cover_image"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:scaleType="centerCrop"
-                android:src="@drawable/nav_menu_header_bg"
-                app:srcCompat="@drawable/nav_menu_header_bg" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/editButton"
+                android:contentDescription="@string/desc_edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:src="@android:drawable/ic_menu_edit" />
 
-                app:civ_border_width="3dp"
-                app:civ_border_color="#FFFFFFFF"
-                android:id="@+id/profile"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_below="@+id/header_cover_image"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="-130dp"
-                android:elevation="5dp"
-                android:padding="20dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/man" />
-
-            <RelativeLayout
-                android:id="@+id/profile_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/header_cover_image"
-                android:background="#ebca0707"
-                android:elevation="4dp"
-                android:paddingBottom="24dp">
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:text="@string/placeholder_name"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/editButton"
-                    android:contentDescription="@string/desc_edit_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@android:drawable/ic_menu_edit" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="70dp"
-                    android:text="@string/placeholder_name"
-                    android:textColor="#fff"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/name"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/placeholder_city"
-                    android:textColor="#fff"
-                    android:textSize="16sp" />
-            </RelativeLayout>
-
-
-
-
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/profile_layout"
-                android:layout_margin="5dp"
-                android:layout_marginTop="5dp"
-                android:background="#fff"
-                android:elevation="4dp"
-                android:orientation="vertical"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:paddingRight="5dp"
-                android:paddingLeft="5dp" >
-
-                <Button
-                    android:id="@+id/addLocationButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:text="@string/add_location_button" />
-
-                <!-- label fields -->
-
-                <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_email"
-                    android:textStyle="bold"
-                    android:layout_marginStart="@dimen/textview_margin_side"
-                    app:layout_constraintTop_toBottomOf="@+id/addLocationButton"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="8dp" />
-
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Random info:"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@+id/textView11"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_side"
-                    app:layout_constraintLeft_toLeftOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView13"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_phone_number"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@+id/textView12"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_side"
-                    app:layout_constraintLeft_toLeftOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView14"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_gender"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@+id/textView13"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_side"
-                    app:layout_constraintLeft_toLeftOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_date_of_birth"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@+id/textView14"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_side"
-                    app:layout_constraintLeft_toLeftOf="parent" />
-
-                <!-- info fields -->
-
-                <TextView
-                    android:id="@+id/email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/placeholder_email"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_start"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
-                    app:layout_constraintLeft_toRightOf="@+id/textView11" />
-
-                <TextView
-                    android:id="@+id/randomInfo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="from here"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_start"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
-                    app:layout_constraintLeft_toRightOf="@+id/textView12" />
-
-                <TextView
-                    android:id="@+id/phoneNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/placeholder_phone_number"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_start"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
-                    app:layout_constraintLeft_toRightOf="@+id/textView13" />
-
-                <TextView
-                    android:id="@+id/gender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/placeholder_gender"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_start"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/textView14"
-                    app:layout_constraintLeft_toRightOf="@+id/textView14" />
-
-                <TextView
-                    android:id="@+id/dob"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/placeholder_date_of_birth"
-                    android:layout_marginTop="@dimen/textview_margin_top"
-                    android:layout_marginStart="@dimen/textview_margin_start"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/textView15"
-                    app:layout_constraintLeft_toRightOf="@+id/textView15" />
-
-
-            </android.support.constraint.ConstraintLayout>
-
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/name"
+                android:layout_marginTop="10dp"
+                android:text="@string/placeholder_city"
+                android:textColor="#fff"
+                android:textSize="16sp" />
         </RelativeLayout>
-    </ScrollView>
 
-</RelativeLayout>
+
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/profile_layout"
+            android:layout_margin="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#fff"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp" >
+
+            <Button
+                android:id="@+id/addLocationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:text="@string/add_location_button" />
+
+            <!-- label fields -->
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_email"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/textview_margin_side"
+                app:layout_constraintTop_toBottomOf="@+id/addLocationButton"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Random info:"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/textView11"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_side"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_phone_number"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/textView12"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_side"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_gender"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/textView13"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_side"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_date_of_birth"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/textView14"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_side"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <!-- info fields -->
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_email"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_start"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
+                app:layout_constraintLeft_toRightOf="@+id/textView11" />
+
+            <TextView
+                android:id="@+id/randomInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="from here"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_start"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
+                app:layout_constraintLeft_toRightOf="@+id/textView12" />
+
+            <TextView
+                android:id="@+id/phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_phone_number"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_start"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
+                app:layout_constraintLeft_toRightOf="@+id/textView13" />
+
+            <TextView
+                android:id="@+id/gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_gender"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_start"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView14"
+                app:layout_constraintLeft_toRightOf="@+id/textView14" />
+
+            <TextView
+                android:id="@+id/dob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_date_of_birth"
+                android:layout_marginTop="@dimen/textview_margin_top"
+                android:layout_marginStart="@dimen/textview_margin_start"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView15"
+                app:layout_constraintLeft_toRightOf="@+id/textView15" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </RelativeLayout>
+</ScrollView>

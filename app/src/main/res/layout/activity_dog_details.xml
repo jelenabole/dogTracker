@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".MainActivity">
+    tools:context=".activities.DogDetailsActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:background="@drawable/default_dog_long"
-            android:contentDescription="dog picture"
+            android:contentDescription="@string/desc_dog_image"
             android:scaleType="fitCenter"
             android:src="@drawable/default_dog_long"
             app:layout_constraintTop_toTopOf="parent" />
@@ -99,13 +99,13 @@
             <View style="@style/HorizontalSeparator" />
 
             <TextView
-                android:text="Location options: \nVrbik 8a, Zagreb"
+                android:text="@string/location_options"
                 style="@style/OptionButton" />
 
             <View style="@style/HorizontalSeparator" />
 
             <TextView
-                android:text="Location interval: \n10 seconds"
+                android:text="@string/location_interval"
                 style="@style/OptionButton" />
 
             <View style="@style/HorizontalSeparator" />
@@ -131,7 +131,7 @@
                 android:orientation="vertical" >
 
                 <TextView
-                    android:text="BASIC INFO"
+                    android:text="@string/basic_info"
                     style="@style/Header" />
 
                 <TextView
@@ -155,7 +155,7 @@
                 android:orientation="vertical" >
 
                 <TextView
-                    android:text="MEDICAL INFO"
+                    android:text="@string/medical_info"
                     style="@style/Header" />
 
                 <ImageView
@@ -163,11 +163,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|end"
-                    android:contentDescription="plus"
+                    android:contentDescription="@string/desc_add_medical_info"
                     android:src="@drawable/add_button" />
 
             </LinearLayout>
-
 
 
 
@@ -179,7 +178,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:text="LAST WEEK ACTIVITY"
+                    android:text="@string/last_week_activity"
                     style="@style/Header" />
 
             </LinearLayout>

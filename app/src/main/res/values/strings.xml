@@ -39,6 +39,15 @@
     <string name="user_phone_number">Phone Number</string>
     <string name="user_gender">Gender</string>
 
+    <!-- dog details -->
+    <string name="desc_dog_image">Dog image</string>
+    <string name="location_options">Location options: \nVrbik 8a, Zagreb</string>
+    <string name="location_interval">Location interval: \n10 seconds</string>
+    <string name="basic_info">Basic info</string>
+    <string name="medical_info">Medical info</string>
+    <string name="desc_add_medical_info">Add medical info button</string>
+    <string name="last_week_activity">Last week activity</string>
+
     <!-- add/edit dog activity = hints -->
     <string name="chip_number_mandatory">Chip Number *</string>
     <string name="dog_name_mandatory">Name *</string>
@@ -83,5 +92,9 @@
     <string name="label_phone_number">Phone number:</string>
     <string name="label_gender">Gender:</string>
     <string name="label_date_of_birth">Date of birth:</string>
+
+    <!-- add location activity -->
+    <string name="desc_search_button">Search button</string>
+    <string name="placeholder_range">100 m</string>
 
 </resources>
