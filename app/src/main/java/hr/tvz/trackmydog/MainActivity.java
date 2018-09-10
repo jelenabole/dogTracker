@@ -20,7 +20,7 @@ import hr.tvz.trackmydog.fragments.DogsFragment;
 import hr.tvz.trackmydog.fragments.MapFragment;
 import hr.tvz.trackmydog.fragments.ProfileFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final int PERMISSIONS_REQUEST = 100;
 
@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Main - On Create");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        hideProgressDialog();
 
         // TODO - check if we have GPS provider:
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);

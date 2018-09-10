@@ -30,7 +30,7 @@ import hr.tvz.trackmydog.userModel.BasicDog;
 
 public class DogsFragment extends ListFragment {
 
-    private static final String TAG = "Dogs List fragment";
+    private static final String TAG = "Dogs List Fragment";
 
     // info about all dogs (get only once, or current or something ??? )
     @BindView(R.id.linearLayout) LinearLayout linearLayout;

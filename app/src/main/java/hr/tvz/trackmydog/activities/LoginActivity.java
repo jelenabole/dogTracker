@@ -45,7 +45,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google);
+        setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         Log.d(TAG, "on create");
 
@@ -123,15 +123,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = FBAuth.mAuth.getCurrentUser();
                         FBAuth.getFirebaseUser(user, context);
-                        // updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         // TODO - snackbar deleted:
+                        hideProgressDialog();
                         Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         // updateUI(null);
                     }
-                    hideProgressDialog();
                     }
                 });
     }

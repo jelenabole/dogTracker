@@ -26,18 +26,16 @@ public class ProfileFragment extends Fragment {
     private static final String TAG = "Profile Fragment";
     CurrentUser user;
 
-    @BindView(R.id.name) TextView name;
-    @BindView(R.id.location) TextView location;
     @BindView(R.id.editButton) ImageView editButton; // edit button
     @BindView(R.id.logoutButton) Button logoutButton;
     @BindView(R.id.addLocationButton) Button addLocationButton;
 
-    // TODO - text views:
+    // text views:
+    @BindView(R.id.name) TextView name;
+    @BindView(R.id.location) TextView location;
     @BindView(R.id.email) TextView email;
-    /*
-    @BindView(R.id.mobileNumber) TextView mobileNumber;
+    @BindView(R.id.phoneNumber) TextView phoneNumber;
     @BindView(R.id.gender) TextView gender;
-    */
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -52,13 +50,12 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        // butterknife bind
         ButterKnife.bind(this, v);
 
         // get user info:
         user = FBAuth.getCurrentUserFB();
 
-        // TODO - set all text views:
+        // set all text views:
         setAllFields();
 
         // edit button listener:
@@ -90,11 +87,22 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, " *** on Resume - refresh user");
+        user = FBAuth.getCurrentUserFB();
+        setAllFields();
+    }
+
     // set all shown fields:
     private void setAllFields() {
         name.setText(HelperClass.getAsStringLabel(user.getName()));
         location.setText(HelperClass.getAsStringLabel(user.getCity()));
         email.setText(HelperClass.getAsStringLabel(user.getEmail()));
+
+        phoneNumber.setText(HelperClass.getAsStringLabel(user.getPhoneNumber()));
+        gender.setText(HelperClass.getAsStringLabel(user.getGender()));
     }
 
 }

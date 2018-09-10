@@ -1,9 +1,9 @@
 <resources>
     <!-- manifest -->
-    <string name="app_name">TrackMyDog</string>
+    <string name="app_name">TrackMyPet</string>
     <string name="main_activity">TrackMyDog</string>
 
-    <string name="label_login">Login</string>
+    <string name="label_login">TrackMyPet</string> <!-- launcher = needs to have an app name -->
     <string name="label_main_activity">Track My Pet</string>
     <string name="label_dog_add_new">New Dog</string>
     <string name="label_dog_details">Dog Details</string>
@@ -19,7 +19,8 @@
     <string name="menu_dogs">Dogs</string>
     <string name="menu_user">User</string>
 
-    <!-- activity_google = google sign in -->
+    <!-- login activity = google sign in -->
+    <string name="desc_loading_screen">Loading - checking for user</string>
     <string name="google_title_text">Google title text</string>
     <string name="signed_out">Signed out</string>
     <string name="sign_out">Sign out</string>
@@ -60,9 +61,28 @@
     <string name="error_chip_has_user">Chip already added to user!</string>
 
     <!-- buttons -->
-    <string name="save_button">SAVE</string>
+    <string name="save_button">Save</string>
+    <string name="edit_button">Edit</string>
+    <string name="logout_button">Logout</string>
+    <string name="add_location_button">Add Location</string>
 
     <!-- add location activity -->
     <string name="location_address">Location Address</string>
+
+    <!-- profile fragment = image descriptions, text placeholders and info labels -->
+    <string name="desc_cover_image">Cover image</string>
+    <string name="desc_edit_button">Edit button</string>
+    <!-- default text - user info -->
+    <string name="placeholder_name">Name</string>
+    <string name="placeholder_city">Location</string>
+    <string name="placeholder_email">email@email.com</string>
+    <string name="placeholder_phone_number">0985761423</string>
+    <string name="placeholder_gender">Other</string>
+    <string name="placeholder_date_of_birth">28/03/1994</string>
+    <!-- labels -->
+    <string name="label_email">Email:</string>
+    <string name="label_phone_number">Phone number:</string>
+    <string name="label_gender">Gender:</string>
+    <string name="label_date_of_birth">Date of birth:</string>
 
 </resources>
