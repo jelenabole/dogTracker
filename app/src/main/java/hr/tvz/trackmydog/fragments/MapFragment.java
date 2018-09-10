@@ -101,27 +101,27 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // TODO - get dogs:
-        if (user.getDogs() != null) {
-            showDogsLayout();
-            getDogsForThumbList();
-        } else {
-            Log.d(TAG, "user doesn't have dogs");
-            showNoDogsLayout();
-        }
+        // show dogs if they exist:
+        showThumbsIfDogsExist();
 
         return v;
     }
 
-    /* show dogs or no dogs */
-    public void showDogsLayout() {
-        dogThumbsLayout.setVisibility(View.VISIBLE);
-        noDogsLayout.setVisibility(View.GONE);
-    }
+    /**
+     * Checks if user has dogs, and creates their thumbnails on map.
+     */
+    private void showThumbsIfDogsExist() {
+        if (user.getDogs() != null) {
+            dogThumbsLayout.setVisibility(View.VISIBLE);
+            noDogsLayout.setVisibility(View.GONE);
 
-    public void showNoDogsLayout() {
-        dogThumbsLayout.setVisibility(View.GONE);
-        noDogsLayout.setVisibility(View.VISIBLE);
+            getDogsForThumbList();
+        } else {
+            Log.w(TAG, "user doesn't have dogs");
+
+            dogThumbsLayout.setVisibility(View.GONE);
+            noDogsLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -150,8 +150,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         Log.d(TAG, "on Map Ready");
 
         map = googleMap;
-        // remove tilt and set max zoom level:
+        // remove tilt, map toolbar and zoom buttons:
         map.getUiSettings().setRotateGesturesEnabled(false);
+        map.getUiSettings().setMapToolbarEnabled(false);
+        // map.getUiSettings().setZoomControlsEnabled(false);
+        // set max zoom level
         map.setMaxZoomPreference(maxZoomLevel);
 
         // TODO - set listener (cause of the zoom and follow):
@@ -163,7 +166,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                     // double-tap (zoom) or drag
                     // changes user made = move, double-tap (zoom)
-                    System.out.println("MAP TOUCHED - DISABLE FOLLOW");
+                    Log.w(TAG, "MAP TOUCHED - DISABLE FOLLOW");
                     followEnabled = false;
                     // TODO - error - let the user zoom in as it wants:
                     // map.setMaxZoomPreference(25);
