@@ -143,9 +143,11 @@ public class FBAuth {
                                 usersRef.child(user.getUid()).child("token").setValue(token);
 
                                 // change all dogs tokens:
-                                DatabaseReference dogsRef = FirebaseDatabase.getInstance().getReference("dogs");
-                                for (BasicDog dog : currentUserFB.getDogs()) {
-                                    dogsRef.child(dog.getKey()).child("token").setValue(token);
+                                if (currentUserFB.getDogs() != null) {
+                                    DatabaseReference dogsRef = FirebaseDatabase.getInstance().getReference("dogs");
+                                    for (BasicDog dog : currentUserFB.getDogs()) {
+                                        dogsRef.child(dog.getKey()).child("token").setValue(token);
+                                    }
                                 }
                             }
 
@@ -226,10 +228,14 @@ public class FBAuth {
             userRef.removeEventListener(userListener);
         currentUserFB = null;
 
+
+        // TODO - delete local user:
+        /*
         // deactivate local user
         localUser.setActive(false);
         localUser.save();
         localUser = null;
+        */
 
         Context context = MyApplication.getContext();
         Intent intent = new Intent(context, LoginActivity.class);

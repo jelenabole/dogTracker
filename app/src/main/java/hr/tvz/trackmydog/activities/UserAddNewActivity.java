@@ -82,10 +82,11 @@ public class UserAddNewActivity extends BaseActivity {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError,
                                        @NonNull DatabaseReference databaseReference) {
-                    hideProgressDialog();
                     if (databaseError == null) {
                         Log.d(TAG, "user saved successfully");
                         finish();
+                    } else {
+                        hideProgressDialog();
                     }
                 }
             });

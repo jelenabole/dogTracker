@@ -44,7 +44,6 @@ public class DogAddNewActivity extends BaseActivity {
     @BindView(R.id.female) RadioButton female;
     @BindView(R.id.male) RadioButton male;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,8 +167,6 @@ public class DogAddNewActivity extends BaseActivity {
         @Override
         public void onComplete(@Nullable DatabaseError databaseError,
                                @NonNull DatabaseReference databaseReference) {
-            hideProgressDialog();
-
             if (databaseError == null) {
                 Log.d(TAG, "dog successfully added to user");
 

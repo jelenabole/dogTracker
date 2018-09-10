@@ -120,16 +120,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success");
+                        Log.d(TAG, "signInWithCredential: success");
                         FirebaseUser user = FBAuth.mAuth.getCurrentUser();
                         FBAuth.getFirebaseUser(user, context);
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Log.w(TAG, "signInWithCredential: failure", task.getException());
                         // TODO - snackbar deleted:
                         hideProgressDialog();
                         Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                        // updateUI(null);
                     }
                     }
                 });

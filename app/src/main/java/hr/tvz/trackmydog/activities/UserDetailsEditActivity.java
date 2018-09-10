@@ -94,10 +94,11 @@ public class UserDetailsEditActivity extends BaseActivity {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError,
                                        @NonNull DatabaseReference databaseReference) {
-                    hideProgressDialog();
                     if (databaseError == null) {
                         Log.d(TAG, "user updated successfully");
                         finish();
+                    } else {
+                        hideProgressDialog();
                     }
                 }
             });

@@ -1,6 +1,7 @@
 package hr.tvz.trackmydog;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -11,34 +12,48 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.activities.UserAddNewActivity;
 import hr.tvz.trackmydog.fragments.DogsFragment;
 import hr.tvz.trackmydog.fragments.MapFragment;
 import hr.tvz.trackmydog.fragments.ProfileFragment;
 
 public class MainActivity extends BaseActivity {
 
+    private static final String TAG = "Main Activity";
     private static final int PERMISSIONS_REQUEST = 100;
 
     @BindView(R.id.navigation) BottomNavigationView navigation;
 
     @Override
+    protected void onResume() {
+        // starts also after create view:
+        super.onResume();
+        Log.d(TAG, "on Resume - hide loading dialog");
+        hideProgressDialog();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("Main - On Create");
+        Log.d(TAG, "on Create");
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        hideProgressDialog();
+        // check if user has filled data - or start add user activity:
+        if (FBAuth.getCurrentUserFB().getName() == null) {
+            startActivity(new Intent(MainActivity.this, UserAddNewActivity.class));
+        }
 
         // TODO - check if we have GPS provider:
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            System.out.println("DOESNT HAVE GPS PROVIDER");
+            Log.e(TAG, "Doesn't have GPS provider.");
         }
 
         // Check whether this app has access to the location permission
@@ -68,19 +83,16 @@ public class MainActivity extends BaseActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            // call different fragments:
             Fragment selectedFragment = null;
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    // TODO - call different activities / fragments:
+                case R.id.navigation_map:
                     selectedFragment = MapFragment.newInstance();
-                    // startActivity(new Intent(getApplicationContext(), QuizListActivity.class));
                     break;
                 case R.id.navigation_dashboard:
                     selectedFragment = DogsFragment.newInstance();

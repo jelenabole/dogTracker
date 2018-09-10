@@ -21,9 +21,8 @@
 
     <!-- login activity = google sign in -->
     <string name="desc_loading_screen">Loading - checking for user</string>
-    <string name="google_title_text">Google title text</string>
     <string name="signed_out">Signed out</string>
-    <string name="sign_out">Sign out</string>
+    <string name="sign_out">Sign out.</string>
 
     <!-- base activity -->
     <string name="loading">Loading</string>

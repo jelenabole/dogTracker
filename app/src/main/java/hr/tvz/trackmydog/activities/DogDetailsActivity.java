@@ -3,7 +3,6 @@ package hr.tvz.trackmydog.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -24,16 +22,16 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.FBAuth;
 import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.dogModel.Dog;
 
-public class DogDetailsActivity extends AppCompatActivity {
+public class DogDetailsActivity extends BaseActivity {
 
     private static final String TAG = "Dog Details Activity";
 
-    // TODO - info from MyApplication:
     private String dogLink;
     private Dog dog;
     private Integer dogIndex;
@@ -58,6 +56,7 @@ public class DogDetailsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_dog_details);
         ButterKnife.bind(this);
+        hideProgressDialog();
 
         // TODO - get user and get dog index = get their info:
         dogIndex = getIntent().getIntExtra("dogIndex", -1);
