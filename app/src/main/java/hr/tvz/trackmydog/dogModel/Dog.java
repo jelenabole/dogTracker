@@ -10,7 +10,7 @@ import hr.tvz.trackmydog.userModel.Settings;
 @IgnoreExtraProperties
 public class Dog implements Serializable {
 
-    private int index;
+    private Integer index;
     private String name;
     private String breed;
     private Integer age;
@@ -29,11 +29,11 @@ public class Dog implements Serializable {
     private Settings settings;
 
 
-    public int getIndex() {
+    public Integer getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(Integer index) {
         this.index = index;
     }
 

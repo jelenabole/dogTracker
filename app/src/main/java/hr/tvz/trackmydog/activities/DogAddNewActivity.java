@@ -173,7 +173,6 @@ public class DogAddNewActivity extends BaseActivity {
                 // save notification token to dog
                 // TODO - find better way to save color and token number
                 db.getReference("dogs").child(dogKey).child("token").setValue(userToken);
-                db.getReference("dogs").child(dogKey).child("color").setValue(dogColor);
 
                 // close the activity
                 finish();

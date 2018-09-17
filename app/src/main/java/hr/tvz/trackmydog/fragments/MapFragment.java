@@ -1,12 +1,7 @@
 package hr.tvz.trackmydog.fragments;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,9 +22,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +46,9 @@ import hr.tvz.trackmydog.HelperClass;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
+import hr.tvz.trackmydog.newDogModel.DogWithLocation;
+import hr.tvz.trackmydog.newDogModel.Tracks;
+import hr.tvz.trackmydog.userModel.BasicDog;
 import hr.tvz.trackmydog.userModel.CurrentUser;
 
 public class MapFragment extends ListFragment implements OnMapReadyCallback {
@@ -56,10 +57,16 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
     boolean followEnabled = true; // if button is pressed, map not touched
     int followDogIndex = -1; // follow all dogs
-    float maxZoomLevel = 17; // max map zoom level (if dogs are too close, or only one)
+    final float MAX_ZOOM_LEVEL = 18; // max map zoom level (if dogs are too close, or only one)
     // Zoom level:
     // 1 - world, 5 - continent
     // 10 - city, 15 streets, 20 - buildings (21 - EU,USA, 22-23 max)
+
+    // for setting up markers:
+    final int MAX_HOURS_PASSED_FOR_MARKER = 10; // longer not showing
+    final int MAX_MIN_BETWEEN_MARKERS = 10; // longer not showing
+    final int MAX_NUMBER_OF_LAST_TRACKS = 7; // the ones that are not the same, and not > 10 mins apart
+    final float MIN_OPACITY = 0.1f; // important for normalizing time that passed
 
     @BindView(R.id.dogThumbsLayout) LinearLayout dogThumbsLayout;
     @BindView(R.id.noDogsLayout) LinearLayout noDogsLayout;
@@ -67,12 +74,12 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     private List<Integer> defaultThumbs;
     private List<Marker> markers; // animal markers
     private CurrentUser user;
+    private List<Marker> tracks; // added new one, for the more locations
 
     public static MapFragment newInstance() {
         return new MapFragment();
     }
 
-    // TODO - list view for quizzes:
     private List<Dog> dogs;
     private GoogleMap map;
 
@@ -84,8 +91,10 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         user = FBAuth.getCurrentUserFB();
 
-        // TODO - error, needed ??
+        // initialize arrays:
         dogs = new ArrayList<>();
+        markers = new ArrayList<>();
+        tracks = new ArrayList<>();
         defaultThumbs = HelperClass.getDefaultDogPictures();
     }
 
@@ -112,13 +121,13 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
      */
     private void showThumbsIfDogsExist() {
         if (user.getDogs() != null) {
+            Log.w(TAG, "user has dogs");
             dogThumbsLayout.setVisibility(View.VISIBLE);
             noDogsLayout.setVisibility(View.GONE);
 
             getDogsForThumbList();
         } else {
             Log.w(TAG, "user doesn't have dogs");
-
             dogThumbsLayout.setVisibility(View.GONE);
             noDogsLayout.setVisibility(View.VISIBLE);
         }
@@ -137,7 +146,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
 
 
-
     /**
      * Manipulates the map once available. This callback is triggered when the map is ready for use.
      * This is where we can add markers or lines, add listeners or move the camera.
@@ -150,12 +158,19 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         Log.d(TAG, "on Map Ready");
 
         map = googleMap;
+
+        // set map style:
+        try {
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.style_json));
+        } catch (Exception ex) {
+            // possible exceptions = Resources.NotFoundException, no Context, parsing error, ...
+            Log.w(TAG, "stlye not added - error: " + ex.getMessage());
+        }
+
         // remove tilt, map toolbar and zoom buttons:
         map.getUiSettings().setRotateGesturesEnabled(false);
         map.getUiSettings().setMapToolbarEnabled(false);
         // map.getUiSettings().setZoomControlsEnabled(false);
-        // set max zoom level
-        map.setMaxZoomPreference(maxZoomLevel);
 
         // TODO - set listener (cause of the zoom and follow):
         // if map is clicked (zoomed or moved) - stop following:
@@ -167,10 +182,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                     // double-tap (zoom) or drag
                     // changes user made = move, double-tap (zoom)
                     Log.w(TAG, "MAP TOUCHED - DISABLE FOLLOW");
-                    followEnabled = false;
-                    // TODO - error - let the user zoom in as it wants:
-                    // map.setMaxZoomPreference(25);
-                    // map.resetMinMaxZoomPreference();
+                    stopFollowing();
                 } else if (reason == GoogleMap.OnCameraMoveStartedListener
                         .REASON_API_ANIMATION) {
                     // changes produced by tapping on marker or double-tapping anywhere
@@ -191,42 +203,31 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         }
 
         Log.d(TAG, "setting markers for dogs");
-
-        // TODO - get all dogs, and set markers:
-        // TODO - error - dohvatiti sve reference posebno (radi promjene pojedinog psa)
+        // TODO - get all dogs, and set markers (individual listeners):
         // set dog reference for the marker, or add null (for deleted dog)
-        markers = new ArrayList<>();
         if (user.getDogs() != null) {
-            System.out.println("number of dogs: " + user.getDogs().size());
+            Log.d(TAG, "number of dogs: " + user.getDogs().size());
             for (int i = 0; i < user.getDogs().size(); i++) {
                 // TODO - null / dog = if dog check
                 if (user.getDogs().get(i) != null) {
-                    // set the index on the dog:
-                    // user.getDogs().get(i).setIndex(i);
-
-                    // TODO - (error) = changed database structure:
-                    // setListenerOnDogLocation(i);
-                    setListenerOnDogLocation(user.getDogs().get(i).getKey());
-
+                    // TODO - we need dog info (key, index, name) - so sending the whole dog
+                    setListenerOnDogLocation(user.getDogs().get(i));
                 }
                 // TODO - just add null, and change it with marker later:
                 markers.add(null);
             }
         }
 
-        // TODO - create on change method for user:
-        // TODO - error - on each user location change, update map
-
         // position maps "my location" button bottom-right
         View mapView = this.getView();
-        View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);rlp.setMargins(0,0,30,30);
+        View userLocationButton = ((View) mapView.findViewById(
+                Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        RelativeLayout.LayoutParams buttonLayoutParams =
+                (RelativeLayout.LayoutParams) userLocationButton.getLayoutParams();
+        buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        buttonLayoutParams.setMargins(0,0,30,30);
     }
-
-
-
 
 
     /*
@@ -236,118 +237,311 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // set dog listener (map location)
     // on change, change the marker on the map
     // recalculate the zoom level and position (same as for the user change)
-    // TODO - (error) = changed database structure (sending key not index)
-    protected void setListenerOnDogLocation(String dogKey) {
-        // TODO - firebase - get reference:
-        // TODO - (error) = changed database structure
-        DatabaseReference dogRef = FirebaseDatabase.getInstance()
-                .getReference("dogs/" + dogKey);
-        dogRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // TODO - on firebase DB refreshes, fragment isnt added on activity:
-                // TODO - isAdded() needed ??? error
-                if (isAdded()) {
-                    changeMarkerLocation(dataSnapshot.getValue(Dog.class));
-                }
-            }
+    // TODO - needed more info from the dog (key, index, name) - sending whole dog
+    protected void setListenerOnDogLocation(final BasicDog usersDog) {
+        FirebaseDatabase.getInstance().getReference("dogs/" + usersDog.getKey())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // add important info on the dog (index, name, color):
+                        DogWithLocation dog = dataSnapshot.getValue(DogWithLocation.class);
+                        dog.setIndex(usersDog.getIndex());
+                        dog.setName(usersDog.getName());
+                        dog.setColor(usersDog.getColor());
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+                        Log.d(TAG + " dog listener", "dog from listener: \n" + dog);
+                        // TODO - isAdded = checking for context
+                        // ... (on some FB refreshes, fragment isnt added on activity)
+                        if (isAdded()) {
+                            Log.d(TAG + " dog listener", "isAdded passed");
+                            changeMarkerLocation(dog);
+                        } else {
+                            Log.w(TAG + " dog listener", "isAdded to context failed");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
-    // change the location of the dog marker on the map
-    // set dog locationa and name/time info on marker
-    private void changeMarkerLocation(Dog dog) {
-        System.out.println("GET DOG LOCATION ***");
-        int index = dog.getIndex();
-        // TODO - get marker for the dog, change the location:
-        int icon = HelperClass.getPawMarker(dog.getColor(), getResources(), getContext());
 
-        // TODO - add position and the marker:
+    /**
+     * Changes location of a marker on the map. Called when dog location is changed.
+     * If location is null, then marker is removed. Otherwise, marker is either added, or
+     * the current one is replaced.
+     *
+     * There is a time limit (MAX HOURS) for "old" markers - not useful after some time. That is
+     * checked only when a new marker is added (map fragment refreshed or dog chip turned on, or FB
+     * triggers), cause updates on marker are always current.
+     * Marker opacity changes depending on the time that passed from the last location input. On
+     * location update its set back to 1.0, while on adding new marker the time passed is normalized
+     * based on the MAX_HOURS allowed.
+     *
+     * ** If dog is refreshed, and its the dog thats been followed, add its tracks (or refresh).
+     * ** If the app keeps running, "old" markers won't dissapear (unless map is refreshed).
+     * ** check for problems with time zones (between app and chip/firebase time)
+     *
+     * @param dog - dog info from Firebase (with additional info from user - name, index, color)
+     */
+    private void changeMarkerLocation(DogWithLocation dog) {
+        int index = dog.getIndex();
+        Log.d(TAG, "change marker location - index: " + index);
+
         if (dog.getLocation() != null) {
-            LatLng position = new LatLng(dog.getLocation().getLatitude(), dog.getLocation().getLongitude());
+            // TODO - check for problems with time zones - get it when registering user:
+
+            // add new marker, or reposition existing one
+            if (markers.get(index) == null) {
+                //TODO - only check time diff when its new marker (its either new dog / without location..
+                // TODO - check the time to decide to add marker:
+                // TODO - remove marker ?? - will it ever change so that we need to
+                // If first time adding marker: (either chip started-bad, or map frag started-intended):
+                long diff = HelperClass.differenceBetweenCurrentTimeInHours(dog.getLocation().getTime());
+                Log.d(TAG, "last location before (h): " + diff);
+                if (diff > MAX_HOURS_PASSED_FOR_MARKER) {
+                    // if longer than 2 hours, dont add marker
+                    // TODO - check if anything else is needed
+                    return;
+                }
+
+                // TODO - if this dog is tracked, add its tracks:
+                if (followDogIndex == dog.getIndex()) {
+                    // add tracks for this dog:
+                    addDogTracks(dog);
+                }
+
+                Log.d(TAG + " - change marker", "(new) marker positioned for dog: " + dog.getName());
+                LatLng newPosition = new LatLng(dog.getLocation().getLatitude(), dog.getLocation().getLongitude());
+
+                // else - calculate opacity by time - normalize data to 0-1 range:
+                // formula => normalized = (diff - min) / (max - min);
+                // .. but opacity should go in reverse order = more hours means lower opacity (1-...)
+                float opacity = 1f - ((diff - MIN_OPACITY) / (MAX_HOURS_PASSED_FOR_MARKER - MIN_OPACITY));
+                Log.e(TAG, "dog - last location time: " + dog.getLocation().getTime());
+                Log.d(TAG, "opacity: " + opacity);
+
+                int icon = HelperClass.getPawMarker(dog.getColor(), getResources(), getContext());
+                markers.set(index, map.addMarker(new MarkerOptions()
+                        .position(newPosition)
+                        .icon(BitmapDescriptorFactory.fromResource(icon))
+                        .alpha(opacity)
+                        .title(dog.getName())
+                        .snippet("last updated: " + HelperClass.converTimeToReadable(dog.getLocation().getTime()))
+                ));
+                // TODO - add zIndex (higher - top)
+            } else {
+                Log.d(TAG + " - change marker", "marker repositioned for dog: " + dog.getKey());
+                LatLng newPosition = new LatLng(dog.getLocation().getLatitude(), dog.getLocation().getLongitude());
+
+                markers.get(index).setPosition(newPosition);
+                // TODO - last updated should always be "now" ??
+                markers.get(index).setSnippet("last updated: " + HelperClass.converTimeToReadable(dog.getLocation().getTime()));
+                // TODO - return opacity back to normal (for new location)
+                markers.get(index).setAlpha(1.0f);
+
+                // if info window is opened, refresh text:
+                if (markers.get(index).isInfoWindowShown()) {
+                    markers.get(index).showInfoWindow();
+                }
+            }
+        } else {
+            Log.w(TAG, "dog doesn't have location - name: " + dog.getName());
+            // if location == null and if marker exists - remove it:
             if (markers.get(index) != null) {
                 markers.get(index).remove();
             }
-            markers.set(index, map.addMarker(new MarkerOptions()
-                    .position(position)
-                    .alpha(1.0f)
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.paw))
-                    .icon(BitmapDescriptorFactory.fromResource(icon))
-                    .title(dog.getName())
-                    .snippet("last updated: " + HelperClass.converTimeToReadable(dog.getLocation().getTime()))
-            )); // TODO - add zIndex (higher - top)
-
-            // TODO - for each change, recalculate and zoom the map:
-            resetMapView();
         }
+
+        // for each change, recalculate and zoom the map:
+        resetMapView();
     }
 
 
+    /**
+     * Reposition map view (bounds) and zoom level. Works only if follow is enabled - if user
+     * didnt touch the map, change its zoom level or position (which automatically disables
+     * any follows).
+     * Recalculate what is being followed - all dogs by default, or one dog when its clicked.
+     * Also checks for user location, if user has to be included in the bounds.
+     *
+     * Function is started whenever dog or user changes its position.
+     *
+     * ** If only one dog is included, or dogs are too close, zoom level is too big.
+     */
     // TODO - change zoom level to see all the dogs:
-    // recalculate the view if needed (if map is not touched)
-    // add the marker for the user (current location)
-    // TODO - error = prikazati sve na početku, pokrenuti funkciju kad se prati lokacija
-    // .. ili kod promjene mjesta psa (kojeg se prati) ili usera (ako ga se prati)
     public void resetMapView() {
-        // TODO - if map is touched - dont follow anything:
+        // if map is touched (user changed position) - dont follow anything:
         if (!followEnabled) {
-            Log.d(TAG, "map view change disabled!");
+            Log.w(TAG, "resetMapView - view change disabled - map touched");
             return;
         }
 
-        Log.d(TAG, "map view changed!");
+        // if there are no markers, dont do anything (no included points - cant build view):
+        if (isMarkersEmpty()) {
+            Log.d(TAG, "resetMapView - no included points");
+            return;
+        }
 
-        // TODO - else follow dog(s) - start building views (markers):
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        // TODO - (error) = if map is not finished, dont reset (if all dog listeners arent set)
 
-        // TODO - start adding markers (for all dogs or only one):
+        // start building bounds
+        Log.d(TAG, "map view changed! - follow dog(s): " + followDogIndex);
+
+        // adding dog markers (all or only one)
+        // TODO - (NEW) - in all dogs, remove tracks, in one dog = add tracks for that dog
         if (followDogIndex == -1) {
+            Log.d(TAG, " - for markers: \n" + markers);
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            // include markers:
             for (Marker mark : markers) {
                 if (mark != null) { // when is it null? (no location for dog ??)
                     builder.include(mark.getPosition());
                 }
             }
-        } else {
-            // TODO - error - check if the mark is null, needed ???
-            builder.include(markers.get(followDogIndex).getPosition());
-        }
 
-        // TODO - error - get user location and pin in on map:
-        // .. simpler way ???
-        if (user.isFollow()) {
-            // builder.include() = user location
-            Log.d(TAG, "Include user location");
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                LocationManager locationManager;
-                locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    builder.include(userLocation);
-                }
+            // TODO - maybe calculate padding based on the dog distance ???
+            // calculate padding pixels (from display width x height):
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            // int padding = (int) (width * 0.25); // offset from edges of the map 20% of screen
+            int padding = (int) (height * 0.20); // offset from edges of the map 20% of screen
+
+            // move camera, set bounds and padding:
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), padding));
+        } else {
+            Log.d(TAG, " - for position: \n" + markers.get(followDogIndex).getPosition());
+            // set location with the zoom of 17 (otherwise its too close)
+            map.animateCamera(CameraUpdateFactory
+                    .newLatLngZoom(markers.get(followDogIndex).getPosition(), MAX_ZOOM_LEVEL));
+        }
+    }
+
+    private boolean isMarkersEmpty() {
+        int includedPoints = 0;
+
+        // check if there are any included points:
+        for (Marker marker : markers) {
+            // marker is null when there is no recent location for that dog
+            if (marker != null) {
+                includedPoints++;
             }
         }
 
-        // TODO - build view, and set padding for map markers:
-        // build bounds on it:
-        LatLngBounds bounds = builder.build();
-
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        // int padding = (int) (width * 0.25); // offset from edges of the map 20% of screen
-        int padding = (int) (height * 0.20); // offset from edges of the map 20% of screen
-
-        map.animateCamera(CameraUpdateFactory
-                .newLatLngBounds(bounds, width, height, padding));
-
-        // TODO - error - check zoom level, and correct it:
-        System.out.println("ZOOM level: " + map.getCameraPosition());
+        // if there are no points (marker locations), bounds cant be set
+        return includedPoints == 0;
     }
+
+
+    // TODO - change dog tracks = dot marker locations:
+    // add dog tracks
+    private void addDogTracks(DogWithLocation dog) {
+        // TODO - maybe also send staring opacity (start from the opacity of the main marker)
+        // ... set main marker to 0.2 min
+
+        // uzeti zadnji i vrijeme zadnjeg (koje god ono bilo)
+        // od tog vremena, uzimati 10 min, plus provjeravati da li su kretnje sve manje
+        // ako je unutar 10 min, ali za svakih 10 min (po broju) manji opacity
+
+        // također pratiti da nije dva sata unazad (??)
+        // TODO - što ako je samo jedan korak ??
+
+        // provjeriti da li postoje /postoji sljedeći
+        // uzeti trenutni, usporediti sa vremenom koje je prošlo
+
+        // TODO - redom
+        // provjeriti da li postoje (null pointer ??)
+        // ako postoje, dodati nove, koliko ih ima
+        // ako ne postoje, paziti također na null, ako nisu postojale do sad
+        // ...
+        // ako postoje dugo -- ili su pobrisane triggerom
+        // .. uzeti zadnjih različitih 5 (ukoliko između svake nema više od 10 minuta, te više od 2 sata od zadnje (markera)
+
+        // TODO - marker alpha ovisno o vremenu koje je prošlo od zadnje lokacije
+
+
+        // TODO - temporary - delete later (only for testing):
+        if (dog.getIndex() != 3) { // Miro
+            // tracks = markeri za pse:
+            return;
+        }
+        Log.d(TAG, "change tracks location - dog: " + dog.getName());
+
+        Log.d(TAG, "CHECK HERE - " + dog);
+
+        if (dog.getTracks() != null) {
+            TreeMap<String, Tracks> treeMap = new TreeMap<>();
+            treeMap.putAll(dog.getTracks());
+
+            // TODO - marker icon:
+            // .. paziti na boju (za sada crna):
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.dot);
+
+            // throw first one (main marker):
+            Tracks lastTrack = treeMap.pollLastEntry().getValue();
+            Tracks newTrack;
+
+            // get only 5:
+            if (tracks.size() == 0) {
+                Log.d(TAG + " - change marker", "(new) marker positioned for dog: " + dog.getKey());
+
+                int index = 0;
+                while (index < MAX_NUMBER_OF_LAST_TRACKS){
+                    newTrack = treeMap.pollLastEntry().getValue();
+                    Log.d(TAG, "tracks: " + newTrack);
+
+                    if (HelperClass.calculateMinutes(lastTrack.getTime() - newTrack.getTime()) > 10) {
+                        return;
+                    }
+                    // TODO - check if they are of the same location - if they are check next:
+                    // if the location is same, check the next one (if its in 10 mins range):
+                    if (lastTrack.getLatitude() == newTrack.getLatitude()
+                            && lastTrack.getLongitude() == newTrack.getLongitude()) {
+                        continue;
+                    }
+
+                    // TODO - normalize opacity:
+                    float opacity = 1.0f;
+                    /*
+                    float opacity = 1 - ((10f * index) / 100);
+                    if (opacity < 0) {
+                        opacity = (float) 0.1;
+                    }
+                    Log.d(TAG, "opacity: " + opacity);
+                    */
+
+                    // set new track:
+                    tracks.add(index, map.addMarker(new MarkerOptions()
+                            .position(new LatLng(newTrack.getLatitude(), newTrack.getLongitude()))
+                            .alpha(opacity)
+                            .icon(icon)
+                            .draggable(false)
+                    ));
+
+                    // increment index (to follow max steps):
+                    index++;
+                }
+            } else {
+                // TODO - there will never be less tracks then usual ??
+                // TODO - delete the rest of the tracks (markers) that are not filled
+                /*
+                // ili samo promijeniti pozicije postojećih markera:
+                Log.d(TAG + " - change marker", "marker repositioned for dog: " + dog.getKey());
+                for (int index = 0; index < MAX_NUMBER_OF_LAST_TRACKS; index++) {
+                    // What if track doesnt exist:
+                    track = treeMap.pollLastEntry().getValue();
+
+                    Log.d(TAG, "tracks: " + track);
+                    tracks.get(index).setPosition(new LatLng(track.getLatitude(), track.getLongitude()));
+                }
+                */
+            }
+        }
+    }
+
 
 
 
@@ -357,23 +551,31 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         functions for buttons = click all dogs, or only one:
      */
 
-    // TODO - onClick for the "all dogs" button (track all dogs):
+    // on "all dogs" button clicked - track all dogs
     private void showAllDogs() {
-        Log.d(TAG, "reset map view = show all dogs");
+        Log.d(TAG, "onClick - follow all dogs");
+        followEnabled = true;
         followDogIndex = -1;
-        followEnabled = true;
         resetMapView();
     }
 
-    // TODO - show only one dog on click:
-    private void showOnlyThisDog(Dog dog) {
-        Log.d(TAG, "reset map view = ZOOM IN on dog: " + dog.getName());
-        followDogIndex = dog.getIndex();
+    // on button click - track only this dog
+    private void showOnlyThisDog(Integer index) {
+        // check if marker location for that dog even exists - either send message or follow dog
+        if (markers.get(index) == null) {
+            Toast.makeText(getContext(), "No recent location for dog: " + dogs.get(index).getName(),
+                    Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "onClick - can't follow dog with index: " + index);
+            return;
+        }
+
+        Log.d(TAG, "onClick - follow dog with index: " + index);
         followEnabled = true;
+        followDogIndex = index;
         resetMapView();
     }
 
-    // TODO - if map is touched = remove following:
+    // map is moved, stop following
     private void stopFollowing() {
         followEnabled = false;
     }
@@ -495,14 +697,18 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 obs.removeGlobalOnLayoutListener(this);
 
                 // TODO - when view ready, set view depending on the orientation:
-                // TODO - error - dodati računanje veličine i paddinga
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    dogThumbsLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    setDogThumbnailsVertical();
-                } else {
-                    dogThumbsLayout.setOrientation(LinearLayout.VERTICAL);
-                    // setDogThumbnailsVertical();
-                    System.out.println("WRONG ORIENTATION");
+                // TODO - error - calculate size and padding (for thumbs)
+                // TODO - IllegalStateException = fragment not attached to a context (after direct FB changes)
+                // .. added to getActivity(). ...
+                if (getActivity() != null) {
+                    if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        dogThumbsLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        setDogThumbnailsVertical();
+                    } else {
+                        dogThumbsLayout.setOrientation(LinearLayout.VERTICAL);
+                        // setDogThumbnailsVertical();
+                        Log.w(TAG, "WRONG ORIENTATION");
+                    }
                 }
             }
         });
@@ -543,7 +749,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         ImageView buttonAll = new ImageView(getActivity());
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size, size);
-            layoutParams.setMargins(0,0, margin, 0);
+        layoutParams.setMargins(0,0, margin, 0);
 
         buttonAll.setBackgroundColor(Color.BLACK);
         buttonAll.setImageResource(R.drawable.all_dogs_small);
@@ -576,6 +782,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         SimpleDraweeView imageView = new SimpleDraweeView(getContext());
 
         if (dogs.get(position) != null) {
+            // add dog photo (if exists):
             if (dogs.get(position).getPhotoURL() ==  null) {
                 imageView.setImageResource(defaultThumbs.get(position));
             } else {
@@ -583,7 +790,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 imageView.setImageURI(uri);
             }
 
-            // TODO - check if dog has color (or add random):
+            // add background color:
             int color = HelperClass.getColorFromRes(dogs.get(position).getColor(), null,
                     getResources(), getContext());
             imageView.setBackgroundColor(color);
@@ -591,20 +798,13 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // get parent, get index of a clicked child:
-                    // -1 = skip the first "all" button
-                    Dog dog = dogs.get(dogThumbsLayout.indexOfChild(v) - 1);
+                    // TODO - better way to get dog index
+                    // get index of a clicked child
+                    // index of a dog ( -1 = skip "all dogs" button)
+                    int dogIndex = dogThumbsLayout.indexOfChild(v) - 1;
 
-                    if (dog != null) {
-                        if (dog.getLocation() != null) {
-                            showOnlyThisDog(dog);
-                            Toast.makeText(getContext(), "TRACK: " + dog.getName(),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "NO INFO: " + dog.getName(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    Log.d(TAG, "clicked dog with index: " + dogIndex);
+                    showOnlyThisDog(dogIndex);
                 }
             });
         }

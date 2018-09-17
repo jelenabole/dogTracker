@@ -109,6 +109,41 @@ public class HelperClass {
         }
     }
 
+    /* functions used when changingLocationOfDog - to check markers */
+
+    public static long getCurrentTime() {
+        return (new Date()).getTime();
+    }
+
+    // in miliseconds:
+    public static long differenceBetweenCurrentTime(long time) {
+        return (new Date()).getTime() - time;
+    }
+
+
+
+    public static long differenceBetweenCurrentTimeInHours(long time) {
+        long diff = (new Date()).getTime() - time;
+
+        long second = diff / 1000;
+
+        long minute = diff / 60000;
+
+        long hour = diff / 3600000;
+
+        return hour;
+    }
+
+    public static long calculateMinutes(long time) {
+        return time / 60000;
+    }
+
+
+
+
+    /* OTHER FUNCTIONS ..... ?? */
+
+
     // convert date to be user friendly
     // now, today, yesterday, day of the (last) week, or date
     public static String converTimeToReadable(long time) {

@@ -10,7 +10,6 @@ public class Settings implements Serializable {
     private int interval;
     private int fastestInterval;
 
-
     public int getInterval() {
         return interval;
     }

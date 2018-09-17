@@ -150,12 +150,13 @@ public class CurrentLocation implements Serializable {
     public String toString() {
         String str = "";
 
-        /*
-        str += "\n " + "key: " + key;
-        str += " - " + "name: " + name;
-        str += " - " + "age: " + age;
-        str += " - " + "photoURL: " + photoURL;
-    */
+        str += " - altitude: " + altitude;
+        str += " - bearing: " + bearing;
+        str += " - latitude: " + latitude;
+        str += " - longitude: " + longitude;
+        str += " - speed: " + speed;
+        str += " - time: " + time;
+
         str += " - " + "extras: \n" + extras;
 
         return str;
