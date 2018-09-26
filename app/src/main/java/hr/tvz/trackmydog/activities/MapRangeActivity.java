@@ -137,6 +137,14 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         Log.d(TAG, "on Map Ready");
         map = googleMap;
 
+        // TODO - calculate map padding:
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+
+        int padding = (int) (height * 0.1);
+
+        googleMap.setPadding(0,padding,0,padding);
+
         // TODO - remove map buttons and disable tilt:
         // remove tilt
         map.getUiSettings().setRotateGesturesEnabled(false);
