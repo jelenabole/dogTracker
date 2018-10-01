@@ -3,10 +3,9 @@ package hr.tvz.trackmydog.newDogModel;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 @IgnoreExtraProperties
-public class DogWithLocation implements Serializable {
+public class DogMarker implements Serializable {
 
     // needed for finding right marker (added after FB listener):
     private Integer index;
@@ -15,7 +14,6 @@ public class DogWithLocation implements Serializable {
 
     private String key;
     private ShortLocation location;
-    private HashMap<String, Tracks> tracks;
 
     public Integer getIndex() {
         return index;
@@ -57,14 +55,6 @@ public class DogWithLocation implements Serializable {
         this.location = location;
     }
 
-    public HashMap<String, Tracks> getTracks() {
-        return tracks;
-    }
-
-    public void setTracks(HashMap<String, Tracks> tracks) {
-        this.tracks = tracks;
-    }
-
     @Override
     public String toString() {
         String str = "";
@@ -73,9 +63,6 @@ public class DogWithLocation implements Serializable {
         str += " - " + "index: " + index;
         str += " - " + "color: " + color;
         str += "\n - " + "location: " + location;
-        if (tracks != null) {
-            str += "\n - " + "number of tracks: " + tracks.size();
-        }
 
         return str;
     }

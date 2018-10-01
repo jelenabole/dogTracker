@@ -37,6 +37,11 @@ public class Tracks implements Serializable {
         this.time = time;
     }
 
+    // for comparing objects:
+    public boolean isEqual(Tracks tracks) {
+        return (tracks.getLatitude() == this.latitude && tracks.getLongitude() == this.longitude);
+    }
+
     @Override
     public String toString() {
         String str = "";

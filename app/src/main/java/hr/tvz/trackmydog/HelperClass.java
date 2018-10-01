@@ -59,18 +59,35 @@ public class HelperClass {
 
 
     /* GET COLOR FROM STRING NAME */
+
+    // if the color is null or undefined value
+    private static String getExistingColor(String color) {
+        if (color == null) {
+            return FALLBACK_COLOR;
+        }
+
+        switch (color) {
+            case "yellow":
+            case "green":
+            case "red":
+            case "blue":
+                return color;
+            default:
+                return FALLBACK_COLOR;
+        }
+    }
+
+
     // get dog color:
     // used: DogDetailsActivity
     public static int getColorFromRes(String color, String additional, Resources res, Context context) {
         Log.d(TAG, "get color from resources: " + color);
-        if (color == null) {
-            color = FALLBACK_COLOR;
-        }
+        color = getExistingColor(color);
+
         // additional info about color (opaque, text, ...)
         if (additional != null) {
             color += additional;
         }
-
         return res.getColor(res.getIdentifier(color, "color",
                 context.getPackageName()), context.getTheme());
     }
@@ -78,9 +95,9 @@ public class HelperClass {
     // get dog color:
     // TODO - function for DogsFragment:
     public static int getDogColor(String color, Resources res, Context context) {
-        if (color == null) {
-            color = FALLBACK_COLOR;
-        }
+        // TODO - check color:
+        // TODO - maybe wrong color - check the resources for colors (make enum)
+        color = getExistingColor(color);
 
         int dogColor = res.getIdentifier(color, "color", context.getPackageName());
         return res.getColor(dogColor, null);
