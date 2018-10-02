@@ -23,10 +23,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.DogAddNewActivity;
 import hr.tvz.trackmydog.activities.DogDetailsActivity;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.utils.ResourceUtils;
+import hr.tvz.trackmydog.utils.TimeUtils;
 
 public class DogsFragment extends ListFragment {
 
@@ -69,7 +70,7 @@ public class DogsFragment extends ListFragment {
             }
         });
 
-        defaultThumbs = HelperClass.getDefaultDogPictures();
+        defaultThumbs = ResourceUtils.getDefaultDogPictures();
         return v;
     }
 
@@ -139,11 +140,11 @@ public class DogsFragment extends ListFragment {
         }
         String dogBreed = dog.getBreed() == null ? "-- unknown --" : dog.getBreed();
         // TODO - context needed (sometimes fails)
-        int dogColor = HelperClass.getDogColor(dog.getColor(), getResources(), getActivity());
+        int dogColor = ResourceUtils.getDogColor(dog.getColor(), getResources(), getActivity());
 
         // TODO - get location currently deleted (not in BasicDog):
         // String dogLastLocationTime = HelperClass.getLastLocationTime(dog.getLocation());
-        String dogLastLocationTime = HelperClass.getLastLocationTime(null);
+        String dogLastLocationTime = TimeUtils.getLastLocationTime(null);
 
         // set all linear views (box, pic and info):
         LinearLayout dogFrame = new LinearLayout(getContext());

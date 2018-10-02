@@ -1,14 +1,10 @@
-package hr.tvz.trackmydog.forms;
+package hr.tvz.trackmydog.models.forms;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import hr.tvz.trackmydog.userModel.BasicDog;
-import hr.tvz.trackmydog.userModel.SafeZone;
 
 @IgnoreExtraProperties
 public class UserForm implements Serializable {

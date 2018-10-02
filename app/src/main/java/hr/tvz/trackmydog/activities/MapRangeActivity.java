@@ -39,14 +39,17 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.userModel.SafeZone;
+import hr.tvz.trackmydog.models.userModel.SafeZone;
+import hr.tvz.trackmydog.utils.ResourceUtils;
 
 public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "Map Range Activity";
+
+    // init location - Zagreb:
+    private final LatLng initLocation = new LatLng(45.800007, 15.979110);
 
     @BindView(R.id.addressText) EditText addressText;
     @BindView(R.id.searchButton) ImageButton searchButton;
@@ -106,6 +109,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
+        // TODO - za range, povećati ili smanjiti zoom na mapi
         // seekbar = range
         rangeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -142,8 +146,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         int height = getResources().getDisplayMetrics().heightPixels;
 
         int padding = (int) (height * 0.1);
-
-        googleMap.setPadding(0,padding,0,padding);
+        googleMap.setPadding(0, padding, 0, padding);
 
         // TODO - remove map buttons and disable tilt:
         // remove tilt
@@ -197,8 +200,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
 
     // init marker on Zagreb
     public void initMarker() {
-        LatLng initLocation = new LatLng(45.800007, 15.979110);
-        int icon = HelperClass.getDrawableIcon("home", getResources(), this);
+        int icon = ResourceUtils.getDrawableIcon("home", getResources(), this);
 
         marker = map.addMarker(new MarkerOptions()
                 .position(initLocation)

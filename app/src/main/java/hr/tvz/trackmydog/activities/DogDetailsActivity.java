@@ -23,10 +23,11 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.dogModel.Dog;
+import hr.tvz.trackmydog.models.dogModel.Dog;
+import hr.tvz.trackmydog.utils.LabelUtils;
+import hr.tvz.trackmydog.utils.ResourceUtils;
 
 public class DogDetailsActivity extends BaseActivity {
 
@@ -92,9 +93,9 @@ public class DogDetailsActivity extends BaseActivity {
         Log.d(TAG, "Get dog info: " + dog.getIndex());
 
         // TODO - get and prepare dog info:
-        String dogName = HelperClass.getAsStringLabel(dog.getName());
-        String dogAge = HelperClass.getAsStringLabel(dog.getAge()) + " yr";
-        String dogBreed = HelperClass.getAsStringLabel(dog.getBreed());
+        String dogName = LabelUtils.getAsStringLabel(dog.getName());
+        String dogAge = LabelUtils.getAsStringLabel(dog.getAge()) + " yr";
+        String dogBreed = LabelUtils.getAsStringLabel(dog.getBreed());
         String dogLastLocationTime = dog.getLocation() == null ? "no location detected" :
                 new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(dog.getLocation().getTime()));
 
@@ -106,8 +107,8 @@ public class DogDetailsActivity extends BaseActivity {
         ageText.setText(dogAge);
 
         // basic info:
-        weightText.setText(HelperClass.getAsStringLabel(dog.getWeight()));
-        heightText.setText(HelperClass.getAsStringLabel(dog.getHeight()));
+        weightText.setText(LabelUtils.getAsStringLabel(dog.getWeight()));
+        heightText.setText(LabelUtils.getAsStringLabel(dog.getHeight()));
 
         changeColorTo(dog.getColor());
 
@@ -123,11 +124,11 @@ public class DogDetailsActivity extends BaseActivity {
     }
 
     private void changeColorTo(String colorName) {
-        int color = HelperClass.getColorFromRes(colorName, null,
+        int color = ResourceUtils.getColorFromRes(colorName, null,
                 getResources(), this);
-        int colorOpaque = HelperClass.getColorFromRes(colorName, "_op",
+        int colorOpaque = ResourceUtils.getColorFromRes(colorName, "_op",
                 getResources(), this);
-        int colorText = HelperClass.getColorFromRes(colorName,"_text",
+        int colorText = ResourceUtils.getColorFromRes(colorName,"_text",
                 getResources(), this);
 
         // BANNER - background and separators:

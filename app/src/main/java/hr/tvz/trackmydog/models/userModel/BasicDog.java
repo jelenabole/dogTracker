@@ -1,15 +1,14 @@
-package hr.tvz.trackmydog.dogModel;
+package hr.tvz.trackmydog.models.userModel;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import hr.tvz.trackmydog.userModel.Settings;
-
 @IgnoreExtraProperties
-public class Dog implements Serializable {
+public class BasicDog implements Serializable {
 
+    private String key;
     private Integer index;
     private String name;
     private String breed;
@@ -24,10 +23,21 @@ public class Dog implements Serializable {
     private Date dateOfBirth;
     private String gender;
 
+    // TODO - only settings needed for user:
+    // TODO - add range of motion:
+    /*
     private CurrentLocation location;
     private Tracking tracks;
+    */
     private Settings settings;
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public Integer getIndex() {
         return index;
@@ -117,22 +127,6 @@ public class Dog implements Serializable {
         this.gender = gender;
     }
 
-    public CurrentLocation getLocation() {
-        return location;
-    }
-
-    public void setLocation(CurrentLocation location) {
-        this.location = location;
-    }
-
-    public Tracking getTracks() {
-        return tracks;
-    }
-
-    public void setTracks(Tracking tracks) {
-        this.tracks = tracks;
-    }
-
     public Settings getSettings() {
         return settings;
     }
@@ -143,15 +137,22 @@ public class Dog implements Serializable {
 
     @Override
     public String toString() {
-        String str = "";
+        String str = "********** \n";
 
         str += "\n " + "index: " + index;
         str += " - " + "name: " + name;
         str += " - " + "breed: " + breed;
         str += " - " + "age: " + age;
+        str += " - " + "color: " + color;
         str += " - " + "photoURL: " + photoURL;
 
-        // str += " - " + "current location: \n" + location;
+        str += "\n - " + "height: " + height;
+        str += " - " + "weight: " + weight;
+        str += " - " + "gender: " + gender;
+        str += " - " + "miles: " + miles;
+        str += " - " + "dateOfBirth: " + dateOfBirth;
+
+        str += "\n - " + "settings: " + settings;
 
         return str;
     }

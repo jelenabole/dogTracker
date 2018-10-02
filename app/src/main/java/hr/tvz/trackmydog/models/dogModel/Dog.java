@@ -1,14 +1,15 @@
-package hr.tvz.trackmydog.userModel;
+package hr.tvz.trackmydog.models.dogModel;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@IgnoreExtraProperties
-public class BasicDog implements Serializable {
+import hr.tvz.trackmydog.models.userModel.Settings;
 
-    private String key;
+@IgnoreExtraProperties
+public class Dog implements Serializable {
+
     private Integer index;
     private String name;
     private String breed;
@@ -23,21 +24,9 @@ public class BasicDog implements Serializable {
     private Date dateOfBirth;
     private String gender;
 
-    // TODO - only settings needed for user:
-    // TODO - add range of motion:
-    /*
     private CurrentLocation location;
-    private Tracking tracks;
-    */
     private Settings settings;
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
 
     public Integer getIndex() {
         return index;
@@ -127,6 +116,14 @@ public class BasicDog implements Serializable {
         this.gender = gender;
     }
 
+    public CurrentLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(CurrentLocation location) {
+        this.location = location;
+    }
+
     public Settings getSettings() {
         return settings;
     }
@@ -137,22 +134,15 @@ public class BasicDog implements Serializable {
 
     @Override
     public String toString() {
-        String str = "********** \n";
+        String str = "";
 
         str += "\n " + "index: " + index;
         str += " - " + "name: " + name;
         str += " - " + "breed: " + breed;
         str += " - " + "age: " + age;
-        str += " - " + "color: " + color;
         str += " - " + "photoURL: " + photoURL;
 
-        str += "\n - " + "height: " + height;
-        str += " - " + "weight: " + weight;
-        str += " - " + "gender: " + gender;
-        str += " - " + "miles: " + miles;
-        str += " - " + "dateOfBirth: " + dateOfBirth;
-
-        str += "\n - " + "settings: " + settings;
+        // str += " - " + "current location: \n" + location;
 
         return str;
     }

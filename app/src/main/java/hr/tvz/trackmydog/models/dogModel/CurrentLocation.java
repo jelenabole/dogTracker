@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.dogModel;
+package hr.tvz.trackmydog.models.dogModel;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -13,8 +13,6 @@ public class CurrentLocation implements Serializable {
     private int bearingAccuracyDegrees;
     private boolean complete;
     private long elapsedRealtimeNanos; // TODO - changing
-
-    private Extras extras;
 
     private boolean fromMockProvider;
     private double latitude; // TODO - changing
@@ -72,14 +70,6 @@ public class CurrentLocation implements Serializable {
 
     public void setElapsedRealtimeNanos(long elapsedRealtimeNanos) {
         this.elapsedRealtimeNanos = elapsedRealtimeNanos;
-    }
-
-    public Extras getExtras() {
-        return extras;
-    }
-
-    public void setExtras(Extras extras) {
-        this.extras = extras;
     }
 
     public boolean isFromMockProvider() {
@@ -156,8 +146,6 @@ public class CurrentLocation implements Serializable {
         str += " - longitude: " + longitude;
         str += " - speed: " + speed;
         str += " - time: " + time;
-
-        str += " - " + "extras: \n" + extras;
 
         return str;
     }

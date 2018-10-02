@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.dogModel;
+package hr.tvz.trackmydog.models.dogModel;
 
 
 import android.content.Context;

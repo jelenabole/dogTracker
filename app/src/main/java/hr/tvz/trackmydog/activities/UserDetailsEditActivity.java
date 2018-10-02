@@ -16,11 +16,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.forms.UserForm;
+import hr.tvz.trackmydog.models.forms.UserForm;
 import hr.tvz.trackmydog.mappers.UserMapper;
+import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class UserDetailsEditActivity extends BaseActivity {
 
@@ -83,9 +83,9 @@ public class UserDetailsEditActivity extends BaseActivity {
 
         // get info from fields:
         user.setName(name.getText().toString());
-        user.setCity(HelperClass.getTextOrNull(city.getText().toString()));
-        user.setPhoneNumber(HelperClass.getTextOrNull(phoneNumber.getText().toString()));
-        user.setGender(HelperClass.getTextOrNull(gender.getText().toString()));
+        user.setCity(LabelUtils.getTextOrNull(city.getText().toString()));
+        user.setPhoneNumber(LabelUtils.getTextOrNull(phoneNumber.getText().toString()));
+        user.setGender(LabelUtils.getTextOrNull(gender.getText().toString()));
 
         // save user:
         Log.d(TAG, "save user: " + user.toString());

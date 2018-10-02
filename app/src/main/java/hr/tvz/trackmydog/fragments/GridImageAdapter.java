@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.BasicDog;
 
 public class GridImageAdapter extends BaseAdapter {
 	private Context context;

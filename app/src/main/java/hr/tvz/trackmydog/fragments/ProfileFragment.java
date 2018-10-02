@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.activities.MapRangeActivity;
 import hr.tvz.trackmydog.activities.UserDetailsEditActivity;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.userModel.CurrentUser;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
+import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class ProfileFragment extends Fragment {
 
@@ -97,12 +97,12 @@ public class ProfileFragment extends Fragment {
 
     // set all shown fields:
     private void setAllFields() {
-        name.setText(HelperClass.getAsStringLabel(user.getName()));
-        location.setText(HelperClass.getAsStringLabel(user.getCity()));
-        email.setText(HelperClass.getAsStringLabel(user.getEmail()));
+        name.setText(LabelUtils.getAsStringLabel(user.getName()));
+        location.setText(LabelUtils.getAsStringLabel(user.getCity()));
+        email.setText(LabelUtils.getAsStringLabel(user.getEmail()));
 
-        phoneNumber.setText(HelperClass.getAsStringLabel(user.getPhoneNumber()));
-        gender.setText(HelperClass.getAsStringLabel(user.getGender()));
+        phoneNumber.setText(LabelUtils.getAsStringLabel(user.getPhoneNumber()));
+        gender.setText(LabelUtils.getAsStringLabel(user.getGender()));
     }
 
 }

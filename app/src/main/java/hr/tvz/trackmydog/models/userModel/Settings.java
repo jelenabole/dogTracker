@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.userModel;
+package hr.tvz.trackmydog.models.userModel;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 

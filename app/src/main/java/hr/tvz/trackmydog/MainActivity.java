@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.UserAddNewActivity;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.fragments.DogsFragment;
 import hr.tvz.trackmydog.fragments.MapFragment;
 import hr.tvz.trackmydog.fragments.ProfileFragment;

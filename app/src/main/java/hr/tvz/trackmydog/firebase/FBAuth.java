@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog;
+package hr.tvz.trackmydog.firebase;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,12 +17,14 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.List;
 
+import hr.tvz.trackmydog.MainActivity;
+import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.activities.LoginActivity;
 import hr.tvz.trackmydog.services.MyCallback;
 import hr.tvz.trackmydog.services.NotificationService;
 import hr.tvz.trackmydog.localDB.User;
-import hr.tvz.trackmydog.userModel.BasicDog;
-import hr.tvz.trackmydog.userModel.CurrentUser;
+import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
 public class FBAuth {
 

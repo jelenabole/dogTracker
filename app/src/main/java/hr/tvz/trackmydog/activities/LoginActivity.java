@@ -25,7 +25,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.FBAuth;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
 
 /**

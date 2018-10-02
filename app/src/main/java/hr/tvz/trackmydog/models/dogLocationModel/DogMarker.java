@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.newDogModel;
+package hr.tvz.trackmydog.models.dogLocationModel;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -59,7 +59,7 @@ public class DogMarker implements Serializable {
     public String toString() {
         String str = "";
 
-        str += "\n " + "key: " + key;
+        str += "key: " + key;
         str += " - " + "index: " + index;
         str += " - " + "color: " + color;
         str += "\n - " + "location: " + location;

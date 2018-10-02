@@ -40,16 +40,17 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.dogModel.CustomDogList;
-import hr.tvz.trackmydog.dogModel.Dog;
-import hr.tvz.trackmydog.newDogModel.DogMarker;
-import hr.tvz.trackmydog.newDogModel.ShortLocation;
-import hr.tvz.trackmydog.newDogModel.Tracks;
-import hr.tvz.trackmydog.userModel.BasicDog;
-import hr.tvz.trackmydog.userModel.CurrentUser;
+import hr.tvz.trackmydog.models.dogModel.CustomDogList;
+import hr.tvz.trackmydog.models.dogModel.Dog;
+import hr.tvz.trackmydog.models.dogLocationModel.DogMarker;
+import hr.tvz.trackmydog.models.dogLocationModel.ShortLocation;
+import hr.tvz.trackmydog.models.dogLocationModel.Tracks;
+import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
+import hr.tvz.trackmydog.utils.ResourceUtils;
+import hr.tvz.trackmydog.utils.TimeUtils;
 
 public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
@@ -65,7 +66,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
     boolean followEnabled = true; // if button is pressed, map not touched
     int followDogIndex = -1; // follow all dogs
-    final float MAX_ZOOM_LEVEL = 18; // max map zoom level (if dogs are too close, or only one)
+    final float MAX_ZOOM_LEVEL = 19; // max map zoom level (if dogs are too close, or only one)
     // Zoom level:
     // 1 - world, 5 - continent
     // 10 - city, 15 streets, 20 - buildings (21 - EU,USA, 22-23 max)
@@ -102,7 +103,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         dogs = new ArrayList<>();
         markers = new ArrayList<>();
         tracks = new ArrayList<>();
-        defaultThumbs = HelperClass.getDefaultDogPictures();
+        defaultThumbs = ResourceUtils.getDefaultDogPictures();
     }
 
     @Override
@@ -306,7 +307,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 // TODO - check the time to decide to add marker:
                 // TODO - remove marker ?? - will it ever change so that we need to
                 // If first time adding marker: (either chip started-bad, or map frag started-intended):
-                long diff = HelperClass.differenceBetweenCurrentTimeInHours(dog.getLocation().getTime());
+                long diff = TimeUtils.differenceBetweenCurrentTimeInHours(dog.getLocation().getTime());
                 Log.d(TAG, "last location before (h): " + diff);
                 if (diff > MAX_HOURS_PASSED_FOR_MARKER) {
                     // if longer than 2 hours, dont add marker
@@ -324,13 +325,13 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 Log.e(TAG, "dog - last location time: " + dog.getLocation().getTime());
                 Log.d(TAG, "opacity: " + opacity);
 
-                int icon = HelperClass.getPawMarker(dog.getColor(), getResources(), getContext());
+                int icon = ResourceUtils.getPawMarker(dog.getColor(), getResources(), getContext());
                 markers.set(index, map.addMarker(new MarkerOptions()
                         .position(newPosition)
                         .icon(BitmapDescriptorFactory.fromResource(icon))
                         .alpha(opacity)
                         .title(dog.getName())
-                        .snippet("last updated: " + HelperClass.converTimeToReadable(dog.getLocation().getTime()))
+                        .snippet("last updated: " + TimeUtils.converTimeToReadable(dog.getLocation().getTime()))
                 ));
                 // TODO - add zIndex (higher - top)
             } else {
@@ -516,7 +517,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // get track-marker icon
         BitmapDescriptor icon = BitmapDescriptorFactory
-                .fromResource(HelperClass.getDotMarker(color, getResources(), getContext()));
+                .fromResource(ResourceUtils.getDotMarker(color, getResources(), getContext()));
         // grey icon:
         // BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.dot_grey);
 
@@ -531,10 +532,10 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         index--;
         int count = 0;
         for (; index >= 0; index--) {
-            Log.d("TAG", "tracks: " + HelperClass.converTimeToReadable(locations.get(index).getTime()));
+            Log.d("TAG", "tracks: " + TimeUtils.converTimeToReadable(locations.get(index).getTime()));
 
             // check if the max allowed number of minutes passed between markers:
-            if (HelperClass.calculateMinutes(lastTrack.getTime()
+            if (TimeUtils.convertToMinutes(lastTrack.getTime()
                     - locations.get(index).getTime()) > MAX_MIN_BETWEEN_MARKERS) {
                 break;
             }
@@ -916,7 +917,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             }
 
             // add background color:
-            int color = HelperClass.getColorFromRes(dogs.get(position).getColor(), null,
+            int color = ResourceUtils.getColorFromRes(dogs.get(position).getColor(), null,
                     getResources(), getContext());
             imageView.setBackgroundColor(color);
 

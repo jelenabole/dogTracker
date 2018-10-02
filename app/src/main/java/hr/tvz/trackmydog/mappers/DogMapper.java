@@ -1,7 +1,7 @@
 package hr.tvz.trackmydog.mappers;
 
-import hr.tvz.trackmydog.forms.DogForm;
-import hr.tvz.trackmydog.userModel.BasicDog;
+import hr.tvz.trackmydog.models.forms.DogForm;
+import hr.tvz.trackmydog.models.userModel.BasicDog;
 
 public class DogMapper {
 

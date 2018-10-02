@@ -18,10 +18,10 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.forms.DogForm;
+import hr.tvz.trackmydog.models.forms.DogForm;
+import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class DogAddNewActivity extends BaseActivity {
 
@@ -142,11 +142,11 @@ public class DogAddNewActivity extends BaseActivity {
         dog.setIndex(dogIndex);
         dog.setKey(dogKey);
         dog.setName(name.getText().toString());
-        dog.setBreed(HelperClass.getTextOrNull(breed.getText().toString()));
+        dog.setBreed(LabelUtils.getTextOrNull(breed.getText().toString()));
 
-        dog.setAge(HelperClass.getIntegerOrNull(age.getText().toString()));
-        dog.setHeight(HelperClass.getIntegerOrNull(height.getText().toString()));
-        dog.setWeight(HelperClass.getIntegerOrNull(weight.getText().toString()));
+        dog.setAge(LabelUtils.getIntegerOrNull(age.getText().toString()));
+        dog.setHeight(LabelUtils.getIntegerOrNull(height.getText().toString()));
+        dog.setWeight(LabelUtils.getIntegerOrNull(weight.getText().toString()));
 
         // gender:
         if (female.isChecked()) {

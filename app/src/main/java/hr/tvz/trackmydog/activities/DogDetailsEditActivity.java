@@ -16,11 +16,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.FBAuth;
-import hr.tvz.trackmydog.HelperClass;
+import hr.tvz.trackmydog.firebase.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.mappers.DogMapper;
-import hr.tvz.trackmydog.forms.DogForm;
+import hr.tvz.trackmydog.models.forms.DogForm;
+import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class DogDetailsEditActivity extends BaseActivity {
 
@@ -70,9 +70,9 @@ public class DogDetailsEditActivity extends BaseActivity {
         breed.setText(dog.getBreed());
 
         // can't return null for int:
-        age.setText(HelperClass.getStringForEdit(dog.getAge()));
-        height.setText(HelperClass.getStringForEdit(dog.getHeight()));
-        weight.setText(HelperClass.getStringForEdit(dog.getWeight()));
+        age.setText(LabelUtils.getStringForEdit(dog.getAge()));
+        height.setText(LabelUtils.getStringForEdit(dog.getHeight()));
+        weight.setText(LabelUtils.getStringForEdit(dog.getWeight()));
 
         if (dog.getGender() != null) {
             if (dog.getGender().equals("F")) {
@@ -99,11 +99,11 @@ public class DogDetailsEditActivity extends BaseActivity {
 
         // get info from fields:
         dog.setName(name.getText().toString());
-        dog.setBreed(HelperClass.getTextOrNull(breed.getText().toString()));
+        dog.setBreed(LabelUtils.getTextOrNull(breed.getText().toString()));
 
-        dog.setAge(HelperClass.getIntegerOrNull(age.getText().toString()));
-        dog.setHeight(HelperClass.getIntegerOrNull(height.getText().toString()));
-        dog.setWeight(HelperClass.getIntegerOrNull(weight.getText().toString()));
+        dog.setAge(LabelUtils.getIntegerOrNull(age.getText().toString()));
+        dog.setHeight(LabelUtils.getIntegerOrNull(height.getText().toString()));
+        dog.setWeight(LabelUtils.getIntegerOrNull(weight.getText().toString()));
 
         // gender:
         if (female.isChecked()) {

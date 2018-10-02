@@ -1,7 +1,7 @@
 package hr.tvz.trackmydog.mappers;
 
-import hr.tvz.trackmydog.forms.UserForm;
-import hr.tvz.trackmydog.userModel.CurrentUser;
+import hr.tvz.trackmydog.models.forms.UserForm;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
 public class UserMapper {
 
