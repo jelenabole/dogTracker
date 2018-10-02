@@ -46,6 +46,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.dogModel.CustomDogList;
 import hr.tvz.trackmydog.dogModel.Dog;
 import hr.tvz.trackmydog.newDogModel.DogMarker;
+import hr.tvz.trackmydog.newDogModel.ShortLocation;
 import hr.tvz.trackmydog.newDogModel.Tracks;
 import hr.tvz.trackmydog.userModel.BasicDog;
 import hr.tvz.trackmydog.userModel.CurrentUser;
@@ -72,7 +73,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // for setting up markers:
     final int MAX_HOURS_PASSED_FOR_MARKER = 10; // longer not showing
     final int MAX_MIN_BETWEEN_MARKERS = 10; // longer not showing
-    final int MAX_NUMBER_OF_LAST_TRACKS = 7; // the ones that are not the same, and not > 10 mins apart
+    final int MAX_NUMBER_OF_LAST_TRACKS = 6; // the ones that are not the same, and not > 10 mins apart
     final float MIN_OPACITY = 0.1f; // important for normalizing time that passed
 
     @BindView(R.id.dogThumbsLayout) LinearLayout dogThumbsLayout;
@@ -243,15 +244,17 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // recalculate the zoom level and position (same as for the user change)
     // TODO - needed more info from the dog (key, index, name) - sending whole dog
     protected void setListenerOnDogLocation(final BasicDog usersDog) {
-        FirebaseDatabase.getInstance().getReference("dogs/" + usersDog.getKey())
+        FirebaseDatabase.getInstance().getReference("dogs/" + usersDog.getKey() + "/location")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         // add important info on the dog (index, name, color):
-                        DogMarker dog = dataSnapshot.getValue(DogMarker.class);
+                        DogMarker dog = new DogMarker();
+                        dog.setLocation(dataSnapshot.getValue(ShortLocation.class));
                         dog.setIndex(usersDog.getIndex());
                         dog.setName(usersDog.getName());
                         dog.setColor(usersDog.getColor());
+                        dog.setKey(usersDog.getKey());
 
                         Log.d(TAG + " dog listener", "dog from listener: \n" + dog);
                         // TODO - isAdded = checking for context
@@ -314,10 +317,10 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 Log.d(TAG + " - change marker", "(new) marker positioned for dog: " + dog.getName());
                 LatLng newPosition = new LatLng(dog.getLocation().getLatitude(), dog.getLocation().getLongitude());
 
-                // else - calculate opacity by time - normalize data to 0-1 range:
-                // formula => normalized = (diff - min) / (max - min);
-                // .. but opacity should go in reverse order = more hours means lower opacity (1-...)
-                float opacity = 1f - ((diff - MIN_OPACITY) / (MAX_HOURS_PASSED_FOR_MARKER - MIN_OPACITY));
+                // calculate opacity by passed time (norm to 0-1 range):
+                // more time = lower opacity (1 - ...)
+                float opacity = normalizeData(diff);
+
                 Log.e(TAG, "dog - last location time: " + dog.getLocation().getTime());
                 Log.d(TAG, "opacity: " + opacity);
 
@@ -335,9 +338,8 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 LatLng newPosition = new LatLng(dog.getLocation().getLatitude(), dog.getLocation().getLongitude());
 
                 markers.get(index).setPosition(newPosition);
-                // TODO - last updated should always be "now" ??
-                markers.get(index).setSnippet("last updated: " + HelperClass.converTimeToReadable(dog.getLocation().getTime()));
-                // TODO - return opacity back to normal (for new location)
+                // currently updated - time "now" and full opacity:
+                markers.get(index).setSnippet("last updated: now");
                 markers.get(index).setAlpha(1.0f);
 
                 // if info window is opened, refresh text:
@@ -471,8 +473,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
      * Previous listener and tracks are deleted, and new ones are set.
      *
      * @param key - key of a dog to listen
+     * @param color - color of a dog for markers (dots)
      */
-    private void setDogTracksListener(final String key) {
+    private void setDogTracksListener(final String key, final String color, final float startAlpha) {
         // TODO - basic dog for color = just in case to fix color dynamically
         Log.d(TAG, "set tracks listener - dog key: " + key);
 
@@ -496,7 +499,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                     tracks.add(snap.getValue(Tracks.class));
                 }
 
-                setDogTracks(tracks);
+                setDogTracks(tracks, color, startAlpha);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -508,13 +511,14 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
 
     // check which tracks dont overlap, and show them on the map:
-    private void setDogTracks(List<Tracks> locations) {
-        Log.d(TAG, "change tracks location - ???");
+    private void setDogTracks(List<Tracks> locations, String color, float startAlpha) {
+        Log.d(TAG, "change tracks location - color: " + color);
 
-        // TODO - set marker color
-        // get marker icon
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.dot);
-        // BitmapDescriptorFactory icon22 = BitmapDescriptorFactory.fromBitmap(icon3);
+        // get track-marker icon
+        BitmapDescriptor icon = BitmapDescriptorFactory
+                .fromResource(HelperClass.getDotMarker(color, getResources(), getContext()));
+        // grey icon:
+        // BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.dot_grey);
 
         // remove existing dog tracks:
         removeDogTracks();
@@ -537,8 +541,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
             // set marker if location is different than last, or skip:
             if (!locations.get(index).isEqual(lastTrack)) {
+                // TODO - starting opacity should be the opacity of the main marker:
                 // normalize opacity:
-                float opacity = normalizeData(10, count);
+                float opacity = normalizeDataToRange(MAX_NUMBER_OF_LAST_TRACKS, count, startAlpha);
                 lastTrack = locations.get(index);
 
                 // add marker
@@ -559,19 +564,51 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     }
 
 
+    /**
+     * Returns normalized number to range 0.3 to 0.8.
+     * Used to calculate opacity of the additional track markers.
+     * Returned value is reversed, since lower indices should have higher opacity.
+     *
+     * @param maxValue - number of max indices (to equally space the values)
+     * @param index - index of the current calculation (used with +1)
+     * @param maxRange - max possible value of the range (depends of opacity of main marker)
+     * @return - normalized number to 0-1 range
+     */
+    // TODO - correct function:
+    public float normalizeDataToRange(float maxValue, float index, float maxRange) {
+        float max = maxRange - 0.1f;
+        float min = MIN_OPACITY + 0.1f;
 
-    // normlize the data to 0-1 range
-    // used for opacity calculations
-    // min = 0.1 is the minimum returned
-    // step = how many steps there should be (thats used to put them in range equally spaced)
-    public float normalizeData(float step, float number) {
-        float calc = 1 - ((step * number) / 100);
-
-        if (calc < 0) {
-            calc = (float) 0.1;
+        // if max range is lower then min opacity, just return it
+        if (max <= min) {
+            return MIN_OPACITY;
         }
 
-        return calc;
+        // starting from 1 (index too):
+        float minValue = 1;
+        float value = index + 1;
+
+        float rangeDiff = (max - min) / (maxValue - minValue);
+        float norm = min + (rangeDiff * (value - minValue));
+
+        // return the reversed value (biggest number should be min opacity):
+        return 1f - norm;
+    }
+
+    /**
+     * Returns normalized number to range 0-1 (min returned is 0.1).
+     * Used to calculate opacity of the main markers.
+     * Returned value is reversed, since bigger number should have opacity closer to 0.
+     *
+     * @param value - given number between min and max that needs to be normalized
+     * @return - normalized number (from min to max) to range 0 - 1
+     */
+    public float normalizeData(float value) {
+        // max possible number, min possible number and current value:
+        float norm = ((value - MIN_OPACITY) / (MAX_HOURS_PASSED_FOR_MARKER - MIN_OPACITY));
+
+        // return the reversed value (biggest number should be min opacity):
+        return 1f - norm;
     }
 
 
@@ -654,7 +691,8 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // remove previous track listeners - add new ones:
         removeDogTracksListener();
-        setDogTracksListener(user.getDogs().get(index).getKey());
+        setDogTracksListener(user.getDogs().get(index).getKey(), user.getDogs().get(index).getColor(),
+                markers.get(index).getAlpha());
 
         Log.d(TAG, "follow dog - index: " + index);
         followEnabled = true;

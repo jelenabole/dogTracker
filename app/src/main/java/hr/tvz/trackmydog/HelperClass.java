@@ -46,6 +46,23 @@ public class HelperClass {
         }
     }
 
+    // get dot icon (track marker) for the dogs:
+    public static int getDotMarker(String color, Resources res, Context context) {
+        if (color == null) {
+            color = FALLBACK_COLOR;
+        }
+
+        switch (color) {
+            case "blue":
+            case "yellow":
+            case "red":
+            case "green":
+                return res.getIdentifier("dot_" + color, "drawable", context.getPackageName());
+            default:
+                return res.getIdentifier("dot", "drawable", context.getPackageName());
+        }
+    }
+
     // get drawable icon (e.g., home marker):
     public static int getDrawableIcon(String name, Resources res, Context context) {
         return res.getIdentifier(name, "drawable", context.getPackageName());
