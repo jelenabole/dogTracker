@@ -67,6 +67,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     boolean followEnabled = true; // if button is pressed, map not touched
     int followDogIndex = -1; // follow all dogs
     final float MAX_ZOOM_LEVEL = 19; // max map zoom level (if dogs are too close, or only one)
+    boolean setZoom = true;
     // Zoom level:
     // 1 - world, 5 - continent
     // 10 - city, 15 streets, 20 - buildings (21 - EU,USA, 22-23 max)
@@ -178,7 +179,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         // remove tilt, map toolbar and zoom buttons:
         map.getUiSettings().setRotateGesturesEnabled(false);
         map.getUiSettings().setMapToolbarEnabled(false);
-        // map.getUiSettings().setZoomControlsEnabled(false);
+        map.getUiSettings().setZoomControlsEnabled(true);
 
         // TODO - set listener (cause of the zoom and follow):
         // if map is clicked (zoomed or moved) - stop following:
@@ -186,20 +187,50 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             @Override
             public void onCameraMoveStarted(int reason) {
                 // TODO - error - only first gesture needed:
+                // on user gestures or buttons clicked = hide info windows
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                     // double-tap (zoom) or drag
                     // changes user made = move, double-tap (zoom)
                     Log.w(TAG, "MAP TOUCHED - DISABLE FOLLOW");
                     stopFollowing();
-                } else if (reason == GoogleMap.OnCameraMoveStartedListener
-                        .REASON_API_ANIMATION) {
-                    // changes produced by tapping on marker or double-tapping anywhere
-                    Toast.makeText(getActivity(), "The user tapped something on the map.",
-                            Toast.LENGTH_SHORT).show();
-                } else if (reason == GoogleMap.OnCameraMoveStartedListener
-                        .REASON_DEVELOPER_ANIMATION) {
-                    // changes produced by app
+
+                    // TODO - hide info windows on change
+                    hideInfoWindows();
+                } else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+                    hideInfoWindows();
                 }
+            }
+        });
+
+        // set on click listener = go to my location and stop following dogs:
+        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+            @Override
+            public boolean onMyLocationButtonClick() {
+                stopFollowing();
+
+                // false = call the super method (default behavior):
+                return false;
+            }
+        });
+
+        // set on marker click = only show the info window, dont zoom or change camera view
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                // other markers windows are hidden automatically
+                Log.d(TAG, "marker clicked - show info window");
+                marker.showInfoWindow();
+
+                // false = launches default behaviour, true = does nothing
+                return true;
+            }
+        });
+
+        // click on a info window to hide it
+        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                marker.hideInfoWindow();
             }
         });
 
@@ -234,7 +265,17 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 (RelativeLayout.LayoutParams) userLocationButton.getLayoutParams();
         buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        buttonLayoutParams.setMargins(0,0,30,30);
+        buttonLayoutParams.setMargins(0,0,30,350);
+    }
+
+
+    // when camera is moved by the user, or user clicked on some button - move all info windows
+    private void hideInfoWindows() {
+        for (Marker mark : markers) {
+            if (mark != null && mark.isInfoWindowShown()) {
+                mark.hideInfoWindow();
+            }
+        }
     }
 
 
@@ -415,8 +456,15 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         } else {
             Log.d(TAG, "map zoom on position: \n" + markers.get(followDogIndex).getPosition());
             // set location with the zoom of 17 (otherwise its too close)
-            map.animateCamera(CameraUpdateFactory
-                    .newLatLngZoom(markers.get(followDogIndex).getPosition(), MAX_ZOOM_LEVEL));
+            if (setZoom) {
+                map.animateCamera(CameraUpdateFactory
+                        .newLatLngZoom(markers.get(followDogIndex).getPosition(), MAX_ZOOM_LEVEL));
+                setZoom = false;
+            } else {
+                map.animateCamera(CameraUpdateFactory
+                        .newLatLng(markers.get(followDogIndex).getPosition()));
+            }
+
         }
     }
 
@@ -510,8 +558,15 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     }
 
 
-
-    // check which tracks dont overlap, and show them on the map:
+    /**
+     * Finds last few dog's locations and puts dot markers on them.
+     * Only markers with different locations and not far apart (by time) are shown.
+     * Their opacity starts below main marker's opacity, and then it reduces until min value.
+     *
+     * @param locations - list of dog previous locations
+     * @param color - dog color
+     * @param startAlpha - starting opacity (alpha of the dog's main marker)
+     */
     private void setDogTracks(List<Tracks> locations, String color, float startAlpha) {
         Log.d(TAG, "change tracks location - color: " + color);
 
@@ -577,11 +632,12 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
      */
     // TODO - correct function:
     public float normalizeDataToRange(float maxValue, float index, float maxRange) {
-        float max = maxRange - 0.1f;
-        float min = MIN_OPACITY + 0.1f;
+        // turn the values around (1 - ...)
+        float max = 1 - MIN_OPACITY - 0.1f;
+        float min = 1 - maxRange + 0.1f;
 
         // if max range is lower then min opacity, just return it
-        if (max <= min) {
+        if (max <= min + 0.05) {
             return MIN_OPACITY;
         }
 
@@ -675,6 +731,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         removeDogTracksListener();
         removeDogTracks();
 
+        // reset zoom level:
+        setZoom = true;
+
         followEnabled = true;
         followDogIndex = -1;
         resetMapView();
@@ -689,6 +748,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             Log.w(TAG, "onClick - can't follow dog with index: " + index);
             return;
         }
+
+        // reset zoom level:
+        setZoom = true;
 
         // remove previous track listeners - add new ones:
         removeDogTracksListener();
