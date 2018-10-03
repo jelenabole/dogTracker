@@ -17,7 +17,7 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.activities.UserAddNewActivity;
+import hr.tvz.trackmydog.activities.UserDetailsAddActivity;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.fragments.DogsFragment;
 import hr.tvz.trackmydog.fragments.MapFragment;
@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity {
 
         // check if user has filled data - or start add user activity:
         if (FBAuth.getCurrentUserFB().getName() == null) {
-            startActivity(new Intent(MainActivity.this, UserAddNewActivity.class));
+            startActivity(new Intent(MainActivity.this, UserDetailsAddActivity.class));
         }
 
         // TODO - check if we have GPS provider:

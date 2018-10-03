@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_centerVertical="true"
     android:padding="10dp"
-    tools:context=".activities.UserAddNewActivity">
+    tools:context=".activities.UserDetailsAddActivity">
 
     <!-- edit fields = restrict to one line -->
     <!-- center vertically in RelativeLayout -->
@@ -14,15 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/colorAccent"
-            android:text="@string/error_while_saving"
-            android:visibility="gone" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -81,6 +72,17 @@
         </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/saveButton"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="@string/error"
+        android:textColor="@color/colorAccent"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/saveButton"

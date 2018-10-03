@@ -10,7 +10,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -30,8 +29,6 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,17 +36,21 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
+import hr.tvz.trackmydog.BaseActivity;
+import hr.tvz.trackmydog.firebaseServices.ActivityCallback;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.models.userModel.SafeZone;
+import hr.tvz.trackmydog.firebaseServices.UserService;
+import hr.tvz.trackmydog.models.forms.SafeZoneForm;
 import hr.tvz.trackmydog.utils.ResourceUtils;
 
-public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class UserLocationAddActivity extends BaseActivity implements OnMapReadyCallback {
 
     private static final String TAG = "Map Range Activity";
 
     // init location - Zagreb:
     private final LatLng initLocation = new LatLng(45.800007, 15.979110);
+
+    @BindView(R.id.error) TextView errorText;
 
     @BindView(R.id.addressText) EditText addressText;
     @BindView(R.id.searchButton) ImageButton searchButton;
@@ -68,7 +69,7 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         Log.d(TAG, "On Create");
 
-        setContentView(R.layout.activity_location_add);
+        setContentView(R.layout.activity_user_location_add);
         ButterKnife.bind(this);
 
         // this is needed to call onMapReady:
@@ -165,10 +166,10 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
             public void onMarkerDragEnd(Marker arg0) {
                 refreshMarkerInfo();
             }
-            @Override public void onMarkerDragStart(Marker arg0) {
-                // TODO Auto-generated method stub
+            @Override public void onMarkerDragStart(Marker arg0) { }
+            @Override public void onMarkerDrag(Marker arg0) {
+                // TODO - move the circle too ??
             }
-            @Override public void onMarkerDrag(Marker arg0) {}
         });
 
         // returns -1 when there's no permission
@@ -322,7 +323,9 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
 
     // save location to user FB and close the activity
     private void saveLocationToUser() {
-        SafeZone safeZone = new SafeZone();
+        errorText.setVisibility(View.GONE);
+
+        SafeZoneForm safeZone = new SafeZoneForm();
         LatLng position = marker.getPosition();
 
         // TODO - set name for the place
@@ -331,12 +334,22 @@ public class MapRangeActivity extends AppCompatActivity implements OnMapReadyCal
         safeZone.setLongitude(position.longitude);
         safeZone.setRange(rangeSeekbar.getProgress() * rangeStep);
 
-        DatabaseReference safeZones = FirebaseDatabase.getInstance()
-                .getReference("users/" + FBAuth.getUserKey() + "/safeZones");
+        UserService.saveSafeZone(safeZone, new ActivityCallback() {
+            @Override
+            public void closeIntent(boolean error) {
+                if (!error) {
+                    Log.d(TAG, "safe location added successfully");
+                    finish();
+                } else {
+                    Log.d(TAG, "error while saving user - DB error");
+                    errorText.setText(getString(R.string.error_save_to_database));
+                    errorText.setVisibility(View.VISIBLE);
+                    hideProgressDialog();
+                }
+            }
+        });
 
-        safeZones.push().setValue(safeZone.toMap());
-        Log.d(TAG, "safe location added successfully");
-        finish();
+
     }
 
 

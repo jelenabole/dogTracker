@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.activities.UserLocationAddActivity;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
-import hr.tvz.trackmydog.activities.MapRangeActivity;
 import hr.tvz.trackmydog.activities.UserDetailsEditActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
@@ -79,7 +79,7 @@ public class ProfileFragment extends Fragment {
         addLocationButton.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View v) {
                 Log.d(TAG, "open AddLocation Activity");
-                Intent addLocationIntent = new Intent(getActivity(), MapRangeActivity.class);
+                Intent addLocationIntent = new Intent(getActivity(), UserLocationAddActivity.class);
                 startActivity(addLocationIntent);
             }
         });

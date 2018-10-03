@@ -16,11 +16,11 @@ import hr.tvz.trackmydog.firebaseServices.UserService;
 import hr.tvz.trackmydog.models.forms.UserForm;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
-public class UserAddNewActivity extends BaseActivity {
+public class UserDetailsAddActivity extends BaseActivity {
 
     private static final String TAG = "Add User Activity";
 
-    @BindView(R.id.error) TextView error;
+    @BindView(R.id.error) TextView errorText;
     @BindView(R.id.saveButton) Button saveButton;
 
     @BindView(R.id.name) TextInputEditText name;
@@ -33,7 +33,7 @@ public class UserAddNewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "on create");
 
-        setContentView(R.layout.activity_user_add);
+        setContentView(R.layout.activity_user_details_add);
         ButterKnife.bind(this);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -46,13 +46,13 @@ public class UserAddNewActivity extends BaseActivity {
 
     // on button clicked
     public void saveUser() {
-        error.setVisibility(View.GONE);
+        errorText.setVisibility(View.INVISIBLE);
 
         // check if mandatory fields are entered:
         if (name.getText().length() < 1) {
             Log.w(TAG, "error - empty 'name' field!");
-            error.setText(getString(R.string.error_empty_fields));
-            error.setVisibility(View.VISIBLE);
+            errorText.setText(getString(R.string.error_empty_fields));
+            errorText.setVisibility(View.VISIBLE);
             return;
         }
         Log.d(TAG, "save user info: " + name.getText().toString());
@@ -73,6 +73,9 @@ public class UserAddNewActivity extends BaseActivity {
                     Log.d(TAG, "user saved successfully");
                     finish();
                 } else {
+                    Log.d(TAG, "error while saving user - DB error");
+                    errorText.setText(getResources().getText(R.string.error_save_to_database));
+                    errorText.setVisibility(View.VISIBLE);
                     hideProgressDialog();
                 }
             }

@@ -6,7 +6,7 @@
     android:layout_centerVertical="true"
     android:padding="10dp"
     android:paddingBottom="24dp"
-    tools:context=".activities.DogAddNewActivity">
+    tools:context=".activities.DogDetailsAddActivity">
 
     <!-- edit fields = restrict to one line -->
     <!-- center vertically in RelativeLayout -->

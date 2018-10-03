@@ -67,6 +67,10 @@
     <string name="error_empty_fields">Some fields are empty!</string>
     <string name="error_wrong_chip_number">Wrong chip number!</string>
     <string name="error_chip_has_user">Chip already added to user!</string>
+    <!-- error messages = for activites with save -->
+    <string name="error_save_to_database">Error while saving data!</string>
+    <string name="error">Error!</string>
+
 
     <!-- buttons -->
     <string name="save_button">Save</string>
@@ -96,5 +100,6 @@
     <!-- add location activity -->
     <string name="desc_search_button">Search button</string>
     <string name="placeholder_range">100 m</string>
+
 
 </resources>

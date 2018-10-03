@@ -21,7 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.activities.DogAddNewActivity;
+import hr.tvz.trackmydog.activities.DogDetailsAddActivity;
 import hr.tvz.trackmydog.activities.DogDetailsActivity;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
@@ -65,7 +65,7 @@ public class DogsFragment extends ListFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), DogAddNewActivity.class);
+                Intent intent = new Intent(getContext(), DogDetailsAddActivity.class);
                 startActivity(intent);
             }
         });

@@ -23,7 +23,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.DogForm;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
-public class DogAddNewActivity extends BaseActivity {
+public class DogDetailsAddActivity extends BaseActivity {
 
     private static final String TAG = "Add New Dog Activity";
 
@@ -49,7 +49,7 @@ public class DogAddNewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "on Create");
 
-        setContentView(R.layout.activity_dog_add);
+        setContentView(R.layout.activity_dog_details_add);
         ButterKnife.bind(this);
 
         // get user notification token and dog index (number of dogs):

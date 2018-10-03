@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import hr.tvz.trackmydog.MyApplication;
+import hr.tvz.trackmydog.models.forms.SafeZoneForm;
 import hr.tvz.trackmydog.models.forms.UserForm;
 
 public class UserService {
@@ -29,6 +30,21 @@ public class UserService {
                     callback.closeIntent(databaseError != null);
                 }
             });
+    }
+
+    public static void saveSafeZone(SafeZoneForm safeZone, final ActivityCallback callback) {
+        Log.d(TAG, "save safe zone: " + safeZone);
+
+        FirebaseDatabase.getInstance()
+                .getReference("users/" + MyApplication.userKey + "/safeZones")
+                .push().setValue(safeZone.toMap(), new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError,
+                                   @NonNull DatabaseReference databaseReference) {
+                // send flag if there was an error:
+                callback.closeIntent(databaseError != null);
+            }
+        });
     }
 
 }

@@ -29,7 +29,7 @@ public class UserDetailsEditActivity extends BaseActivity {
 
     UserForm user;
 
-    @BindView(R.id.error) TextView error;
+    @BindView(R.id.error) TextView errorText;
     @BindView(R.id.saveButton) Button saveButton;
 
     @BindView(R.id.name) TextInputEditText name;
@@ -81,13 +81,13 @@ public class UserDetailsEditActivity extends BaseActivity {
     }
 
     public void saveUser() {
-        error.setVisibility(View.GONE);
+        errorText.setVisibility(View.INVISIBLE);
 
         // check if mandatory fields are entered:
         if (name.getText().length() < 1) {
             Log.w(TAG, "error - empty 'name' field!");
-            error.setText(getString(R.string.error_empty_fields));
-            error.setVisibility(View.VISIBLE);
+            errorText.setText(getString(R.string.error_empty_fields));
+            errorText.setVisibility(View.VISIBLE);
             return;
         }
         Log.d(TAG, "save user info: " + name.getText().toString());
@@ -107,6 +107,9 @@ public class UserDetailsEditActivity extends BaseActivity {
                     Log.d(TAG, "user updated successfully");
                     finish();
                 } else {
+                    Log.d(TAG, "error while saving user - DB error");
+                    errorText.setText(getResources().getText(R.string.error_save_to_database));
+                    errorText.setVisibility(View.VISIBLE);
                     hideProgressDialog();
                 }
             }

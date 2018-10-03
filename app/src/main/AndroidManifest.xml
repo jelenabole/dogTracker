@@ -41,7 +41,7 @@
 
         <!-- add / edit dog activities -->
         <activity
-            android:name=".activities.DogAddNewActivity"
+            android:name=".activities.DogDetailsAddActivity"
             android:label="@string/label_dog_add_new"
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".MainActivity" />
@@ -58,7 +58,7 @@
 
         <!-- user details -->
         <activity
-            android:name=".activities.UserAddNewActivity"
+            android:name=".activities.UserDetailsAddActivity"
             android:label="@string/label_user_add_new"
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".MainActivity" />
@@ -69,7 +69,7 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".activities.MapRangeActivity"
+            android:name=".activities.UserLocationAddActivity"
             android:label="@string/label_location_add"
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".activities.UserDetailsEditActivity" />
