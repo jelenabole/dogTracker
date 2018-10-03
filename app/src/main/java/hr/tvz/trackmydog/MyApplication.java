@@ -14,6 +14,8 @@ public class MyApplication extends Application {
 
     private static final String TAG = "Application";
 
+    // TODO - used for testing new listeners:
+    public static String userKey = "Kj3CXcAUKsOwZ6rm6Vvq7vYU5ff2";
     private static MyApplication instance;
     
     public static Context getContext(){
