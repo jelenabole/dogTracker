@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.util.Log;
@@ -12,17 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.R;
+import hr.tvz.trackmydog.firebaseServices.ActivityCallback;
+import hr.tvz.trackmydog.firebaseServices.UserService;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
+import hr.tvz.trackmydog.mappers.UserMapper;
 import hr.tvz.trackmydog.models.forms.UserForm;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class UserDetailsEditActivity extends BaseActivity {
@@ -30,7 +28,6 @@ public class UserDetailsEditActivity extends BaseActivity {
     private static final String TAG = "Edit User Details Activity";
 
     UserForm user;
-    private String userLink = "users/";
 
     @BindView(R.id.error) TextView error;
     @BindView(R.id.saveButton) Button saveButton;
@@ -48,21 +45,19 @@ public class UserDetailsEditActivity extends BaseActivity {
         setContentView(R.layout.activity_user_details_edit);
         ButterKnife.bind(this);
 
-        // TODO - get another user (listener new):
         // Obtain a new or prior instance of CurrentUserViewModel from the ViewModelProviders utility class:
-        CurrentUserViewModel model = ViewModelProviders.of(this).get(CurrentUserViewModel.class);
-        LiveData<DataSnapshot> liveData = model.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
+        CurrentUserViewModel currentUserViewModel =
+                ViewModelProviders.of(this).get(CurrentUserViewModel.class);
+
+        LiveData<CurrentUser> currentUserLiveData = currentUserViewModel.getCurrentUserLiveData();
+        currentUserLiveData.observe(this, new Observer<CurrentUser>() {
             @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    // update the UI here with values in the snapshot
-                    user = dataSnapshot.getValue(UserForm.class);
-                    userLink += dataSnapshot.getKey();
+            public void onChanged(@Nullable CurrentUser currentUser) {
+                if (currentUser != null) {
+                    Log.d(TAG, "Current user data retrieved: " + currentUser);
 
-                    Log.d(TAG, "Current user data retrieved: " + dataSnapshot);
-
-                    // set all fields:
+                    // update the UI with values from the snapshot
+                    user = UserMapper.mapCurretUserToForm(currentUser);
                     setFieldValues();
                 }
             }
@@ -105,19 +100,16 @@ public class UserDetailsEditActivity extends BaseActivity {
         user.setGender(LabelUtils.getTextOrNull(gender.getText().toString()));
 
         // save user:
-        Log.d(TAG, "save user: " + user.toString());
-        FirebaseDatabase.getInstance().getReference(userLink)
-            .updateChildren(user.toMap(), new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(@Nullable DatabaseError databaseError,
-                                       @NonNull DatabaseReference databaseReference) {
-                    if (databaseError == null) {
-                        Log.d(TAG, "user updated successfully");
-                        finish();
-                    } else {
-                        hideProgressDialog();
-                    }
+        UserService.saveUser(user, new ActivityCallback() {
+            @Override
+            public void closeIntent(boolean error) {
+                if (!error) {
+                    Log.d(TAG, "user updated successfully");
+                    finish();
+                } else {
+                    hideProgressDialog();
                 }
-            });
+            }
+        });
     }
 }

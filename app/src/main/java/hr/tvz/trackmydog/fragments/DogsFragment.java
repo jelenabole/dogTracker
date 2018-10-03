@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.DogAddNewActivity;
 import hr.tvz.trackmydog.activities.DogDetailsActivity;
-import hr.tvz.trackmydog.firebase.FBAuth;
+import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.userModel.BasicDog;
 import hr.tvz.trackmydog.utils.ResourceUtils;

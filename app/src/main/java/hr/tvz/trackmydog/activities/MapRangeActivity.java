@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.firebase.FBAuth;
+import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.userModel.SafeZone;
 import hr.tvz.trackmydog.utils.ResourceUtils;

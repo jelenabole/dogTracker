@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.firebase;
+package hr.tvz.trackmydog.firebaseQueries;
 
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
@@ -10,22 +10,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class UserQuery extends LiveData<DataSnapshot> {
+public class CurrentUserQueryLiveData extends LiveData<DataSnapshot> {
 
     private static final String TAG = "FB Query - User";
 
     private final Query query;
     private final MyValueEventListener listener = new MyValueEventListener();
 
-    public UserQuery(Query query) {
+    public CurrentUserQueryLiveData(Query query) {
         this.query = query;
     }
 
-    public UserQuery(DatabaseReference ref) {
+    public CurrentUserQueryLiveData(DatabaseReference ref) {
         this.query = ref;
     }
 
     /* whenever activty/fragment associated with this is on, this will be active */
+
     @Override
     protected void onActive() {
         Log.d(TAG, "onActive");

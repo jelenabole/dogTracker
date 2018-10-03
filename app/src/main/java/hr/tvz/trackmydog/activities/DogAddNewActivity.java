@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.firebase.FBAuth;
+import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.DogForm;
 import hr.tvz.trackmydog.utils.LabelUtils;

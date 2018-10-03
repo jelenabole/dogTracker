@@ -23,7 +23,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.firebase.FBAuth;
+import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.dogModel.Dog;
 import hr.tvz.trackmydog.utils.LabelUtils;
