@@ -109,6 +109,14 @@ public class ResourceUtils {
         return res.getColor(dogColor, null);
     }
 
+    // TODO - same as other one, just without ress:
+    // resources = context.getResources()
+    public static int getDogColor(String color, Context context) {
+        color = getExistingColor(color);
+        int dogColor = context.getResources().getIdentifier(color, "color", context.getPackageName());
+        return context.getResources().getColor(dogColor, null);
+    }
+
 
     // get default pictures for dogs (if there are no dog pics)
     public static List<Integer> getDefaultDogPictures() {

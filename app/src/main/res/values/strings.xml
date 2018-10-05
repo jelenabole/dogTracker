@@ -1,4 +1,7 @@
-<resources>
+<!-- ignore translation problems -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ExtraTranslation">
+
     <!-- manifest -->
     <string name="app_name">TrackMyPet</string>
     <string name="main_activity">TrackMyDog</string>
@@ -38,6 +41,13 @@
     <string name="user_city">City</string>
     <string name="user_phone_number">Phone Number</string>
     <string name="user_gender">Gender</string>
+
+    <!-- dog list = default values -->
+    <string name="no_dogs_warning">No available dogs</string>
+    <string name="dog_list_item_image_description">Dog image</string>
+    <string name="dog_list_item_name">Dog Name</string>
+    <string name="dog_list_item_breed">Dog Breed</string>
+    <string name="dog_list_item_last_location">Last known location</string>
 
     <!-- dog details -->
     <string name="desc_dog_image">Dog image</string>
