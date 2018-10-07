@@ -170,7 +170,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // set map style:
         try {
-            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.style_json));
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_json));
         } catch (Exception ex) {
             // possible exceptions = Resources.NotFoundException, no Context, parsing error, ...
             Log.w(TAG, "stlye not added - error: " + ex.getMessage());
@@ -939,7 +939,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size, size);
         layoutParams.setMargins(0,0, margin, 0);
 
-        buttonAll.setBackgroundColor(Color.BLACK);
+        buttonAll.setBackgroundColor(ResourceUtils.getDogColor(null, getContext()));
         buttonAll.setImageResource(R.drawable.all_dogs_small);
         buttonAll.setScaleType(ImageView.ScaleType.FIT_CENTER);
         buttonAll.setLayoutParams(layoutParams);
