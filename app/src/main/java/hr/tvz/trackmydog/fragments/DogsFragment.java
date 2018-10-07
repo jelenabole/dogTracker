@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.DogDetailsAddActivity;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
 public class DogsFragment extends ListFragment {
@@ -33,7 +33,7 @@ public class DogsFragment extends ListFragment {
     @BindView(R.id.noDogsLayout) LinearLayout noDogsLayout;
     @BindView(R.id.addButton) FloatingActionButton addButton;
     @BindView(R.id.recyclerview) RecyclerView recyclerView;
-    private DogListAdapter dogListAdapter;
+    private DogInfoListAdapter dogInfoListAdapter;
 
     public static DogsFragment newInstance() {
         return new DogsFragment();
@@ -55,8 +55,8 @@ public class DogsFragment extends ListFragment {
 
         // set recycler view and adapter
         // TODO - check activity as a "context":
-        dogListAdapter = new DogListAdapter(getActivity());
-        recyclerView.setAdapter(dogListAdapter);
+        dogInfoListAdapter = new DogInfoListAdapter(getActivity());
+        recyclerView.setAdapter(dogInfoListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // get CurrentUserViewModel from the ViewModelProvider utility class
@@ -70,12 +70,12 @@ public class DogsFragment extends ListFragment {
                         // update the UI with values from the snapshot
                         Log.d(TAG, "Current user data retrieved: " + currentUser);
                         noDogsLayout.setVisibility(View.GONE);
-                        dogListAdapter.refreshData(currentUser.getDogs());
+                        dogInfoListAdapter.refreshData(currentUser.getDogs());
                     } else {
                         // remove the dogs:
                         Log.d(TAG, "Dog list is empty");
                         noDogsLayout.setVisibility(View.VISIBLE);
-                        dogListAdapter.refreshData(new ArrayList<BasicDog>());
+                        dogInfoListAdapter.refreshData(new ArrayList<DogInfo>());
                     }
                 }
             }

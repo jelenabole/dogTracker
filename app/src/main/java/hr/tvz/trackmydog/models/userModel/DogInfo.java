@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @IgnoreExtraProperties
-public class BasicDog implements Serializable {
+public class DogInfo implements Serializable {
 
     private String key;
     private Integer index;

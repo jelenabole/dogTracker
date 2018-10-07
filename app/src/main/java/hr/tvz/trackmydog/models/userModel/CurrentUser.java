@@ -21,7 +21,7 @@ public class CurrentUser implements Serializable {
     private String gender;
 
     private String token; // fb messaging token
-    private List<BasicDog> dogs;
+    private List<DogInfo> dogs;
     private HashMap<String, SafeZone> safeZones;
 
     public String getKey() {
@@ -96,11 +96,11 @@ public class CurrentUser implements Serializable {
         this.token = token;
     }
 
-    public List<BasicDog> getDogs() {
+    public List<DogInfo> getDogs() {
         return dogs;
     }
 
-    public void setDogs(List<BasicDog> dogs) {
+    public void setDogs(List<DogInfo> dogs) {
         this.dogs = dogs;
     }
 

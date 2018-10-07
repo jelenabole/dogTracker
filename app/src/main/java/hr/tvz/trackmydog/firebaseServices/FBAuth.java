@@ -23,7 +23,7 @@ import hr.tvz.trackmydog.activities.LoginActivity;
 import hr.tvz.trackmydog.services.MyCallback;
 import hr.tvz.trackmydog.services.NotificationService;
 import hr.tvz.trackmydog.localDB.User;
-import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
 public class FBAuth {
@@ -147,7 +147,7 @@ public class FBAuth {
                                 // change all dogs tokens:
                                 if (currentUserFB.getDogs() != null) {
                                     DatabaseReference dogsRef = FirebaseDatabase.getInstance().getReference("dogs");
-                                    for (BasicDog dog : currentUserFB.getDogs()) {
+                                    for (DogInfo dog : currentUserFB.getDogs()) {
                                         dogsRef.child(dog.getKey()).child("token").setValue(token);
                                     }
                                 }

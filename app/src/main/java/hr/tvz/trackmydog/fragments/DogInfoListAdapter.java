@@ -21,11 +21,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.activities.DogDetailsActivity;
-import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.utils.ResourceUtils;
 import hr.tvz.trackmydog.utils.TimeUtils;
 
-public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewHolder> {
+public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.DogViewHolder> {
 
     // class for the individual views:
     class DogViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -33,10 +33,10 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
         @BindView(R.id.nameText) TextView nameText;
         @BindView(R.id.breedText) TextView breedText;
         @BindView(R.id.locationText) TextView locationText;
-        final DogListAdapter adapter;
+        final DogInfoListAdapter adapter;
 
         // constructor (since there is no deafult constructor for it) - bind views:
-        private DogViewHolder(View itemView, DogListAdapter adapter) {
+        private DogViewHolder(View itemView, DogInfoListAdapter adapter) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -62,12 +62,12 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
 
     // TODO - other adapter stuff:
     private static String TAG = "Dog List Adapter";
-    private List<BasicDog> dogList;
+    private List<DogInfo> dogList;
     private LayoutInflater layoutInflater;
     private Context context;
 
     // constructor - inflate the view and set the list of items:
-    DogListAdapter(Context context) {
+    DogInfoListAdapter(Context context) {
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
         dogList = new ArrayList<>();
@@ -75,13 +75,13 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
 
     @NonNull
     @Override
-    public DogListAdapter.DogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DogInfoListAdapter.DogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = layoutInflater.inflate(R.layout.doglist_item, parent, false);
         return new DogViewHolder(itemView, this);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DogListAdapter.DogViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DogInfoListAdapter.DogViewHolder holder, int position) {
         Log.d(TAG, "bind view holder - dog found: " + dogList.get(position));
 
         // set dog info into holder views:
@@ -93,7 +93,7 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
         return dogList.size();
     }
 
-    private void setDogFrame(DogListAdapter.DogViewHolder holder, BasicDog dog) {
+    private void setDogFrame(DogInfoListAdapter.DogViewHolder holder, DogInfo dog) {
         // handle null text and labels:
         String dogName = dog.getName() == null ? "-- unknown --" : dog.getName();
         if (dog.getAge() != null) {
@@ -118,7 +118,7 @@ public class DogListAdapter extends RecyclerView.Adapter<DogListAdapter.DogViewH
     }
 
     // add new data on change:
-    void refreshData(List<BasicDog> dogs) {
+    void refreshData(List<DogInfo> dogs) {
         // TODO - workaround = remove all nulls from the list:
         // deleted dogs are left as nulls in fb array
         dogs.removeAll(Collections.singleton(null));

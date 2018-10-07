@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.DogInfo;
 
 public class GridImageAdapter extends BaseAdapter {
 	private Context context;
 	private List<Integer> images;
 	private int numberOfDogs = 0;
-	private List<BasicDog> dogs;
+	private List<DogInfo> dogs;
 
 	// TODO - calculate the size of the images:
 	private int sizeOfImages = 0;
@@ -30,7 +30,7 @@ public class GridImageAdapter extends BaseAdapter {
 
 	Resources res;
 
-	public GridImageAdapter(Context cont, List<BasicDog> listOfDogs) {
+	public GridImageAdapter(Context cont, List<DogInfo> listOfDogs) {
 		context = cont;
 		res = cont.getResources();
 

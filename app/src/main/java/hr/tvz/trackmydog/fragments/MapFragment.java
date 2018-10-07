@@ -1,7 +1,6 @@
 package hr.tvz.trackmydog.fragments;
 
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,7 +46,7 @@ import hr.tvz.trackmydog.models.dogModel.Dog;
 import hr.tvz.trackmydog.models.dogLocationModel.DogMarker;
 import hr.tvz.trackmydog.models.dogLocationModel.ShortLocation;
 import hr.tvz.trackmydog.models.dogLocationModel.Tracks;
-import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.utils.ResourceUtils;
 import hr.tvz.trackmydog.utils.TimeUtils;
@@ -285,7 +284,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // on change, change the marker on the map
     // recalculate the zoom level and position (same as for the user change)
     // TODO - needed more info from the dog (key, index, name) - sending whole dog
-    protected void setListenerOnDogLocation(final BasicDog usersDog) {
+    protected void setListenerOnDogLocation(final DogInfo usersDog) {
         FirebaseDatabase.getInstance().getReference("dogs/" + usersDog.getKey() + "/location")
                 .addValueEventListener(new ValueEventListener() {
                     @Override

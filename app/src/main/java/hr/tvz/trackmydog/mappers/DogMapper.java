@@ -1,11 +1,11 @@
 package hr.tvz.trackmydog.mappers;
 
 import hr.tvz.trackmydog.models.forms.DogForm;
-import hr.tvz.trackmydog.models.userModel.BasicDog;
+import hr.tvz.trackmydog.models.userModel.DogInfo;
 
 public class DogMapper {
 
-    public static DogForm mapBasicDogToForm(BasicDog dog) {
+    public static DogForm mapBasicDogToForm(DogInfo dog) {
         DogForm form = new DogForm();
 
         form.setKey(dog.getKey());
