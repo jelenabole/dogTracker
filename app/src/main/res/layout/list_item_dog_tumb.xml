@@ -1,0 +1,11 @@
+<com.facebook.drawee.view.SimpleDraweeView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/dogImage"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+
+    android:padding="@dimen/border_padding"
+    fresco:actualImageScaleType="centerCrop"
+    fresco:placeholderImage="@drawable/default_dog" />

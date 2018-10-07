@@ -1,7 +1,6 @@
 package hr.tvz.trackmydog.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -20,23 +18,22 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.activities.DogDetailsActivity;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.utils.ResourceUtils;
-import hr.tvz.trackmydog.utils.TimeUtils;
 
-public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.DogViewHolder> {
+public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapter.DogViewHolder> {
+
+    // TODO - add color and image
+    // TODO - calculate (from context ?) width/height to fit few (or to be 1/5 of the screen)
+    // calculate the size and put the images
 
     // class for the individual views:
     class DogViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.dogImage) SimpleDraweeView dogImage;
-        @BindView(R.id.nameText) TextView nameText;
-        @BindView(R.id.breedText) TextView breedText;
-        @BindView(R.id.locationText) TextView locationText;
-        final DogInfoListAdapter adapter;
+        final DogThumbListAdapter adapter;
 
         // constructor (since there is no deafult constructor for it) - bind views:
-        private DogViewHolder(View itemView, DogInfoListAdapter adapter) {
+        private DogViewHolder(View itemView, DogThumbListAdapter adapter) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -52,36 +49,42 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
 
             Log.d(TAG, "dog ViewHolder clicked: " + position + " - dog index: " + index);
 
-            // start intent for that dog:
-            Intent dogDetailsIntent = new Intent(context, DogDetailsActivity.class);
-            dogDetailsIntent.putExtra("dogIndex", index);
-            context.startActivity(dogDetailsIntent);
+            // TODO - start following the dog
         }
     }
 
 
     // TODO - other adapter stuff:
-    private static String TAG = "Dog List Adapter";
+    private static String TAG = "Dog Thumbs Adapter";
     private List<DogInfo> dogList;
-    private LayoutInflater layoutInflater;
     private Context context;
 
     // constructor - inflate the view and set the list of items:
-    DogInfoListAdapter(Context context) {
+    DogThumbListAdapter(Context context) {
         this.context = context;
-        layoutInflater = LayoutInflater.from(context);
         dogList = new ArrayList<>();
     }
 
     @NonNull
     @Override
-    public DogInfoListAdapter.DogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = layoutInflater.inflate(R.layout.list_item_dog_info, parent, false);
+    public DogThumbListAdapter.DogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item_dog_tumb, parent, false);
+
+        int paddingBetween = (int) context.getResources().getDimension(R.dimen.items_margin_between);
+        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        int thumbWidth = screenWidth / 6;
+
+
+        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(thumbWidth, thumbWidth);
+        params.setMargins(0, 0, paddingBetween, 0);
+
+        itemView.setLayoutParams(params);
         return new DogViewHolder(itemView, this);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DogInfoListAdapter.DogViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DogThumbListAdapter.DogViewHolder holder, int position) {
         Log.d(TAG, "bind view holder - dog found: " + dogList.get(position));
 
         // set dog info into holder views:
@@ -93,14 +96,7 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
         return dogList.size();
     }
 
-    private void setDogFrame(DogInfoListAdapter.DogViewHolder holder, DogInfo dog) {
-        // handle null text and labels:
-        String dogName = dog.getName() == null ? "-- unknown --" : dog.getName();
-        if (dog.getAge() != null) {
-            dogName += " (" + dog.getAge() + ")";
-        }
-        String dogBreed = dog.getBreed() == null ? "-- unknown --" : dog.getBreed();
-        String dogLastLocationTime = TimeUtils.getLastLocationTime(null);
+    private void setDogFrame(DogThumbListAdapter.DogViewHolder holder, DogInfo dog) {
         int dogColor = ResourceUtils.getDogColor(dog.getColor(), context);
 
         // add dog photo (if exists):
@@ -109,12 +105,7 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
             holder.dogImage.setImageURI(uri);
         }
 
-        holder.nameText.setTextColor(dogColor);
         holder.dogImage.setBackgroundColor(dogColor);
-
-        holder.nameText.setText(dogName);
-        holder.breedText.setText(dogBreed);
-        holder.locationText.setText(dogLastLocationTime);
     }
 
     // add new data on change:

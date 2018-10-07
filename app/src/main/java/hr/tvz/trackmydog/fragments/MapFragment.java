@@ -1,11 +1,18 @@
 package hr.tvz.trackmydog.fragments;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +46,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.dogModel.CustomDogList;
@@ -54,6 +62,11 @@ import hr.tvz.trackmydog.utils.TimeUtils;
 public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
     private static final String TAG = "Map fragment";
+
+    // TODO - recycler view:
+    @BindView(R.id.recyclerview) RecyclerView recyclerView;
+    private DogThumbListAdapter dogThumbListAdapter;
+
 
     // for tracks listeners:
     DatabaseReference tracksRef;
@@ -97,8 +110,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
 
-        user = FBAuth.getCurrentUserFB();
-
         // initialize arrays:
         dogs = new ArrayList<>();
         markers = new ArrayList<>();
@@ -114,12 +125,56 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         ButterKnife.bind(this, v);
 
+        // set map fragment:
         SupportMapFragment mapFragment;
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // show dogs if they exist:
-        showThumbsIfDogsExist();
+        // TODO - set dogs listener:
+        // TODO - set user listener
+
+
+
+        /* start of a new thing */
+
+        // TODO - check activity as a "context":
+        // set adapter and recycler view (horizontal):
+        dogThumbListAdapter = new DogThumbListAdapter(getActivity());
+        recyclerView.setAdapter(dogThumbListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+
+        // TODO - horizontal view:
+        /*
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(),1);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(layoutManager);
+        */
+
+        // set listener to current user and get info:
+        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+            @Override
+            public void onChanged(@Nullable CurrentUser currentUser) {
+                if (currentUser != null) {
+                    user = currentUser;
+                    if (currentUser.getDogs() != null) {
+                        // update the UI with values from the snapshot
+                        Log.d(TAG, "Current user data retrieved: " + currentUser);
+                        dogThumbListAdapter.refreshData(currentUser.getDogs());
+                        showThumbs();
+
+                        // TODO - write dogs:
+                        // getDogsForThumbList();
+                    } else {
+                        // remove the dogs:
+                        Log.d(TAG, "Dog list is empty");
+                        dogThumbListAdapter.refreshData(new ArrayList<DogInfo>());
+                        hideThumbs();
+                    }
+                }
+            }
+        });
 
         return v;
     }
@@ -127,18 +182,15 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     /**
      * Checks if user has dogs, and creates their thumbnails on map.
      */
-    private void showThumbsIfDogsExist() {
-        if (user.getDogs() != null) {
-            Log.w(TAG, "user has dogs");
-            dogThumbsLayout.setVisibility(View.VISIBLE);
-            noDogsLayout.setVisibility(View.GONE);
-
-            getDogsForThumbList();
-        } else {
-            Log.w(TAG, "user doesn't have dogs");
-            dogThumbsLayout.setVisibility(View.GONE);
-            noDogsLayout.setVisibility(View.VISIBLE);
-        }
+    private void showThumbs() {
+        Log.w(TAG, "user has dogs");
+        dogThumbsLayout.setVisibility(View.VISIBLE);
+        noDogsLayout.setVisibility(View.GONE);
+    }
+    private void hideThumbs() {
+        Log.w(TAG, "user doesn't have dogs");
+        dogThumbsLayout.setVisibility(View.GONE);
+        noDogsLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -233,6 +285,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             }
         });
 
+
+
+        /* this part was deleted, until changed */
+
+        /*
         // returns -1 when there's no permission
         if (ContextCompat.checkSelfPermission(getContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != -1) {
@@ -255,6 +312,8 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 markers.add(null);
             }
         }
+        */
+
 
         // position maps "my location" button bottom-right
         View mapView = this.getView();
