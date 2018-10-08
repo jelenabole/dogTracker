@@ -1,64 +1,61 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:background="@color/grey"
     android:baselineAligned="false"
-    android:padding="@dimen/border_padding"
     android:weightSum="10"
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:orientation="vertical">
+        android:layout_weight="3"
+        android:gravity="center" >
 
+        <!-- fresco:roundAsCircle="true" -->
         <com.facebook.drawee.view.SimpleDraweeView
+            xmlns:fresco="http://schemas.android.com/apk/res-auto"
             android:id="@+id/dogImage"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:contentDescription="@string/dog_list_item_image_description"
-            android:padding="@dimen/border_padding"
+            fresco:viewAspectRatio="1"
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@drawable/default_dog" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
-        android:background="@color/white"
+        android:layout_marginStart="@dimen/items_margin_between"
         android:orientation="vertical"
-        android:padding="@dimen/small_padding">
+        android:layout_weight="7"
+        android:padding="@dimen/border_padding" >
 
         <TextView
             android:id="@+id/nameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/dog_list_item_name"
             android:textAllCaps="true"
-            android:textStyle="bold|italic"
             android:textSize="20sp"
-            android:text="@string/dog_list_item_name" />
+            android:textStyle="bold|italic" />
 
         <TextView
             android:id="@+id/breedText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:text="@string/dog_list_item_breed" />
+            android:text="@string/dog_list_item_breed"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/locationText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:text="@string/dog_list_item_last_location" />
+            android:text="@string/dog_list_item_last_location"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
 </LinearLayout>
-
-

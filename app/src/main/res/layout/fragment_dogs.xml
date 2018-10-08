@@ -10,15 +10,13 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/padding" />
+        android:layout_height="match_parent"/>
 
     <!-- no dogs layout -->
     <LinearLayout
         android:id="@+id/noDogsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/padding"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -33,7 +31,7 @@
 
     </LinearLayout>
 
-
+    <!-- FAB -->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addButton"
         android:layout_width="wrap_content"

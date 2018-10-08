@@ -2,6 +2,7 @@ package hr.tvz.trackmydog.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
@@ -108,6 +110,14 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
             Uri uri = Uri.parse(dog.getPhotoURL());
             holder.dogImage.setImageURI(uri);
         }
+
+        // setting the border of an image:
+        RoundingParams borderParams = new RoundingParams();
+        borderParams.setOverlayColor(Color.WHITE)
+                .setCornersRadius(context.getResources().getDimension(R.dimen.border_radius))
+                .setBorderColor(dogColor)
+                .setBorderWidth(context.getResources().getDimension(R.dimen.border_width));
+        holder.dogImage.getHierarchy().setRoundingParams(borderParams);
 
         holder.nameText.setTextColor(dogColor);
         holder.dogImage.setBackgroundColor(dogColor);

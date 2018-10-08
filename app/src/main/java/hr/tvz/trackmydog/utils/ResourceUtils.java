@@ -130,4 +130,20 @@ public class ResourceUtils {
         return imgList;
     }
 
+
+    /**
+     * Converts dp to pixels.
+     *
+     * @param dp - number that needs to be converted
+     * @param scale - density of the screen
+     * @return - number of pixels that it presents
+     */
+    // convert dp to pixels:
+    // density = number of dps that needs
+    public static int convertDpToPixels(float dp, float scale) {
+        // TODO - remove to resource utils:
+        // TODO - (+0.5) is used instead of round() when casting to int:
+        // https://stackoverflow.com/questions/9685658/add-padding-on-view-programmatically
+        return (int) (dp * scale + 0.5f);
+    }
 }

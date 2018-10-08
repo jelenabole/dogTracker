@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,6 +59,10 @@ public class DogsFragment extends ListFragment {
         dogInfoListAdapter = new DogInfoListAdapter(getActivity());
         recyclerView.setAdapter(dogInfoListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // add item decoration (divider between views):
+        recyclerView.addItemDecoration(new VerticalDivider(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL, 30));
 
         // get CurrentUserViewModel from the ViewModelProvider utility class
         // set the observer on user (and dogs) and refresh adapter on data change:
