@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -111,18 +112,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         ButterKnife.bind(this, v);
 
-        // set map fragment:
-        SupportMapFragment mapFragment;
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        // TODO - set dogs listener:
-        // TODO - set user listener
-
-
-
-        /* start of a new thing */
-
         // TODO - check activity as a "context":
         // set adapter and recycler view (horizontal):
         dogThumbListAdapter = new DogThumbListAdapter(getActivity());
@@ -137,9 +126,11 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             public void onChanged(@Nullable CurrentUser currentUser) {
                 if (currentUser != null) {
                     user = currentUser;
+
                     if (currentUser.getDogs() != null) {
                         // update the UI with values from the snapshot
                         Log.d(TAG, "Current user data retrieved: " + currentUser);
+
                         dogThumbListAdapter.refreshData(currentUser.getDogs());
                         showThumbs();
 
@@ -151,11 +142,25 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                         dogThumbListAdapter.refreshData(new ArrayList<DogInfo>());
                         hideThumbs();
                     }
+
+                    // TODO - change map and markers:
+                    startMap();
                 }
             }
         });
 
         return v;
+    }
+
+    public void startMap() {
+        Log.d(TAG, "map: " + map);
+        // TODO - set up map if its null (first time)
+        if (map == null) {
+            // set map fragment:
+            SupportMapFragment mapFragment;
+            mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
     }
 
     /**
@@ -166,6 +171,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         dogThumbsLayout.setVisibility(View.VISIBLE);
         noDogsLayout.setVisibility(View.GONE);
     }
+
     private void hideThumbs() {
         Log.w(TAG, "user doesn't have dogs");
         dogThumbsLayout.setVisibility(View.GONE);
@@ -182,7 +188,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         Log.d(TAG, "onViewCreated");
     }
-
 
 
     /**
@@ -233,7 +238,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         });
 
         // set on click listener = go to my location and stop following dogs:
-        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
                 stopFollowing();
@@ -268,7 +273,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         /* this part was deleted, until changed */
 
-        /*
         // returns -1 when there's no permission
         if (ContextCompat.checkSelfPermission(getContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != -1) {
@@ -291,7 +295,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 markers.add(null);
             }
         }
-        */
 
 
         // position maps "my location" button bottom-right
@@ -302,7 +305,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 (RelativeLayout.LayoutParams) userLocationButton.getLayoutParams();
         buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        buttonLayoutParams.setMargins(0,0,30,350);
+        buttonLayoutParams.setMargins(0, 0, 30, 350);
     }
 
 
