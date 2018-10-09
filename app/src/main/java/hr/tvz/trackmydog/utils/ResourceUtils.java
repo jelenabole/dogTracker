@@ -144,6 +144,9 @@ public class ResourceUtils {
         // TODO - remove to resource utils:
         // TODO - (+0.5) is used instead of round() when casting to int:
         // https://stackoverflow.com/questions/9685658/add-padding-on-view-programmatically
+
+        // TODO - scale from context:
+        // float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 }
