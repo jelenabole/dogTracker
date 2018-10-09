@@ -2,8 +2,6 @@ package hr.tvz.trackmydog.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,13 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,9 +39,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.models.dogModel.CustomDogList;
 import hr.tvz.trackmydog.models.dogModel.Dog;
 import hr.tvz.trackmydog.models.dogLocationModel.DogMarker;
 import hr.tvz.trackmydog.models.dogLocationModel.ShortLocation;
@@ -64,14 +57,12 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     @BindView(R.id.recyclerview) RecyclerView recyclerView;
     private DogThumbListAdapter dogThumbListAdapter;
 
-
     // for tracks listeners:
     DatabaseReference tracksRef;
     ValueEventListener tracksListener;
     private List<Marker> tracks;
     // number of last locations to get from FB:
     int NUMBER_OF_LAST_LOCATIONS = 100;
-
 
     boolean followEnabled = true; // if button is pressed, map not touched
     int followDogIndex = -1; // follow all dogs
@@ -90,7 +81,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     @BindView(R.id.dogThumbsLayout) LinearLayout dogThumbsLayout;
     @BindView(R.id.noDogsLayout) LinearLayout noDogsLayout;
 
-    private List<Integer> defaultThumbs;
     private List<Marker> markers; // animal markers
     private CurrentUser user;
 
@@ -111,7 +101,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         dogs = new ArrayList<>();
         markers = new ArrayList<>();
         tracks = new ArrayList<>();
-        defaultThumbs = ResourceUtils.getDefaultDogPictures();
     }
 
     @Override
@@ -141,13 +130,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
 
-        // TODO - horizontal view:
-        /*
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(),1);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(layoutManager);
-        */
-
         // set listener to current user and get info:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
@@ -162,7 +144,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                         showThumbs();
 
                         // TODO - write dogs:
-                        // getDogsForThumbList();
+                        // TODO - ... get all dog listeners
                     } else {
                         // remove the dogs:
                         Log.d(TAG, "Dog list is empty");
@@ -759,21 +741,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /*
         functions for buttons = click all dogs, or only one:
      */
@@ -821,246 +788,5 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // map is moved, stop following
     private void stopFollowing() {
         followEnabled = false;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-        Get dogs thumbs - make list of dogs, with listeners (for follow target)
-     */
-
-    // set dogs listener:
-    protected void getDogsForThumbList() {
-        // TODO - make custom list adapter:
-        final CustomDogList customAdapter = new CustomDogList(getActivity(), dogs);
-        // listView.setAdapter(customAdapter);
-        setListAdapter(customAdapter);
-        // TODO - set click listener:
-        // getListView().setOnItemClickListener(this);
-
-        // TODO - firebase - get reference:
-        DatabaseReference dogsRef = FirebaseDatabase.getInstance()
-                .getReference("users/" + FBAuth.getUserKey() + "/dogs");
-        dogsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                customAdapter.clear();
-
-                for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
-                    Dog dog = dogSnaps.getValue(Dog.class);
-                    Log.d(TAG, "get all dogs - save to custom (thumb) list");
-                    Log.d(TAG, dog.toString());
-                    customAdapter.add(dog);
-                }
-
-                // TODO - error = nakon dohvaćanja svih pasa, postavi view ovisno o orijentaciji:
-                setViewByOrientation();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-
-    // set orientation, and calculate sizes:
-    private void setViewByOrientation() {
-        final View testView = dogThumbsLayout;
-        ViewTreeObserver vto = testView.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Log.d("TEST", "Height = " + testView.getHeight() + " Width = " + testView.getWidth());
-                ViewTreeObserver obs = testView.getViewTreeObserver();
-                obs.removeGlobalOnLayoutListener(this);
-
-                // TODO - when view ready, set view depending on the orientation:
-                // TODO - error - calculate size and padding (for thumbs)
-                // TODO - IllegalStateException = fragment not attached to a context (after direct FB changes)
-                // .. added to getActivity(). ...
-                if (getActivity() != null) {
-                    if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        dogThumbsLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        setDogThumbnailsVertical();
-                    } else {
-                        dogThumbsLayout.setOrientation(LinearLayout.VERTICAL);
-                        // setDogThumbnailsVertical();
-                        Log.w(TAG, "WRONG ORIENTATION");
-                    }
-                }
-            }
-        });
-    }
-
-    // set dog Thumbnails (calculate size) and click listeners:
-    // vertical orientation
-    private void setDogThumbnailsVertical() {
-        // TODO - size in pixels (instead of dp):
-        int size;
-        int padding = 16;
-        int space = 16;
-        int margin = padding;
-
-        // calculate w x h (for 5 elements in a row)
-        size = (dogThumbsLayout.getWidth() - (space * dogs.size()) - (padding * 2)) / 5;
-        // TODO - remove all views (if exist, for refresh) - needed ???
-        dogThumbsLayout.removeViews(0, dogThumbsLayout.getChildCount());
-
-        // add "all dogs" button:
-        dogThumbsLayout.addView(addButtonAllDogs(size, padding, margin));
-
-        // add the rest of the dogs buttons
-        int numberOfDogs = dogs.size();
-        for (int i = 0; i < numberOfDogs; i++) {
-            dogThumbsLayout.addView(addButtonForDogs(size, padding, margin, i, numberOfDogs));
-        }
-    }
-
-
-    /** Set "all dogs" button to see/follow all dogs at the same time.
-     * @param size
-     * @param padding
-     * @param margin
-     * @return
-     */
-    private ImageView addButtonAllDogs(int size, int padding, int margin) {
-        ImageView buttonAll = new ImageView(getActivity());
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size, size);
-        layoutParams.setMargins(0,0, margin, 0);
-
-        buttonAll.setBackgroundColor(ResourceUtils.getDogColor(null, getContext()));
-        buttonAll.setImageResource(R.drawable.all_dogs_small);
-        buttonAll.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        buttonAll.setLayoutParams(layoutParams);
-        buttonAll.setPadding(padding, padding, padding, padding);
-
-        buttonAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAllDogs();
-            }
-        });
-
-        return buttonAll;
-    }
-
-
-    /** Set image for the dog, and onclick listener to follow it.
-     * @param size
-     * @param padding
-     * @param margin
-     * @param position
-     * @param numberOfDogs
-     * @return
-     */
-    private SimpleDraweeView addButtonForDogs(int size, int padding, int margin,
-                                              int position, int numberOfDogs) {
-        // TODO - image with fresco:
-        SimpleDraweeView imageView = new SimpleDraweeView(getContext());
-
-        if (dogs.get(position) != null) {
-            // add dog photo (if exists):
-            if (dogs.get(position).getPhotoURL() ==  null) {
-                imageView.setImageResource(defaultThumbs.get(position));
-            } else {
-                Uri uri = Uri.parse(dogs.get(position).getPhotoURL());
-                imageView.setImageURI(uri);
-            }
-
-            // add background color:
-            int color = ResourceUtils.getColorFromRes(dogs.get(position).getColor(), null,
-                    getResources(), getContext());
-            imageView.setBackgroundColor(color);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO - better way to get dog index
-                    // get index of a clicked child
-                    // index of a dog ( -1 = skip "all dogs" button)
-                    int dogIndex = dogThumbsLayout.indexOfChild(v) - 1;
-
-                    Log.d(TAG, "clicked thumb: " + dogIndex);
-                    showOnlyThisDog(dogIndex);
-                }
-            });
-        }
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(size, size);
-        // ako nije zadnji, staviti margin-right:
-        if (position < numberOfDogs - 1) {
-            layoutParams.setMargins(0,0, margin, 0);
-        }
-        imageView.setLayoutParams(layoutParams);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setPadding(padding, padding, padding, padding);
-
-        return imageView;
     }
 }
