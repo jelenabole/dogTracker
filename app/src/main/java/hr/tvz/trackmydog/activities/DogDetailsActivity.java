@@ -23,6 +23,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
+import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.dogModel.Dog;
@@ -65,7 +66,7 @@ public class DogDetailsActivity extends BaseActivity {
         if (dogIndex != -1) {
             FBAuth.setCurrentDogIndex(dogIndex);
             Log.d(TAG, "show details of dog with index: " + dogIndex);
-            dogLink = "users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex;
+            dogLink = "users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex;
             getDogDetails();
         }
     };
@@ -185,7 +186,7 @@ public class DogDetailsActivity extends BaseActivity {
         dogIndex = FBAuth.getCurrentDogIndex();
         Log.d(TAG, "on resume - dog index: " + dogIndex);
 
-        dogLink = "users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex;
+        dogLink = "users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex;
         getDogDetails();
     }
 

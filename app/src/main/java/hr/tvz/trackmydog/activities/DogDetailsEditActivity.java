@@ -1,5 +1,7 @@
 package hr.tvz.trackmydog.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,10 +18,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
+import hr.tvz.trackmydog.MyApplication;
+import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.mappers.DogMapper;
 import hr.tvz.trackmydog.models.forms.DogForm;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class DogDetailsEditActivity extends BaseActivity {
@@ -48,12 +53,22 @@ public class DogDetailsEditActivity extends BaseActivity {
         setContentView(R.layout.activity_dog_details_edit);
         ButterKnife.bind(this);
 
-        Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
-        dog = DogMapper.mapBasicDogToForm(FBAuth.getCurrentUserFB().getDogs().get(dogIndex));
-        Log.d(TAG, "Dog index: " + dogIndex);
+        // set listener to current user and get info:
+        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+            @Override
+            public void onChanged(@Nullable CurrentUser currentUser) {
+                if (currentUser != null) {
+                    Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
+                    dog = DogMapper.mapBasicDogToForm(currentUser.getDogs().get(dogIndex));
+                    Log.d(TAG, "Dog index: " + dogIndex);
 
-        // set all fields to values
-        setFieldValues();
+                    // set all fields to values
+                    setFieldValues();
+                }
+            }
+        });
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +130,7 @@ public class DogDetailsEditActivity extends BaseActivity {
         // save dog:
         Log.d(TAG, "save dog: " + dog.toString());
         FirebaseDatabase.getInstance()
-            .getReference("users/" + FBAuth.getUserKey() + "/dogs/" + dog.getIndex())
+            .getReference("users/" + MyApplication.getUserKey() + "/dogs/" + dog.getIndex())
             .updateChildren(dog.toMap(), new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError,

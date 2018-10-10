@@ -1,9 +1,13 @@
 package hr.tvz.trackmydog.activities;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -25,8 +29,16 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
+import hr.tvz.trackmydog.MainActivity;
+import hr.tvz.trackmydog.MyApplication;
+import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
+import hr.tvz.trackmydog.firebaseServices.AuthService;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
+import hr.tvz.trackmydog.models.forms.NewUserForm;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
+import hr.tvz.trackmydog.services.MyCallback;
+import hr.tvz.trackmydog.services.NotificationService;
 
 /**
  * A login screen that offers login via google.
@@ -63,10 +75,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         super.onStart();
         Log.d(TAG, "on start - check if user is logged in");
 
-        FirebaseUser currentUser = FBAuth.mAuth.getCurrentUser();
-        if (currentUser != null) {
+        // check if the user is signed in
+        FirebaseUser firebaseUser = FBAuth.mAuth.getCurrentUser();
+        if (firebaseUser != null) {
             Log.d(TAG, "user logged in - get info and show main activity");
-            FBAuth.getFirebaseUser(currentUser, this);
+            checkUser(firebaseUser);
         } else {
             Log.d(TAG, "user isn't logged - show google sign-in option");
             loginLayout.setVisibility(View.VISIBLE);
@@ -75,69 +88,59 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "on activity result ***");
+    /**
+     * Check if user exists in firebase DB, get data or add new one. Sets the user key to the app.
+     * @param firebaseUser - current mAuth user
+     */
+    private void checkUser(FirebaseUser firebaseUser) {
+        setUserListener(firebaseUser, new MyCallback() {
+            @Override
+            public void startIntent(Context context) {
+                Log.d(TAG, "user listeners set = start MainActivity");
+                Intent intent = new Intent(context, MainActivity.class);
+                context.startActivity(intent);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                // TODO - show an error message:
-                mStatusTextView.setText("Google sign in failed");
-                mStatusTextView.setTextColor(getResources().getColor(R.color.colorAccent, null));
-                // updateUI(null);
+                // back button closes the app (doesnt return to login)
+                ((Activity) context).finish();
             }
-        }
+        });
     }
 
-
-    /**
-     * TODO - check what should be here (except user log in)
-     * Takes google account and get user info.
-     * Start auth with google.
-     * @param acct = Google Account
-     */
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // progress dialog:
-        showProgressDialog();
-
-        // TODO - additional (cause 'this' is from firebase):
+    private void setUserListener(final FirebaseUser firebaseUser, final MyCallback callback) {
+        // TODO - is the user UID same for each device ???
+        MyApplication.setUserKey(firebaseUser.getUid());
+        final String token = NotificationService.getAppToken();;
         final Context context = this;
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        FBAuth.mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential: success");
-                        FirebaseUser user = FBAuth.mAuth.getCurrentUser();
-                        FBAuth.getFirebaseUser(user, context);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential: failure", task.getException());
-                        // TODO - snackbar deleted:
-                        hideProgressDialog();
-                        Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
+        // get the user data form listener
+        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+            @Override
+            public void onChanged(@Nullable CurrentUser currentUser) {
+                Log.d(TAG, "current user: " + currentUser);
+                if (currentUser != null) {
+                    // check if token is the same
+                    // if null or not equal, save new one to FB:
+                    if (currentUser.getToken() == null || !currentUser.getToken().equals(token)) {
+                        Log.e(TAG, "token is null or not valid - save new one on FB");
+                        AuthService.changeToken(currentUser, token);
                     }
-                    }
-                });
+                } else {
+                    // register new user:
+                    NewUserForm user = new NewUserForm(firebaseUser.getEmail(), token);
+                    AuthService.addUser(user, firebaseUser.getUid());
+                }
+
+                // continue with the app:
+                callback.startIntent(context);
+            }
+        });
     }
 
 
     // initialize google sign in at the begining:
     public void configureSignIn() {
-        System.out.println("*** configure sign in (google)");
+        Log.d(TAG, "configure sign in (google)");
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 // TODO - what is this ID:
@@ -148,20 +151,76 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-
-    private void signIn() {
-        System.out.println("*** sign in (google) - open intent (start RC activity)");
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.sign_in_button) {
             signIn();
         }
+    }
+
+    /**
+     * Shows Google dialog, to choose the account. Opened on button click.
+     */
+    private void signIn() {
+        Log.d(TAG, "*** sign in (google) - open intent (start RC activity)");
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "on Google dialog result");
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, show message
+                Log.w(TAG, "Google sign in failed", e);
+                mStatusTextView.setText("Google sign in failed");
+            }
+        }
+    }
+
+    /**
+     * TODO - check what should be here (except user log in)
+     * Takes google account and get user info.
+     * Start auth with google.
+     * @param acct = Google Account
+     */
+    // TODO - this function is not checked:
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        // progress dialog:
+        showProgressDialog();
+
+        // TODO - additional (cause 'this' is from firebase):
+        final Context context = this;
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        FBAuth.mAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential: success");
+                    checkUser(FBAuth.mAuth.getCurrentUser());
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential: failure", task.getException());
+                    // TODO - snackbar deleted:
+                    hideProgressDialog();
+                    Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                }
+                }
+            });
     }
 }
 

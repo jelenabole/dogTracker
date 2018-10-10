@@ -15,9 +15,16 @@ public class MyApplication extends Application {
     private static final String TAG = "Application";
 
     // TODO - used for testing new listeners:
-    public static String userKey = "Kj3CXcAUKsOwZ6rm6Vvq7vYU5ff2";
+    private static String userKey;
     private static MyApplication instance;
-    
+
+    public static String getUserKey() {
+        return userKey;
+    }
+    public static void setUserKey(String userKey) {
+        MyApplication.userKey = userKey;
+    }
+
     public static Context getContext(){
         return instance.getApplicationContext();
     }

@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -13,12 +14,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.firebaseQueries.CurrentUserQueryLiveData;
+import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
 public class CurrentUserViewModel extends ViewModel {
 
+    private static final String TAG = "Current User View Model";
     private static final DatabaseReference USER_REF =
-            FirebaseDatabase.getInstance().getReference("/users/" + MyApplication.userKey);
+            FirebaseDatabase.getInstance().getReference("/users/" + MyApplication.getUserKey());
 
     private final CurrentUserQueryLiveData liveData = new CurrentUserQueryLiveData(USER_REF);
 
@@ -52,6 +55,16 @@ public class CurrentUserViewModel extends ViewModel {
         currentUserLiveData.addSource(liveData, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable final DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    // data not found (eg user deleted from firebase, not throught this app)
+                    Log.e(TAG, " *** user Ref Listener - user not found");
+                    // TODO - notify the user about the error
+                    // error = user data was deleted
+
+                    // sign out the user and delete this listener
+                    FBAuth.logoutUser();
+                }
+
                 if (dataSnapshot != null) {
                     new Thread(new Runnable() {
                         @Override

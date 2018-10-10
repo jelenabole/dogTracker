@@ -1,5 +1,7 @@
 package hr.tvz.trackmydog.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,9 +20,13 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
+import hr.tvz.trackmydog.MyApplication;
+import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.DogForm;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
+import hr.tvz.trackmydog.services.NotificationService;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class DogDetailsAddActivity extends BaseActivity {
@@ -52,14 +58,23 @@ public class DogDetailsAddActivity extends BaseActivity {
         setContentView(R.layout.activity_dog_details_add);
         ButterKnife.bind(this);
 
-        // get user notification token and dog index (number of dogs):
-        userToken = FBAuth.getCurrentUserFB().getToken();
-        if (FBAuth.getCurrentUserFB().getDogs() != null) {
-            dogIndex = FBAuth.getCurrentUserFB().getDogs().size();
-        } else {
-            dogIndex = 0;
-        }
-        Log.d(TAG, "Dog index: " + dogIndex);
+        // set listener to current user and get info:
+        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+            @Override
+            public void onChanged(@Nullable CurrentUser currentUser) {
+                if (currentUser != null) {
+                    // get user notification token and dog index (number of dogs):
+                    userToken = currentUser.getToken();
+                    if (currentUser.getDogs() != null) {
+                        dogIndex = currentUser.getDogs().size();
+                    } else {
+                        dogIndex = 0;
+                    }
+                    Log.d(TAG, "Dog index: " + dogIndex);
+                }
+            }
+        });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,7 +177,7 @@ public class DogDetailsAddActivity extends BaseActivity {
         Log.d(TAG, "save dog: " + dog.toString());
         // add dog to user:
         final FirebaseDatabase db = FirebaseDatabase.getInstance();
-        db.getReference("users/" + FBAuth.getUserKey() + "/dogs/" + dogIndex)
+        db.getReference("users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex)
             .setValue(dog.toMap(), new DatabaseReference.CompletionListener() {
         @Override
         public void onComplete(@Nullable DatabaseError databaseError,

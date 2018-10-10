@@ -1,8 +1,11 @@
 package hr.tvz.trackmydog.fragments;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.UserLocationAddActivity;
+import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.activities.UserDetailsEditActivity;
 import hr.tvz.trackmydog.R;
@@ -52,11 +56,18 @@ public class ProfileFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, v);
 
-        // get user info:
-        user = FBAuth.getCurrentUserFB();
-
-        // set all text views:
-        setAllFields();
+        // set listener to current user and get info:
+        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+            @Override
+            public void onChanged(@Nullable CurrentUser currentUser) {
+                if (currentUser != null) {
+                    user = currentUser;
+                    // set all text views:
+                    setAllFields();
+                }
+            }
+        });
 
         // edit button listener:
         editButton.setOnClickListener(new View.OnClickListener(){
@@ -87,14 +98,6 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, " *** on Resume - refresh user");
-        user = FBAuth.getCurrentUserFB();
-        setAllFields();
-    }
-
     // set all shown fields:
     private void setAllFields() {
         name.setText(LabelUtils.getAsStringLabel(user.getName()));
@@ -104,5 +107,4 @@ public class ProfileFragment extends Fragment {
         phoneNumber.setText(LabelUtils.getAsStringLabel(user.getPhoneNumber()));
         gender.setText(LabelUtils.getAsStringLabel(user.getGender()));
     }
-
 }

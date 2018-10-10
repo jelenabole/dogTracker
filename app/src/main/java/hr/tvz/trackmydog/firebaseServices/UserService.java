@@ -21,7 +21,7 @@ public class UserService {
         Log.d(TAG, "save user: " + user);
 
         // TODO - user key - change to local db
-        FirebaseDatabase.getInstance().getReference(userLink + MyApplication.userKey)
+        FirebaseDatabase.getInstance().getReference(userLink + MyApplication.getUserKey())
             .updateChildren(user.toMap(), new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError,
@@ -36,7 +36,7 @@ public class UserService {
         Log.d(TAG, "save safe zone: " + safeZone);
 
         FirebaseDatabase.getInstance()
-                .getReference("users/" + MyApplication.userKey + "/safeZones")
+                .getReference("users/" + MyApplication.getUserKey() + "/safeZones")
                 .push().setValue(safeZone.toMap(), new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError,

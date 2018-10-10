@@ -47,9 +47,12 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         // check if user has filled data - or start add user activity:
+        // TODO - open the add user info activity
+        /*
         if (FBAuth.getCurrentUserFB().getName() == null) {
             startActivity(new Intent(MainActivity.this, UserDetailsAddActivity.class));
         }
+        */
 
         // TODO - check if we have GPS provider:
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
