@@ -47,10 +47,10 @@ public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapte
             // Get the position of the item that was clicked.
             int position = getLayoutPosition();
             int index = dogList.get(position).getIndex();
-
             Log.d(TAG, "dog ViewHolder clicked: " + position + " - dog index: " + index);
 
-            // TODO - start following the dog
+            // start following the dog
+            fragment.showOnlyThisDog(index);
         }
     }
 
@@ -59,10 +59,12 @@ public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapte
     private static String TAG = "Dog Thumbs Adapter";
     private List<DogInfo> dogList;
     private Context context;
+    private MapFragment fragment;
 
     // constructor - inflate the view and set the list of items:
-    DogThumbListAdapter(Context context) {
+    DogThumbListAdapter(Context context, MapFragment fragment) {
         this.context = context;
+        this.fragment = fragment;
         dogList = new ArrayList<>();
     }
 
