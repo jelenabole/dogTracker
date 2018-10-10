@@ -24,11 +24,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             fresco:viewAspectRatio="1"
-
             android:layout_marginStart="@dimen/items_margin_between"
             android:layout_marginEnd="@dimen/items_margin_between"
-            android:background="@color/black"
-            android:padding="@dimen/border_padding"
+
+            fresco:roundedCornerRadius="@dimen/border_radius"
+            fresco:roundingBorderWidth="@dimen/border_width"
+            fresco:roundingBorderColor="@color/black"
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@drawable/all_dogs" />
 

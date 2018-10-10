@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
@@ -105,7 +106,12 @@ public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapte
             holder.dogImage.setImageURI(uri);
         }
 
-        holder.dogImage.setBackgroundColor(dogColor);
+        // setting the border of an image:
+        RoundingParams borderParams = new RoundingParams();
+        borderParams.setCornersRadius(context.getResources().getDimension(R.dimen.border_radius))
+                .setBorderWidth(context.getResources().getDimension(R.dimen.border_width))
+                .setBorderColor(dogColor);
+        holder.dogImage.getHierarchy().setRoundingParams(borderParams);
     }
 
     // add new data on change:

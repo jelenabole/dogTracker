@@ -6,6 +6,5 @@
     android:layout_width="50dp"
     android:layout_height="50dp"
 
-    android:padding="@dimen/border_padding"
     fresco:actualImageScaleType="centerCrop"
     fresco:placeholderImage="@drawable/default_dog" />

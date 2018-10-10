@@ -2,7 +2,6 @@ package hr.tvz.trackmydog.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -61,8 +60,6 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
         }
     }
 
-
-    // TODO - other adapter stuff:
     private static String TAG = "Dog List Adapter";
     private List<DogInfo> dogList;
     private LayoutInflater layoutInflater;
@@ -113,15 +110,13 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
 
         // setting the border of an image:
         RoundingParams borderParams = new RoundingParams();
-        borderParams.setOverlayColor(Color.WHITE)
-                .setCornersRadius(context.getResources().getDimension(R.dimen.border_radius))
-                .setBorderColor(dogColor)
-                .setBorderWidth(context.getResources().getDimension(R.dimen.border_width));
+        borderParams.setCornersRadius(context.getResources().getDimension(R.dimen.border_radius))
+                .setBorderWidth(context.getResources().getDimension(R.dimen.border_width))
+                .setBorderColor(dogColor);
+
         holder.dogImage.getHierarchy().setRoundingParams(borderParams);
 
         holder.nameText.setTextColor(dogColor);
-        holder.dogImage.setBackgroundColor(dogColor);
-
         holder.nameText.setText(dogName);
         holder.breedText.setText(dogBreed);
         holder.locationText.setText(dogLastLocationTime);
@@ -129,10 +124,7 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
 
     // add new data on change:
     void refreshData(List<DogInfo> dogs) {
-        // TODO - workaround = remove all nulls from the list:
-        // deleted dogs are left as nulls in fb array
         dogs.removeAll(Collections.singleton(null));
-        // while(tourists.remove(null));
         this.dogList = dogs;
         this.notifyDataSetChanged();
     }
