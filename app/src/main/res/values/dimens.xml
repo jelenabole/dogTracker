@@ -6,7 +6,7 @@
     <dimen name="items_margin_between">6dp</dimen>
 
     <!-- list of dogs -->
-    <dimen name="border_width">6dp</dimen>
+    <dimen name="border_width">5dp</dimen>
     <dimen name="border_radius">10dp</dimen>
 
     <dimen name="activity_vertical_margin">16dp</dimen>

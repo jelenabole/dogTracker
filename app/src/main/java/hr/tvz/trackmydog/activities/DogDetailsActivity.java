@@ -1,8 +1,11 @@
 package hr.tvz.trackmydog.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,21 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.MyApplication;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.models.dogModel.Dog;
+import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
+import hr.tvz.trackmydog.models.userModel.CurrentUser;
+import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.utils.LabelUtils;
 import hr.tvz.trackmydog.utils.ResourceUtils;
 
@@ -34,9 +29,8 @@ public class DogDetailsActivity extends BaseActivity {
 
     private static final String TAG = "Dog Details Activity";
 
-    private String dogLink;
-    private Dog dog;
-    private Integer dogIndex;
+    // TODO - Dog = with more info than user's DogInfo
+    private DogInfo dog;
 
     @BindView(R.id.infoBanner) LinearLayout infoBanner;
     @BindView(R.id.dogImage) ImageView dogImage;
@@ -60,44 +54,44 @@ public class DogDetailsActivity extends BaseActivity {
         ButterKnife.bind(this);
         hideProgressDialog();
 
+        // get user info, and dog index - show that dog info:
         // TODO - get user and get dog index = get their info:
-        dogIndex = getIntent().getIntExtra("dogIndex", -1);
-        // means the activity has been paused:
-        if (dogIndex != -1) {
-            Log.d(TAG, "show details of dog with index: " + dogIndex);
-            dogLink = "users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex;
-            getDogDetails();
+        final Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
+
+        // dogIndex = -1;
+        if (dogIndex == -1) {
+            finish();
         }
+
+        Log.d(TAG, "show details of dog with index: " + dogIndex);
+
+        // get user info and take in this dog:
+        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+            @Override
+            public void onChanged(@Nullable CurrentUser currentUser) {
+                if (currentUser != null) {
+                    if (currentUser.getDogs() != null) {
+                        dog = currentUser.getDogs().get(dogIndex);
+                        setDogInfo(dog);
+                    }
+                }
+            }
+        });
     };
 
-    /**
-     * Get current dog info (listener).
-     */
-    protected void getDogDetails() {
-        FirebaseDatabase.getInstance().getReference(dogLink)
-            .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    dog = dataSnapshot.getValue(Dog.class);
-                    setDogInfo(dog);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-        });
-    }
-
-    private void setDogInfo(Dog dog) {
+    private void setDogInfo(DogInfo dog) {
         Log.d(TAG, "Get dog info: " + dog.getIndex());
 
         // TODO - get and prepare dog info:
         String dogName = LabelUtils.getAsStringLabel(dog.getName());
         String dogAge = LabelUtils.getAsStringLabel(dog.getAge()) + " yr";
         String dogBreed = LabelUtils.getAsStringLabel(dog.getBreed());
+        // TODO - add some different info here (level of acitvity)
+        /*
         String dogLastLocationTime = dog.getLocation() == null ? "no location detected" :
                 new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(dog.getLocation().getTime()));
+        */
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(dogName.toUpperCase());
@@ -143,6 +137,9 @@ public class DogDetailsActivity extends BaseActivity {
 
         // label = dogColor
     }
+
+
+    /* Edit dog info menu */
 
     // create an action bar button
     @Override

@@ -277,7 +277,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                     tracks.add(snap.getValue(Tracks.class));
                 }
 
-                myMap.setDogTracks(tracks, color, startAlpha);
+                myMap.setDogTracks(tracks, color);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -300,13 +300,10 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // on "all dogs" button clicked - track all dogs
     private void showAllDogs() {
         Log.d(TAG, "onClick - follow all dogs");
-
         // remove existing dog tracks and track listeners:
         removeDogTracksListener();
-        myMap.removeDogTracks();
         // reset zoom level:
         myMap.showAllDogs();
-        myMap.resetMapView();
     }
 
     // on button click - track only this dog
@@ -320,7 +317,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             return;
         }
 
-        myMap.showOneDog(index);
+        Log.d(TAG, "follow dog - index: " + index);
 
         // remove previous track listeners - add new ones:
         removeDogTracksListener();
@@ -328,8 +325,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         setDogTracksListener(user.getDogs().get(index).getKey(), user.getDogs().get(index).getColor(),
                 1f);
 
-        Log.d(TAG, "follow dog - index: " + index);
-        myMap.resetMapView();
+        myMap.showOneDog(index);
     }
-
 }
