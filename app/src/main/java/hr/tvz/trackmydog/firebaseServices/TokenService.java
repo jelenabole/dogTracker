@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.services;
+package hr.tvz.trackmydog.firebaseServices;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -28,7 +28,7 @@ import hr.tvz.trackmydog.localDB.Token;
 
 // TODO - token is same for multiple users on the same device
 // TODO - in case the local token is not defined = maybe wait during sign in process
-public class NotificationService extends FirebaseMessagingService {
+public class TokenService extends FirebaseMessagingService {
 
     private static final String TAG = "FB Notification Service";
 

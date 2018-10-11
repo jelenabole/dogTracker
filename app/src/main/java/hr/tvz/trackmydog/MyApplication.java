@@ -8,7 +8,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
-import hr.tvz.trackmydog.services.NotificationService;
+import hr.tvz.trackmydog.firebaseServices.TokenService;
 
 public class MyApplication extends Application {
 
@@ -41,7 +41,7 @@ public class MyApplication extends Application {
         FlowManager.init(new FlowConfig.Builder(this).build());
 
         // prepare app token
-        NotificationService.retriveLocalToken();
+        TokenService.retriveLocalToken();
     }
 
 }

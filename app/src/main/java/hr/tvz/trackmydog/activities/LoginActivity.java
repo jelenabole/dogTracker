@@ -23,7 +23,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import butterknife.BindView;
@@ -38,7 +37,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.NewUserForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.services.MyCallback;
-import hr.tvz.trackmydog.services.NotificationService;
+import hr.tvz.trackmydog.firebaseServices.TokenService;
 
 /**
  * A login screen that offers login via google.
@@ -76,24 +75,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         Log.d(TAG, "on start - check if user is logged in");
 
         // check if the user is signed in
-        FirebaseUser firebaseUser = FBAuth.mAuth.getCurrentUser();
-        if (firebaseUser != null) {
+        if (FBAuth.isUserLoggedIn()) {
             Log.d(TAG, "user logged in - get info and show main activity");
-            checkUser(firebaseUser);
+            // TODO - is the user UID same for each device ???
+            MyApplication.setUserKey(FBAuth.getUserKey());
+            loginUser();
         } else {
             Log.d(TAG, "user isn't logged - show google sign-in option");
             loginLayout.setVisibility(View.VISIBLE);
-            // loading layout (dog image):
             loadingLayout.setVisibility(View.GONE);
         }
     }
 
-    /**
-     * Check if user exists in firebase DB, get data or add new one. Sets the user key to the app.
-     * @param firebaseUser - current mAuth user
-     */
-    private void checkUser(FirebaseUser firebaseUser) {
-        setUserListener(firebaseUser, new MyCallback() {
+    private void loginUser() {
+        setUserListener(new MyCallback() {
             @Override
             public void startIntent(Context context) {
                 Log.d(TAG, "user listeners set = start MainActivity");
@@ -106,10 +101,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         });
     }
 
-    private void setUserListener(final FirebaseUser firebaseUser, final MyCallback callback) {
-        // TODO - is the user UID same for each device ???
-        MyApplication.setUserKey(firebaseUser.getUid());
-        final String token = NotificationService.getAppToken();;
+    private void setUserListener(final MyCallback callback) {
+        final String email = FBAuth.getUserEmail();
+        final String token = TokenService.getAppToken();;
         final Context context = this;
 
         // get the user data form listener
@@ -127,8 +121,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     }
                 } else {
                     // register new user:
-                    NewUserForm user = new NewUserForm(firebaseUser.getEmail(), token);
-                    AuthService.addUser(user, firebaseUser.getUid());
+                    NewUserForm user = new NewUserForm(email, token);
+                    AuthService.addUser(user);
                 }
 
                 // continue with the app:
@@ -211,7 +205,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential: success");
-                    checkUser(FBAuth.mAuth.getCurrentUser());
+                    loginUser();
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential: failure", task.getException());

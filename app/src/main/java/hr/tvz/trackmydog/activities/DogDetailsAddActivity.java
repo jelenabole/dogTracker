@@ -22,11 +22,9 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.DogForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
-import hr.tvz.trackmydog.services.NotificationService;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class DogDetailsAddActivity extends BaseActivity {

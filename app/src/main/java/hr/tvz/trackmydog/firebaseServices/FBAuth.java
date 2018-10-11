@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.activities.LoginActivity;
@@ -15,17 +16,6 @@ public class FBAuth {
 
     public static FirebaseAuth mAuth;
 
-    /* ERROR - check if this works */
-    private static Integer currentDogIndex;
-    public static Integer getCurrentDogIndex() {
-        return currentDogIndex;
-    }
-    public static void setCurrentDogIndex(Integer index) {
-        currentDogIndex = index;
-    }
-    /* END check */
-
-
     /**
      * Initializes firebase auth at the beginning of the app:
      */
@@ -34,9 +24,27 @@ public class FBAuth {
         mAuth = FirebaseAuth.getInstance();
     }
 
+    /* Log in and check user */
+
+    // start app with the data, or show loggin layout:
+    public static boolean isUserLoggedIn() {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        Log.d(TAG, "is user logged in: " + firebaseUser);
+        return firebaseUser != null;
+    }
+
+    // start app with the data, or show loggin layout:
+    public static String getUserKey() {
+        return mAuth.getCurrentUser().getUid();
+    }
+
+    // start app with the data, or show loggin layout:
+    public static String getUserEmail() {
+        return mAuth.getCurrentUser().getEmail();
+    }
+
 
     /* Log out */
-
 
     // deletes backstack (all) and starts Login activity
     // called from a user-listener (user deleted) and on Logout button pressed
@@ -45,10 +53,6 @@ public class FBAuth {
         Log.d(TAG, "sign out user and return to Login Activity");
         // firebase - signout
         mAuth.signOut();
-        /*
-        if (userListener != null)
-            userRef.removeEventListener(userListener);
-            */
         // TODO - delete the listener, and the user key (??)
         // .. if the key is deleted first, the user will be null ?
 

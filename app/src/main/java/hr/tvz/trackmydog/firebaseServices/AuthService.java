@@ -16,11 +16,11 @@ public class AuthService {
     private static final String userLink = "users/";
 
     // register:
-    public static void addUser(NewUserForm user, String key) {
+    public static void addUser(NewUserForm user) {
         Log.d(TAG, "save (register) new user: " + user);
 
         FirebaseDatabase.getInstance()
-                .getReference(userLink + key)
+                .getReference(userLink + MyApplication.getUserKey())
                 .setValue(user);
     }
 
