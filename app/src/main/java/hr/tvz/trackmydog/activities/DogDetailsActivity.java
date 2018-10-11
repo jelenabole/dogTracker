@@ -64,7 +64,6 @@ public class DogDetailsActivity extends BaseActivity {
         dogIndex = getIntent().getIntExtra("dogIndex", -1);
         // means the activity has been paused:
         if (dogIndex != -1) {
-            FBAuth.setCurrentDogIndex(dogIndex);
             Log.d(TAG, "show details of dog with index: " + dogIndex);
             dogLink = "users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex;
             getDogDetails();
@@ -171,23 +170,6 @@ public class DogDetailsActivity extends BaseActivity {
         if (resultCode == RESULT_OK && requestCode == 0) {
             Toast.makeText(this, "Dog info Saved", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "on pause - dog index: " + dogIndex);
-        FBAuth.setCurrentDogIndex(dogIndex);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        dogIndex = FBAuth.getCurrentDogIndex();
-        Log.d(TAG, "on resume - dog index: " + dogIndex);
-
-        dogLink = "users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex;
-        getDogDetails();
     }
 
 }
