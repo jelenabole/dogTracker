@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="70dp"
-                android:text="@string/placeholder_name"
+                android:text="@string/placeholder_empty"
                 android:textColor="#fff"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -85,7 +85,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/name"
                 android:layout_marginTop="10dp"
-                android:text="@string/placeholder_city"
+                android:text="@string/placeholder_empty"
                 android:textColor="#fff"
                 android:textSize="16sp" />
         </RelativeLayout>
@@ -177,7 +177,7 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/placeholder_email"
+                android:text="@string/placeholder_empty"
                 android:layout_marginTop="@dimen/textview_margin_top"
                 android:layout_marginStart="@dimen/textview_margin_start"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
@@ -187,7 +187,7 @@
                 android:id="@+id/randomInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="from here"
+                android:text="@string/placeholder_empty"
                 android:layout_marginTop="@dimen/textview_margin_top"
                 android:layout_marginStart="@dimen/textview_margin_start"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
@@ -197,7 +197,7 @@
                 android:id="@+id/phoneNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/placeholder_phone_number"
+                android:text="@string/placeholder_empty"
                 android:layout_marginTop="@dimen/textview_margin_top"
                 android:layout_marginStart="@dimen/textview_margin_start"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
@@ -207,7 +207,7 @@
                 android:id="@+id/gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/placeholder_gender"
+                android:text="@string/placeholder_empty"
                 android:layout_marginTop="@dimen/textview_margin_top"
                 android:layout_marginStart="@dimen/textview_margin_start"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView14"
@@ -217,7 +217,7 @@
                 android:id="@+id/dob"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/placeholder_date_of_birth"
+                android:text="@string/placeholder_empty"
                 android:layout_marginTop="@dimen/textview_margin_top"
                 android:layout_marginStart="@dimen/textview_margin_start"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView15"
@@ -226,4 +226,5 @@
         </android.support.constraint.ConstraintLayout>
 
     </RelativeLayout>
+
 </ScrollView>

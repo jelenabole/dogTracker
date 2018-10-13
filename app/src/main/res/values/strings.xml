@@ -94,7 +94,8 @@
     <!-- profile fragment = image descriptions, text placeholders and info labels -->
     <string name="desc_cover_image">Cover image</string>
     <string name="desc_edit_button">Edit button</string>
-    <!-- default text - user info -->
+    <!-- default text - user info = all changed to empty -->
+    <string name="placeholder_empty"> </string>
     <string name="placeholder_name">Name</string>
     <string name="placeholder_city">Location</string>
     <string name="placeholder_email">email@email.com</string>

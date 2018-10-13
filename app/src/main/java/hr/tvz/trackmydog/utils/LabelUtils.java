@@ -8,14 +8,16 @@ public class LabelUtils {
 
     /* CHECK EMPTY STRINGS FOR LABELS */
 
+    private static String DEFAULT_EMPTY = " --- ";
+
     // for strings in labels (user / dog detail page):
     public static String getAsStringLabel(String str) {
-        return str == null ? " --- " : str;
+        return str == null ? DEFAULT_EMPTY: str;
     }
 
     // for strings in labels (user / dog detail page) - for int:
     public static String getAsStringLabel(Integer str) {
-        return str == null ? " --- " : str.toString();
+        return str == null ? DEFAULT_EMPTY : str.toString();
     }
 
 
