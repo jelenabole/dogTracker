@@ -78,7 +78,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         if (FBAuth.isUserLoggedIn()) {
             Log.d(TAG, "user logged in - get info and show main activity");
             // TODO - is the user UID same for each device ???
-            MyApplication.setUserKey(FBAuth.getUserKey());
             loginUser();
         } else {
             Log.d(TAG, "user isn't logged - show google sign-in option");
@@ -102,8 +101,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void setUserListener(final MyCallback callback) {
+        MyApplication.setUserKey(FBAuth.getUserKey());
+        Log.d(TAG, "set user listener: " + FBAuth.getUserEmail()
+                + " - key: " + MyApplication.getUserKey());
         final String email = FBAuth.getUserEmail();
-        final String token = TokenService.getAppToken();;
+        final String token = TokenService.getAppToken();
         final Context context = this;
 
         // get the user data form listener
