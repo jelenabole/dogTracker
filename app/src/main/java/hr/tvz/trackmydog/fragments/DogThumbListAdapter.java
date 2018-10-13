@@ -77,6 +77,8 @@ public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapte
         int paddingBetween = (int) context.getResources().getDimension(R.dimen.items_margin_between);
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         int thumbWidth = screenWidth / 6;
+        // TODO - fixed buttons going over linear layout (bottom border not full) - why 6px ???
+        thumbWidth -= 6;
 
 
         RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(thumbWidth, thumbWidth);
