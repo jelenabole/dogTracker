@@ -5,7 +5,7 @@
     <!-- "Edit", should always appear as action button -->
     <item
         android:id="@+id/edit"
-        android:icon="@drawable/ic_action_edit"
+        android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/action_edit"
         app:showAsAction="always"/>
 

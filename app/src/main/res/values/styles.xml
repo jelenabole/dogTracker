@@ -34,6 +34,13 @@
         <item name="colorPrimary">@color/transparent_white</item>
     </style>
 
+    <!-- action bar = colored programatically -->
+    <style name="AppTheme.ActionBar.Colored" parent="Theme.AppCompat.Light">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
     <!-- implementation of the color depends:
         TextAppearance.AppCompat.Caption    OR    TextAppearance.Design.Hint
     -->

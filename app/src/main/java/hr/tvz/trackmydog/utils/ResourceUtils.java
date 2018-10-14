@@ -98,6 +98,41 @@ public class ResourceUtils {
                 context.getPackageName()), context.getTheme());
     }
 
+    /* NEW FUNCTIONS */
+
+    private static String COLOR_TEXT_SUFFIX = "_text";
+    private static String COLOR_OPAQUE_SUFFIX = "_op";
+
+    // get dog color:
+    // used: DogDetailsActivity
+    public static int getColor(String color, Context context) {
+        Log.d(TAG, "get color from resources: " + color);
+        color = getExistingColor(color);
+
+        return context.getResources().getColor(context.getResources().getIdentifier(
+                color, "color", context.getPackageName()), null);
+    }
+
+    // get text color for that dog:
+    public static int getTextColor(String color, Context context) {
+        Log.d(TAG, "get color from resources: " + color);
+        color = getExistingColor(color);
+        color += COLOR_TEXT_SUFFIX;
+
+        return context.getResources().getColor(context.getResources().getIdentifier(color, "color",
+                context.getPackageName()), null);
+    }
+
+    // get opaque color for the dog:
+    public static int getOpaqueColor(String color, Context context) {
+        Log.d(TAG, "get color from resources: " + color);
+        color = getExistingColor(color);
+        color += COLOR_OPAQUE_SUFFIX;
+
+        return context.getResources().getColor(context.getResources().getIdentifier(color, "color",
+                context.getPackageName()), null);
+    }
+
     // get dog color:
     // TODO - function for DogsFragment:
     public static int getDogColor(String color, Resources res, Context context) {

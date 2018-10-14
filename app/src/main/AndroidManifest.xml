@@ -48,7 +48,7 @@
         <activity
             android:name=".activities.DogDetailsActivity"
             android:label="@string/label_dog_details"
-            android:theme="@style/AppTheme.ActionBar.Transparent"
+            android:theme="@style/AppTheme.ActionBar.Colored"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.DogDetailsEditActivity"
