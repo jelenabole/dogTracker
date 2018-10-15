@@ -75,11 +75,13 @@ public class DogsFragment extends ListFragment {
                         // update the UI with values from the snapshot
                         Log.d(TAG, "Current user data retrieved: " + currentUser);
                         noDogsLayout.setVisibility(View.GONE);
+                        recyclerView.scheduleLayoutAnimation();
                         dogInfoListAdapter.refreshData(currentUser.getDogs());
                     } else {
                         // remove the dogs:
                         Log.d(TAG, "Dog list is empty");
                         noDogsLayout.setVisibility(View.VISIBLE);
+                        recyclerView.scheduleLayoutAnimation();
                         dogInfoListAdapter.refreshData(new ArrayList<DogInfo>());
                     }
                 }

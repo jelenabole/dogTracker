@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MapFragment">
 
+    <!-- animation set on the whole layout, not just recycler view -->
     <LinearLayout
         android:id="@+id/dogThumbsLayout"
         android:layout_width="match_parent"
@@ -39,7 +40,8 @@
             android:id="@+id/recyclerview"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5" />
+            android:layout_weight="5"
+            android:layoutAnimation="@anim/dog_thumb_recycler_anim" />
 
     </LinearLayout>
 

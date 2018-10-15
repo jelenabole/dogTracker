@@ -1,7 +1,6 @@
 package hr.tvz.trackmydog;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -17,8 +16,6 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hr.tvz.trackmydog.activities.UserDetailsAddActivity;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.fragments.DogsFragment;
 import hr.tvz.trackmydog.fragments.MapFragment;
 import hr.tvz.trackmydog.fragments.ProfileFragment;
@@ -29,6 +26,7 @@ public class MainActivity extends BaseActivity {
     private static final int PERMISSIONS_REQUEST = 100;
 
     @BindView(R.id.navigation) BottomNavigationView navigation;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onResume() {
@@ -45,14 +43,7 @@ public class MainActivity extends BaseActivity {
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        // check if user has filled data - or start add user activity:
-        // TODO - open the add user info activity
-        /*
-        if (FBAuth.getCurrentUserFB().getName() == null) {
-            startActivity(new Intent(MainActivity.this, UserDetailsAddActivity.class));
-        }
-        */
+        fragmentManager = getSupportFragmentManager();
 
         // TODO - check if we have GPS provider:
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -74,17 +65,21 @@ public class MainActivity extends BaseActivity {
                     PERMISSIONS_REQUEST);
         }
 
-        // set the first fragment (map fragment):
-        // TODO - on refresh/change orientation = remember current fragment
-        // if savedInstance exists, don't inflate the beginning fragment (already exists):
+        // set the first (map) fragment
+        // don't inflate if savedInstance exists (otherwise it changes on rotation)1
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout, MapFragment.newInstance()).commit();
+            loadFragment(MapFragment.newInstance());
         }
 
         // Set the bottom navigation and onclick listener:
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    private void loadFragment(Fragment selectedFragment) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        transaction.replace(R.id.frame_layout, selectedFragment);
+        transaction.commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -106,11 +101,8 @@ public class MainActivity extends BaseActivity {
                     break;
             }
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_layout, selectedFragment);
-            transaction.commit();
+            loadFragment(selectedFragment);
             return true;
         }
     };
-
 }

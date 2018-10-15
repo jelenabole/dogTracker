@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -86,6 +88,10 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
 
+        // add animation to the all-dogs button:
+        final Animation buttonsAnimation = AnimationUtils
+                .loadAnimation(getContext(), R.anim.dog_buttons_item_anim);
+
         // set listener to current user and get info:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
@@ -98,12 +104,16 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                         // update the UI with values from the snapshot
                         Log.d(TAG, "Current user data retrieved: " + currentUser);
 
+                        // allDogsButton.animate();
+                        allDogsButton.startAnimation(buttonsAnimation);
+                        recyclerView.scheduleLayoutAnimation();
                         dogThumbListAdapter.refreshData(currentUser.getDogs());
                         showThumbs();
                     } else {
                         // remove the dogs:
                         Log.d(TAG, "Dog list is empty");
                         dogThumbListAdapter.refreshData(new ArrayList<DogInfo>());
+                        // TODO - no dogs (nor all-button) - no need for layout animations
                         hideThumbs();
                     }
 

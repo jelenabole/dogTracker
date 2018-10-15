@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- defines which animation to apply to each item in the layout -->
+<!-- 0% of the delay would make all the items fall simultaneously -->
+<!-- animation orders: normal, reverse, random -->
+<layoutAnimation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animation="@anim/dog_info_item_anim"
+    android:delay="15%"
+    android:animationOrder="normal" />

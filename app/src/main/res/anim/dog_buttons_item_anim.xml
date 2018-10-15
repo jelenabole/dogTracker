@@ -1,0 +1,16 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="1000">
+
+    <!-- bring the view 20% up, and let it fall down during the animation -->
+    <translate
+        android:fromXDelta="70%"
+        android:toXDelta="0"
+        android:interpolator="@android:anim/decelerate_interpolator" />
+
+    <!-- it will start invisible and appear fully -->
+    <alpha
+        android:fromAlpha="0"
+        android:toAlpha="1"
+        android:interpolator="@android:anim/decelerate_interpolator" />
+
+</set>
