@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -46,15 +48,32 @@ public class DogDetailsActivity extends BaseActivity {
     @BindView(R.id.weightText) TextView weightText;
     @BindView(R.id.heightText) TextView heightText;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "On Create");
-
         setContentView(R.layout.activity_dog_details);
         ButterKnife.bind(this);
         hideProgressDialog();
+
+        /* animations */
+
+        getWindow().setAllowReturnTransitionOverlap(true);
+        getWindow().setAllowEnterTransitionOverlap(true);
+
+        // TODO - set for the fresco transition:
+        getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(
+                ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
+
+        // not needed:
+        getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(
+                ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
+
+        // needed for returning:
+        getWindow().setSharedElementExitTransition(DraweeTransition.createTransitionSet(
+                ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
+
+
 
         // get index of a dog:
         final Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);

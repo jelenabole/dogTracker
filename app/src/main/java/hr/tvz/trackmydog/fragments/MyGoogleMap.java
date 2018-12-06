@@ -39,7 +39,7 @@ public class MyGoogleMap {
     private boolean setZoom = true;
 
     // for setting up markers:
-    private final int MAX_HOURS_PASSED_FOR_MARKER = 24; // longer not showing
+    private final int MAX_HOURS_PASSED_FOR_MARKER = 5000; // longer not showing
     private final int MAX_MIN_BETWEEN_MARKERS = 10; // longer not showing
     private final int MAX_NUMBER_OF_LAST_TRACKS = 6; // the ones that are not the same, and not > 10 mins apart
     private final float MIN_OPACITY = 0.1f; // important for normalizing time that passed

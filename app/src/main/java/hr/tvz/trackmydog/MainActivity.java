@@ -11,8 +11,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.Window;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +44,29 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "on Create");
+
+        // TODO - enable shared transitions (or add in style):
+        // getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+        // ???
+        /*
+        getWindow().setAllowReturnTransitionOverlap(true);
+        getWindow().setAllowEnterTransitionOverlap(true);
+        */
+
+        // TODO - try transitions - explode:
+        Explode explode = new Explode();
+        explode.setDuration(700);
+        getWindow().setExitTransition(explode);
+        getWindow().setAllowEnterTransitionOverlap(false);
+        // getWindow().setAllowReturnTransitionOverlap(true);
+
+        // TODO - slide transition:
+        Slide slide = new Slide(Gravity.LEFT);
+        getWindow().setReturnTransition(slide);
+
+        getWindow().setReenterTransition(explode);
+
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -77,7 +104,11 @@ public class MainActivity extends BaseActivity {
 
     private void loadFragment(Fragment selectedFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
+        // TODO - added animations:
+        /*
+        transaction.setCustomAnimations(R.anim.start_fragment, R.anim.end_fragment,
+                R.anim.pop_start_fragment, R.anim.pop_end_fragment);
+        */
         transaction.replace(R.id.frame_layout, selectedFragment);
         transaction.commit();
     }

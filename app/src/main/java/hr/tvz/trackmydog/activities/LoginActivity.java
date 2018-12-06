@@ -36,7 +36,7 @@ import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.NewUserForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
-import hr.tvz.trackmydog.services.MyCallback;
+import hr.tvz.trackmydog.MyCallback;
 import hr.tvz.trackmydog.firebaseServices.TokenService;
 
 /**

@@ -18,7 +18,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseServices.ActivityCallback;
 import hr.tvz.trackmydog.firebaseServices.UserService;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
-import hr.tvz.trackmydog.mappers.UserMapper;
+import hr.tvz.trackmydog.models.mappers.UserMapper;
 import hr.tvz.trackmydog.models.forms.UserForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.utils.LabelUtils;

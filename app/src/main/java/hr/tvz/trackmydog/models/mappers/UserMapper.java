@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.mappers;
+package hr.tvz.trackmydog.models.mappers;
 
 import hr.tvz.trackmydog.models.forms.UserForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;

@@ -12,6 +12,19 @@
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
 
+        <item name="android:windowEnterTransition">@transition/explode</item>
+        <item name="android:windowExitTransition">@transition/explode</item>
+
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+
+    </style>
+
+    <!-- add dog style -->
+    <style name="DogsDetailsTheme" parent="AppTheme">
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
         <!-- specify enter and exit transitions -->
         <item name="android:windowEnterTransition">@transition/explode</item>
         <item name="android:windowExitTransition">@transition/explode</item>
@@ -21,7 +34,6 @@
             @transition/change_image_transform</item>
         <item name="android:windowSharedElementExitTransition">
             @transition/change_image_transform</item>
-
     </style>
 
 
@@ -32,6 +44,9 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="colorPrimary">@color/transparent_white</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <!-- action bar = colored programatically -->
@@ -39,6 +54,9 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="android:textColorPrimary">@color/white</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <!-- implementation of the color depends:

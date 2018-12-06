@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.services;
+package hr.tvz.trackmydog;
 
 import android.content.Context;
 

@@ -1,5 +1,7 @@
 package hr.tvz.trackmydog.fragments;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.generic.RoundingParams;
@@ -56,7 +59,21 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
             // start intent for that dog:
             Intent dogDetailsIntent = new Intent(context, DogDetailsActivity.class);
             dogDetailsIntent.putExtra("dogIndex", index);
-            context.startActivity(dogDetailsIntent);
+
+            // TODO - add transition name:
+            // v.setTransitionName("transitionDogImage");
+            View image = ((LinearLayout)((LinearLayout) v).getChildAt(0)).getChildAt(0);
+
+            // System.out.println(((LinearLayout)((LinearLayout) v).getChildAt(0)).getChildAt(0));
+
+            // TODO - set with animation: (and shared element view and common transition name)
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    (Activity) context, image, "transitionDogImage");
+            context.startActivity(dogDetailsIntent, options.toBundle());
+
+            // context.startActivity(dogDetailsIntent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
+
+            // context.startActivity(dogDetailsIntent);
         }
     }
 

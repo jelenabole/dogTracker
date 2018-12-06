@@ -12,6 +12,7 @@
         android:layout_height="wrap_content">
 
         <com.facebook.drawee.view.SimpleDraweeView
+            android:transitionName="transitionDogImage"
             xmlns:fresco="http://schemas.android.com/apk/res-auto"
             android:id="@+id/dogImage"
             android:layout_width="match_parent"
