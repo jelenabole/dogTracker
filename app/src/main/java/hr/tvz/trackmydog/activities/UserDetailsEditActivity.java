@@ -1,6 +1,5 @@
 package hr.tvz.trackmydog.activities;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -27,7 +26,7 @@ public class UserDetailsEditActivity extends BaseActivity {
 
     private static final String TAG = "Edit User Details Activity";
 
-    UserForm user;
+    UserForm user = new UserForm();
 
     @BindView(R.id.error) TextView errorText;
     @BindView(R.id.saveButton) Button saveButton;
@@ -45,12 +44,9 @@ public class UserDetailsEditActivity extends BaseActivity {
         setContentView(R.layout.activity_user_details_edit);
         ButterKnife.bind(this);
 
-        // Obtain a new or prior instance of CurrentUserViewModel from the ViewModelProviders utility class:
-        CurrentUserViewModel currentUserViewModel =
-                ViewModelProviders.of(this).get(CurrentUserViewModel.class);
-
-        LiveData<CurrentUser> currentUserLiveData = currentUserViewModel.getCurrentUserLiveData();
-        currentUserLiveData.observe(this, new Observer<CurrentUser>() {
+        // obtain instance of CurrentUser from ViewModelProvider utility class - if exists:
+        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
             @Override
             public void onChanged(@Nullable CurrentUser currentUser) {
                 if (currentUser != null) {

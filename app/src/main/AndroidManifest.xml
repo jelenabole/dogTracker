@@ -58,11 +58,6 @@
 
         <!-- user details -->
         <activity
-            android:name=".activities.UserDetailsAddActivity"
-            android:label="@string/label_user_add_new"
-            android:theme="@style/AppTheme.ActionBar.Transparent"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".activities.UserDetailsEditActivity"
             android:label="@string/label_user_details_edit"
             android:theme="@style/AppTheme.ActionBar.Transparent"
