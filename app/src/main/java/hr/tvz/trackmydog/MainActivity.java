@@ -16,7 +16,6 @@ import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.Window;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

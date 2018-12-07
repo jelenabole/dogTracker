@@ -83,7 +83,7 @@ public class DogsFragment extends ListFragment {
 
         // get CurrentUserViewModel from the ViewModelProvider utility class
         // set the observer on user (and dogs) and refresh adapter on data change:
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
             @Override
             public void onChanged(@Nullable CurrentUser currentUser) {

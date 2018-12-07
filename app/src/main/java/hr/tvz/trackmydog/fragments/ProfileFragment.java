@@ -57,7 +57,7 @@ public class ProfileFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         // set listener to current user and get info:
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
             @Override
             public void onChanged(@Nullable CurrentUser currentUser) {

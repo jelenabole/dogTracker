@@ -93,7 +93,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 .loadAnimation(getContext(), R.anim.dog_buttons_item_anim);
 
         // set listener to current user and get info:
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
             @Override
             public void onChanged(@Nullable CurrentUser currentUser) {

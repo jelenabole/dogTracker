@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.firebaseQueries;
+package hr.tvz.trackmydog.firebaseModel;
 
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;

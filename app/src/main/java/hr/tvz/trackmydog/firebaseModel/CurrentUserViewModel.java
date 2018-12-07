@@ -13,7 +13,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import hr.tvz.trackmydog.MyApplication;
-import hr.tvz.trackmydog.firebaseQueries.CurrentUserQueryLiveData;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
@@ -45,7 +44,6 @@ public class CurrentUserViewModel extends ViewModel {
     */
 
 
-    // TODO - try using MediatorLiveData (but needs Executor pool for threads)
     /* third time = adding asyncronous transformation */
 
     private final MediatorLiveData<CurrentUser> currentUserLiveData = new MediatorLiveData<>();
@@ -83,14 +81,4 @@ public class CurrentUserViewModel extends ViewModel {
     public LiveData<CurrentUser> getCurrentUserLiveData() {
         return currentUserLiveData;
     }
-
-
-    /* old function = gets live data instead of the deserialized current user */
-
-    /*
-    @NonNull
-    public LiveData<DataSnapshot> getDataSnapshotLiveData() {
-        return liveData;
-    }
-    */
 }
