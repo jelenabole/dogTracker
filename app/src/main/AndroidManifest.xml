@@ -59,7 +59,7 @@
         <!-- user details -->
         <activity
             android:name=".activities.UserDetailsEditActivity"
-            android:label="@string/label_user_details_edit"
+            android:label="@string/label_user_details"
             android:theme="@style/AppTheme.ActionBar.Transparent"
             android:parentActivityName=".MainActivity" />
 

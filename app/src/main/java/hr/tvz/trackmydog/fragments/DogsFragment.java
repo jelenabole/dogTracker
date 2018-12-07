@@ -1,16 +1,9 @@
 package hr.tvz.trackmydog.fragments;
 
-import android.animation.AnimatorSet;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,20 +11,10 @@ import android.support.v4.app.ListFragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Xml;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -98,18 +81,19 @@ public class DogsFragment extends ListFragment {
                         // remove the dogs:
                         Log.d(TAG, "Dog list is empty");
                         noDogsLayout.setVisibility(View.VISIBLE);
-                        // recyclerView.scheduleLayoutAnimation();
                         dogInfoListAdapter.refreshData(new ArrayList<DogInfo>());
                     }
                 }
             }
         });
 
-        // second animation:
+        // second animation (add button animation):
+        /*
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int parentWidth = displaymetrics.widthPixels;
         int parentHeight = displaymetrics.heightPixels;
+        */
 
         // add dog floating button - starts activity
         addButton.setOnClickListener(new View.OnClickListener() {

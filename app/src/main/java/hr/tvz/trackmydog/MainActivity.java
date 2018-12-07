@@ -12,9 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.transition.Explode;
-import android.transition.Slide;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 
 import butterknife.BindView;
@@ -47,31 +45,20 @@ public class MainActivity extends BaseActivity {
         // TODO - enable shared transitions (or add in style):
         // getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
-        // ???
-        /*
         getWindow().setAllowReturnTransitionOverlap(true);
         getWindow().setAllowEnterTransitionOverlap(true);
-        */
 
         // TODO - try transitions - explode:
         Explode explode = new Explode();
-        explode.setDuration(700);
+        explode.setDuration(500);
         getWindow().setExitTransition(explode);
-        getWindow().setAllowEnterTransitionOverlap(false);
-        // getWindow().setAllowReturnTransitionOverlap(true);
-
-        // TODO - slide transition:
-        Slide slide = new Slide(Gravity.LEFT);
-        getWindow().setReturnTransition(slide);
-
         getWindow().setReenterTransition(explode);
-
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         fragmentManager = getSupportFragmentManager();
 
-        // TODO - check if we have GPS provider:
+        // check if we have GPS provider:
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Log.e(TAG, "Doesn't have GPS provider.");
@@ -92,7 +79,7 @@ public class MainActivity extends BaseActivity {
         }
 
         // set the first (map) fragment
-        // don't inflate if savedInstance exists (otherwise it changes on rotation)1
+        // don't inflate if savedInstance exists (otherwise it changes on rotation):
         if (savedInstanceState == null) {
             loadFragment(MapFragment.newInstance());
         }

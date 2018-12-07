@@ -12,7 +12,7 @@
     <string name="label_dog_details">Dog Details</string>
     <string name="label_dog_details_edit">Edit Dog</string>
     <string name="label_user_add_new">New User</string>
-    <string name="label_user_details_edit">Edit User</string>
+    <string name="label_user_details">User Details</string>
     <string name="label_location_add">Add Safe Zone</string>
     <!-- check if needed -->
     <string name="label_activity_maps">Map</string>
