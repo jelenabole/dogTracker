@@ -2,16 +2,22 @@ package hr.tvz.trackmydog.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +32,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
+import hr.tvz.trackmydog.utils.DesignUtils;
 import hr.tvz.trackmydog.utils.LabelUtils;
 import hr.tvz.trackmydog.utils.ResourceUtils;
 
@@ -40,13 +47,18 @@ public class DogDetailsActivity extends BaseActivity {
     @BindView(R.id.dogImage) SimpleDraweeView dogImage;
     @BindView(R.id.sep1) View sep1;
     @BindView(R.id.sep2) View sep2;
-    @BindView(R.id.nameText) TextView nameText;
+    @BindView(R.id.kilometersText) TextView kilometersText;
     @BindView(R.id.breedText) TextView breedText;
     @BindView(R.id.ageText) TextView ageText;
 
     // basic info:
-    @BindView(R.id.weightText) TextView weightText;
-    @BindView(R.id.heightText) TextView heightText;
+    @BindView(R.id.breed) TextView breed;
+    @BindView(R.id.age) TextView age;
+    @BindView(R.id.height) TextView height;
+    @BindView(R.id.weight) TextView weight;
+    @BindView(R.id.gender) TextView gender;
+
+    @BindView(R.id.scrollView) ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,19 +73,15 @@ public class DogDetailsActivity extends BaseActivity {
         getWindow().setAllowReturnTransitionOverlap(true);
         getWindow().setAllowEnterTransitionOverlap(true);
 
-        // TODO - set for the fresco transition:
+        // TODO - set for the fresco transitions:
         getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(
                 ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
-
         // not needed:
         getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(
                 ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
-
         // needed for returning:
         getWindow().setSharedElementExitTransition(DraweeTransition.createTransitionSet(
                 ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
-
-
 
         // get index of a dog:
         final Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
@@ -100,12 +108,49 @@ public class DogDetailsActivity extends BaseActivity {
         });
     };
 
+    private void openPopupWindow(int height) {
+        Log.d(TAG, "open popup window");
+
+        // inflate popup
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup, null, false);
+
+        // contentView, width, height, focusable (false)
+        final PopupWindow popup = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.MATCH_PARENT, height, true);
+        popup.setAnimationStyle(R.style.popupAnimations);
+        popup.showAtLocation(scrollView, Gravity.BOTTOM, 0, 0);
+        DesignUtils.dimBackground(popup);
+
+        popupView.findViewById(R.id.popupCancelButton)
+            .setOnClickListener(new View.OnClickListener() {
+                public void onClick(View popupView) {
+                    popup.dismiss();
+                }
+            });
+
+        popupView.findViewById(R.id.popupDoneButton)
+            .setOnClickListener(new View.OnClickListener() {
+                public void onClick(View popupView) {
+                    // TODO - save data
+                    popup.dismiss();
+                }
+            });
+    }
+
     private void setDogInfo(DogInfo dog) {
         Log.d(TAG, "Get dog info: " + dog.getIndex());
 
         String dogName = LabelUtils.getAsStringLabel(dog.getName());
-        String dogAge = LabelUtils.getAsStringLabel(dog.getAge()) + " yr";
+        String dogAge = LabelUtils.getAsStringLabel(dog.getAge()) +
+                getResources().getString(R.string.years);
         String dogBreed = LabelUtils.getAsStringLabel(dog.getBreed());
+        String dogWeight = LabelUtils.getAsStringLabel(dog.getWeight()) +
+                getResources().getString(R.string.kilograms);
+        String dogHeight = LabelUtils.getAsStringLabel(dog.getHeight()) +
+                getResources().getString(R.string.centimeters);
+
+        String dogKilometers = "10.2" + getResources().getString(R.string.kilometers);
 
         // TODO - add some different info here (level of acitvity)
         /*
@@ -120,13 +165,17 @@ public class DogDetailsActivity extends BaseActivity {
                     new ColorDrawable(ResourceUtils.getColor(dog.getColor(), this)));
         }
 
-        nameText.setText(dogName);
+        // TODO - example kilometers:
+        kilometersText.setText(dogKilometers);
         breedText.setText(dogBreed);
         ageText.setText(dogAge);
 
         // basic info:
-        weightText.setText(LabelUtils.getAsStringLabel(dog.getWeight()));
-        heightText.setText(LabelUtils.getAsStringLabel(dog.getHeight()));
+        breed.setText(dogBreed);
+        age.setText(dogAge);
+        weight.setText(dogWeight);
+        height.setText(dogHeight);
+        gender.setText(LabelUtils.getAsStringLabel(dog.getGender()));
 
         changeColorTo(dog.getColor());
 
@@ -134,7 +183,6 @@ public class DogDetailsActivity extends BaseActivity {
         if (dog.getPhotoURL() !=  null) {
             dogImage.setImageURI(Uri.parse(dog.getPhotoURL()));
         }
-
     }
 
     private void changeColorTo(String colorName) {
@@ -151,7 +199,7 @@ public class DogDetailsActivity extends BaseActivity {
         sep2.setBackgroundColor(colorText);
 
         // BANNER - text color:
-        nameText.setTextColor(colorText);
+        kilometersText.setTextColor(colorText);
         ageText.setTextColor(colorText);
         breedText.setTextColor(colorText);
 

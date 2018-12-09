@@ -1,0 +1,16 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="300">
+
+    <!-- bring the view all the way up -->
+    <translate
+        android:fromYDelta="100%"
+        android:toYDelta="0"
+        android:interpolator="@android:anim/decelerate_interpolator" />
+
+    <!-- it will start invisible and appear fully -->
+    <alpha
+        android:fromAlpha="0"
+        android:toAlpha="1"
+        android:interpolator="@android:anim/decelerate_interpolator" />
+
+</set>

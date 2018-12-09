@@ -68,24 +68,51 @@
         <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
     </style>
 
+    <!-- layout for dogs info sections -->
+    <style name="SectionLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">7dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:elevation">8dp</item>
+        <item name="android:background">#fff</item>
+    </style>
+
+    <!-- header of dogs info sections -->
     <style name="Header">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">25sp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:padding">10dp</item>
         <item name="android:background">@color/grey</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <!-- section labels -->
+    <style name="section_label">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/textview_margin_top</item>
+        <item name="android:layout_marginStart">@dimen/textview_margin_side</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- section texts (info) -->
+    <style name="section_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/textview_margin_top</item>
+        <item name="android:layout_marginStart">@dimen/textview_margin_start</item>
     </style>
 
     <style name="OptionButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
         <item name="android:padding">10dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:drawableRight">@drawable/right_button</item>
@@ -95,6 +122,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">@color/grey</item>
+    </style>
+
+    <!-- popup window animations -->
+    <style name="popupAnimations">
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
 </resources>

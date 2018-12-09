@@ -42,6 +42,7 @@
     <color name="green_text">#ffffff</color>
     <color name="white_text">#ffffff</color>
 
+    <color name="full_white">#fff</color>
     <color name="transparent_white">#50ffffff</color>
     <color name="grey">#cacaca</color>
 

@@ -70,10 +70,9 @@
             android:parentActivityName=".activities.UserDetailsEditActivity" />
 
         <!-- firebase messaging service -->
-        <service
-            android:name=".firebaseServices.TokenService">
+        <service android:name=".firebaseServices.TokenService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 

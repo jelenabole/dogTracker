@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background color -->
+    <!--
+    <item>
+        <color android:color="@color/full_white"/>
+    </item>
+    -->
+
+    <!-- line color and height -->
+    <item android:gravity="bottom">
+        <shape>
+            <size android:height="1dp" />
+            <solid android:color="@color/black" />
+        </shape>
+    </item>
+</layer-list>
