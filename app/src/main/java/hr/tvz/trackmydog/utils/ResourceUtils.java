@@ -103,14 +103,17 @@ public class ResourceUtils {
     private static String COLOR_TEXT_SUFFIX = "_text";
     private static String COLOR_OPAQUE_SUFFIX = "_op";
 
-    // get dog color:
-    // used: DogDetailsActivity
-    public static int getColor(String color, Context context) {
+    // get any color from resources:
+    public static int getAnyColor(String color, Context context) {
         Log.d(TAG, "get color from resources: " + color);
-        color = getExistingColor(color);
-
         return context.getResources().getColor(context.getResources().getIdentifier(
                 color, "color", context.getPackageName()), null);
+    }
+
+    public static int getDogColor(String color, Context context) {
+        color = getExistingColor(color);
+        int dogColor = context.getResources().getIdentifier(color, "color", context.getPackageName());
+        return context.getResources().getColor(dogColor, null);
     }
 
     // get text color for that dog:
@@ -131,25 +134,6 @@ public class ResourceUtils {
 
         return context.getResources().getColor(context.getResources().getIdentifier(color, "color",
                 context.getPackageName()), null);
-    }
-
-    // get dog color:
-    // TODO - function for DogsFragment:
-    public static int getDogColor(String color, Resources res, Context context) {
-        // TODO - check color:
-        // TODO - maybe wrong color - check the resources for colors (make enum)
-        color = getExistingColor(color);
-
-        int dogColor = res.getIdentifier(color, "color", context.getPackageName());
-        return res.getColor(dogColor, null);
-    }
-
-    // TODO - same as other one, just without ress:
-    // resources = context.getResources()
-    public static int getDogColor(String color, Context context) {
-        color = getExistingColor(color);
-        int dogColor = context.getResources().getIdentifier(color, "color", context.getPackageName());
-        return context.getResources().getColor(dogColor, null);
     }
 
 

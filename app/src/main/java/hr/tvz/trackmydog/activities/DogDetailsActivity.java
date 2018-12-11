@@ -162,7 +162,7 @@ public class DogDetailsActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(dogName);
             getSupportActionBar().setBackgroundDrawable(
-                    new ColorDrawable(ResourceUtils.getColor(dog.getColor(), this)));
+                    new ColorDrawable(ResourceUtils.getDogColor(dog.getColor(), this)));
         }
 
         // TODO - example kilometers:

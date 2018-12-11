@@ -19,16 +19,9 @@ public class DogInfo implements Serializable {
     // additional info:
     private Integer height;
     private Integer weight;
-    private Float miles;
     private Date dateOfBirth;
     private String gender;
 
-    // TODO - only settings needed for user:
-    // TODO - add range of motion:
-    /*
-    private CurrentLocation location;
-    private Tracking tracks;
-    */
     private Settings settings;
 
     public String getKey() {
@@ -103,14 +96,6 @@ public class DogInfo implements Serializable {
         this.weight = weight;
     }
 
-    public Float getMiles() {
-        return miles;
-    }
-
-    public void setMiles(Float miles) {
-        this.miles = miles;
-    }
-
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
@@ -149,7 +134,6 @@ public class DogInfo implements Serializable {
         str += "\n - " + "height: " + height;
         str += " - " + "weight: " + weight;
         str += " - " + "gender: " + gender;
-        str += " - " + "miles: " + miles;
         str += " - " + "dateOfBirth: " + dateOfBirth;
 
         str += "\n - " + "settings: " + settings;
