@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/full_white"
@@ -38,24 +39,22 @@
 
     </LinearLayout>
 
-    <!--
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black_op" />
-    -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="POPUP WINDOW CONTENT"
-            android:textColor="@color/black" />
+        <com.aigestudio.wheelpicker.WheelPicker
+            android:id="@+id/wheelPicker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:wheel_curved="true"
+            app:wheel_selected_item_text_color="@color/black"
+            app:wheel_visible_item_count="6"
+            app:wheel_indicator="true"
+            app:wheel_indicator_color="@color/grey"
+            app:wheel_indicator_size="1dp" />
 
     </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,15 +22,24 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aigestudio.wheelpicker.WheelPicker;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
+import hr.tvz.trackmydog.models.dogModel.DogSettings;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.utils.DesignUtils;
@@ -42,6 +52,9 @@ public class DogDetailsActivity extends BaseActivity {
 
     // TODO - Dog = with more info than user's DogInfo
     private DogInfo dog;
+
+    private CurrentUser user;
+    private DogSettings dogSettings;
 
     @BindView(R.id.infoBanner) LinearLayout infoBanner;
     @BindView(R.id.dogImage) SimpleDraweeView dogImage;
@@ -93,14 +106,19 @@ public class DogDetailsActivity extends BaseActivity {
 
         Log.d(TAG, "show details of dog with index: " + dogIndex);
 
+        /* model */
+
+        // TODO - change model to get the user from previous activity
         // get user info and this dog:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
             @Override
             public void onChanged(@Nullable CurrentUser currentUser) {
                 if (currentUser != null) {
+                    user = currentUser;
                     if (currentUser.getDogs() != null) {
                         dog = currentUser.getDogs().get(dogIndex);
+                        getDogSettings();
                         setDogInfo(dog);
                     }
                 }
@@ -108,13 +126,45 @@ public class DogDetailsActivity extends BaseActivity {
         });
     };
 
-    private void openPopupWindow(int height) {
+    private void getDogSettings() {
+        Log.d(TAG, "get dog settings from firebase");
+
+        // get dogs settings:
+        FirebaseDatabase.getInstance().getReference("dogs/" + dog.getKey() + "/settings")
+            .addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        dogSettings = dataSnapshot.getValue(DogSettings.class);
+
+                        // TODO - set dog settings
+                        // setDogSettings();
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "error - get dog settings (FB): " + databaseError.getCode());
+                    }
+                });
+    }
+
+    private void openPopupWindow(final List<String> data) {
         Log.d(TAG, "open popup window");
 
         // inflate popup
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup, null, false);
 
+        // wheel picker:
+        final WheelPicker wheelPicker = (WheelPicker) popupView.findViewById(R.id.wheelPicker);
+        wheelPicker.setData(data);
+
+        // TODO - set height = set by xml (???)
+        // get size of a screen (calc height for the popup):
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = (int) (displayMetrics.heightPixels * 0.40);
+
+        // popup window and button actions:
         // contentView, width, height, focusable (false)
         final PopupWindow popup = new PopupWindow(popupView,
                 LinearLayout.LayoutParams.MATCH_PARENT, height, true);
@@ -133,6 +183,10 @@ public class DogDetailsActivity extends BaseActivity {
             .setOnClickListener(new View.OnClickListener() {
                 public void onClick(View popupView) {
                     // TODO - save data
+                    Log.d(TAG, "picked: " + data.get(wheelPicker.getCurrentItemPosition()));
+                    Integer number = Integer.parseInt(data.get(wheelPicker.getCurrentItemPosition()));
+                    // TODO - save interval to current dog (!)
+
                     popup.dismiss();
                 }
             });
@@ -206,7 +260,6 @@ public class DogDetailsActivity extends BaseActivity {
         // label = dogColor
     }
 
-
     /* Edit dog info menu */
 
     // create an action bar button
@@ -236,5 +289,4 @@ public class DogDetailsActivity extends BaseActivity {
             Toast.makeText(this, "Dog info Saved", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
