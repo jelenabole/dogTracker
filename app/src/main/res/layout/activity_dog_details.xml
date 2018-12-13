@@ -170,7 +170,7 @@
             </android.support.constraint.ConstraintLayout>
 
 
-            <!-- medical info -->
+            <!-- tracking options -->
 
             <android.support.constraint.ConstraintLayout
                 style="@style/SectionLayout">
@@ -203,6 +203,37 @@
 
                     <View style="@style/HorizontalSeparator" />
 
+
+                    <!-- new linear layouts = as options -->
+
+                    <LinearLayout
+                        android:id="@+id/locationLayout"
+                        style="@style/OptionLayout">
+
+                        <TextView
+                            android:text="@string/label_location_name"
+                            style="@style/OptionTitle" />
+
+                        <TextView
+                            android:id="@+id/location"
+                            style="@style/OptionPlaceholder" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/intervalLayout"
+                            style="@style/OptionLayout">
+
+                        <TextView
+                            android:text="@string/label_interval"
+                            style="@style/OptionTitle" />
+
+                        <TextView
+                            android:id="@+id/interval"
+                            style="@style/OptionPlaceholder" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </android.support.constraint.ConstraintLayout>
@@ -233,14 +264,14 @@
             </android.support.constraint.ConstraintLayout>
 
 
-            <!-- activities -->
+            <!-- recent activity -->
 
             <android.support.constraint.ConstraintLayout
                 style="@style/SectionLayout">
 
                 <TextView
                     android:id="@+id/activities_header"
-                    android:text="@string/last_week_activity"
+                    android:text="@string/recent_activity"
                     style="@style/Header" />
 
             </android.support.constraint.ConstraintLayout>

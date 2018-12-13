@@ -56,15 +56,18 @@
     <string name="tracking_options">Tracking options</string>
     <string name="medical_info">Medical info</string>
     <string name="desc_add_medical_info">Add medical info button</string>
-    <string name="last_week_activity">Last week activity</string>
+    <string name="recent_activity">Recent activity</string>
 
     <!-- dog details = info labels -->
     <string name="label_breed">Breed:</string>
     <string name="label_age">Age:</string>
     <string name="label_height">Height:</string>
     <string name="label_weight">Weight:</string>
+    <string name="label_location_name">Location</string>
+    <string name="label_interval">Interval</string>
 
     <!-- measure units -->
+    <string name="seconds">&#160;s</string>
     <string name="years">&#160;yrs</string>
     <string name="centimeters">&#160;cm</string>
     <string name="meters">&#160;m</string>

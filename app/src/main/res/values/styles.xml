@@ -124,7 +124,46 @@
         <item name="android:background">@color/grey</item>
     </style>
 
+
+    <!-- choice (linear layout) buttons -->
+
+    <style name="OptionLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/bottom_border</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
+    </style>
+
+    <style name="OptionLayoutPart">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="OptionTitle" parent="OptionLayoutPart">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="OptionPlaceholder" parent="OptionLayoutPart">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:drawableEnd">@drawable/dash</item>
+    </style>
+
+    <style name="OptionArrow" parent="OptionLayoutPart">
+        <item name="android:drawableEnd">@drawable/arrow_right</item>
+    </style>
+
+
     <!-- popup window animations -->
+
     <style name="popupAnimations">
         <item name="android:windowEnterAnimation">@anim/popup_show</item>
         <item name="android:windowExitAnimation">@anim/popup_hide</item>

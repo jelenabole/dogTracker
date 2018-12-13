@@ -50,9 +50,8 @@ public class DogDetailsActivity extends BaseActivity {
 
     private static final String TAG = "Dog Details Activity";
 
-    // TODO - Dog = with more info than user's DogInfo
+    // model:
     private DogInfo dog;
-
     private CurrentUser user;
     private DogSettings dogSettings;
 
@@ -72,6 +71,12 @@ public class DogDetailsActivity extends BaseActivity {
     @BindView(R.id.gender) TextView gender;
 
     @BindView(R.id.scrollView) ScrollView scrollView;
+
+    // linear layouts for options (popup windows):
+    @BindView(R.id.locationLayout) LinearLayout locationLayout;
+    @BindView(R.id.intervalLayout) LinearLayout intervalLayout;
+    @BindView(R.id.location) TextView location;
+    @BindView(R.id.interval) TextView interval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +101,9 @@ public class DogDetailsActivity extends BaseActivity {
         getWindow().setSharedElementExitTransition(DraweeTransition.createTransitionSet(
                 ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
 
+
+        /* model */
+
         // get index of a dog:
         final Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
 
@@ -105,8 +113,6 @@ public class DogDetailsActivity extends BaseActivity {
         }
 
         Log.d(TAG, "show details of dog with index: " + dogIndex);
-
-        /* model */
 
         // TODO - change model to get the user from previous activity
         // get user info and this dog:
@@ -124,7 +130,28 @@ public class DogDetailsActivity extends BaseActivity {
                 }
             }
         });
-    };
+
+        /* options - with popup windows onClick */
+
+        locationLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<String> data = Arrays.asList(
+                        getResources().getStringArray(R.array.location_intervals_array));
+                openPopupWindow(data);
+            }
+        });
+        intervalLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> data = Arrays.asList(
+                        getResources().getStringArray(R.array.location_intervals_array));
+
+                openPopupWindow(data);
+            }
+        });
+    }
 
     private void getDogSettings() {
         Log.d(TAG, "get dog settings from firebase");
@@ -136,15 +163,32 @@ public class DogDetailsActivity extends BaseActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         dogSettings = dataSnapshot.getValue(DogSettings.class);
-
-                        // TODO - set dog settings
-                        // setDogSettings();
+                        setDogSettings();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.e(TAG, "error - get dog settings (FB): " + databaseError.getCode());
                     }
                 });
+    }
+
+    private void setDogSettings() {
+        Log.d(TAG, "Get dog settings: " + dog.getIndex());
+
+        // possible nulls:
+        if (dogSettings.getLocationName() != null) {
+            String dogLocation = dogSettings.getLocationName();
+            location.setText(dogLocation);
+            location.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        } else {
+            location.setText("");
+            location.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.dash, 0);
+        }
+
+        // non-null items:
+        String dogInterval = dogSettings.getInterval() + getResources().getString(R.string.seconds);
+        interval.setText(dogInterval);
+        interval.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
     }
 
     private void openPopupWindow(final List<String> data) {
