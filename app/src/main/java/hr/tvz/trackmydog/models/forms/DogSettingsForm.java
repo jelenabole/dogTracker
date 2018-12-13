@@ -1,11 +1,13 @@
-package hr.tvz.trackmydog.models.dogModel;
+package hr.tvz.trackmydog.models.forms;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @IgnoreExtraProperties
-public class DogSettings implements Serializable {
+public class DogSettingsForm implements Serializable {
 
     private int interval;
     private String locationName;
@@ -51,6 +53,18 @@ public class DogSettings implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("interval", interval);
+        result.put("locationName", locationName);
+        result.put("range", range);
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
+
+        return result;
     }
 
     @Override

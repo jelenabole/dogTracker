@@ -39,7 +39,9 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
-import hr.tvz.trackmydog.models.dogModel.DogSettings;
+import hr.tvz.trackmydog.firebaseServices.DogService;
+import hr.tvz.trackmydog.firebaseServices.DogSettingsCallback;
+import hr.tvz.trackmydog.models.forms.DogSettingsForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.utils.DesignUtils;
@@ -53,7 +55,7 @@ public class DogDetailsActivity extends BaseActivity {
     // model:
     private DogInfo dog;
     private CurrentUser user;
-    private DogSettings dogSettings;
+    private DogSettingsForm dogSettings;
 
     @BindView(R.id.infoBanner) LinearLayout infoBanner;
     @BindView(R.id.dogImage) SimpleDraweeView dogImage;
@@ -124,7 +126,7 @@ public class DogDetailsActivity extends BaseActivity {
                     user = currentUser;
                     if (currentUser.getDogs() != null) {
                         dog = currentUser.getDogs().get(dogIndex);
-                        getDogSettings();
+                        setDogSettingsListener();
                         setDogInfo(dog);
                     }
                 }
@@ -139,7 +141,11 @@ public class DogDetailsActivity extends BaseActivity {
 
                 List<String> data = Arrays.asList(
                         getResources().getStringArray(R.array.location_intervals_array));
-                openPopupWindow(data);
+                openPopupWindow(data, new DogSettingsCallback() {
+                    @Override
+                    public void saveSettings(String string) {
+                    }
+                });
             }
         });
         intervalLayout.setOnClickListener(new View.OnClickListener() {
@@ -148,21 +154,31 @@ public class DogDetailsActivity extends BaseActivity {
                 List<String> data = Arrays.asList(
                         getResources().getStringArray(R.array.location_intervals_array));
 
-                openPopupWindow(data);
+                // open popup with data and callback
+                openPopupWindow(data, new DogSettingsCallback() {
+                    @Override
+                    public void saveSettings(String number) {
+                        dogSettings.setInterval(Integer.parseInt(number));
+
+                        DogService.saveSettings(dogSettings, dog.getKey());
+                    }
+                });
             }
         });
     }
 
-    private void getDogSettings() {
+    private void setDogSettingsListener() {
         Log.d(TAG, "get dog settings from firebase");
 
         // get dogs settings:
         FirebaseDatabase.getInstance().getReference("dogs/" + dog.getKey() + "/settings")
-            .addListenerForSingleValueEvent(
+            .addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        dogSettings = dataSnapshot.getValue(DogSettings.class);
+                        dogSettings = dataSnapshot.getValue(DogSettingsForm.class);
+                        Log.d(TAG, "dog settings changed: " + dogSettings);
+
                         setDogSettings();
                     }
                     @Override
@@ -191,7 +207,7 @@ public class DogDetailsActivity extends BaseActivity {
         interval.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
     }
 
-    private void openPopupWindow(final List<String> data) {
+    private void openPopupWindow(final List<String> data, final DogSettingsCallback callback) {
         Log.d(TAG, "open popup window");
 
         // inflate popup
@@ -199,7 +215,7 @@ public class DogDetailsActivity extends BaseActivity {
         View popupView = inflater.inflate(R.layout.popup, null, false);
 
         // wheel picker:
-        final WheelPicker wheelPicker = (WheelPicker) popupView.findViewById(R.id.wheelPicker);
+        final WheelPicker wheelPicker = popupView.findViewById(R.id.wheelPicker);
         wheelPicker.setData(data);
 
         // TODO - set height = set by xml (???)
@@ -228,9 +244,8 @@ public class DogDetailsActivity extends BaseActivity {
                 public void onClick(View popupView) {
                     // TODO - save data
                     Log.d(TAG, "picked: " + data.get(wheelPicker.getCurrentItemPosition()));
-                    Integer number = Integer.parseInt(data.get(wheelPicker.getCurrentItemPosition()));
                     // TODO - save interval to current dog (!)
-
+                    callback.saveSettings(data.get(wheelPicker.getCurrentItemPosition()));
                     popup.dismiss();
                 }
             });
