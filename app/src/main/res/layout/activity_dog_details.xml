@@ -93,7 +93,7 @@
 
                 <!-- labels -->
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -169,7 +169,7 @@
                         app:layout_constraintBaseline_toBaselineOf="@+id/textView15"
                         app:layout_constraintLeft_toRightOf="@+id/textView15" />
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 

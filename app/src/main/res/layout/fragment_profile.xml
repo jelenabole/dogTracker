@@ -79,7 +79,7 @@
 
         </RelativeLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             style="@style/SectionLayout"
             android:layout_below="@+id/profile_layout"
             android:elevation="4dp">
@@ -166,7 +166,7 @@
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView15"
                 app:layout_constraintLeft_toRightOf="@+id/textView15" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>
 
