@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:text="@string/no_dogs_warning"
             android:gravity="center"
-            android:textColor="@color/grey"
+            android:textColor="@color/light_grey"
             android:textStyle="italic"
             android:textSize="30sp" />
 

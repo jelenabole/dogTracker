@@ -1,7 +1,7 @@
 package hr.tvz.trackmydog.firebaseServices;
 
-public interface DogSettingsCallback {
+public interface SpinnerCallback {
 
     // string or number (interval or location name)
-    void saveSettings(String string);
+    void save(String string);
 }

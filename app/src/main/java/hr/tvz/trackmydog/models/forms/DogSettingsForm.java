@@ -11,9 +11,9 @@ public class DogSettingsForm implements Serializable {
 
     private int interval;
     private String locationName;
-    private int range;
-    private double latitude;
-    private double longitude;
+    private Integer range;
+    private Double latitude;
+    private Double longitude;
 
     public int getInterval() {
         return interval;
@@ -53,6 +53,13 @@ public class DogSettingsForm implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public void deleteSafeZone() {
+        locationName = null;
+        range = null;
+        latitude = null;
+        longitude = null;
     }
 
     public Map<String, Object> toMap() {

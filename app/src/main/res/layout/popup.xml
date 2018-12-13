@@ -53,7 +53,7 @@
             app:wheel_selected_item_text_color="@color/black"
             app:wheel_visible_item_count="6"
             app:wheel_indicator="true"
-            app:wheel_indicator_color="@color/grey"
+            app:wheel_indicator_color="@color/light_grey"
             app:wheel_indicator_size="1dp" />
 
     </LinearLayout>

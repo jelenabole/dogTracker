@@ -1,6 +1,5 @@
 package hr.tvz.trackmydog.activities;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +39,7 @@ import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.DogService;
-import hr.tvz.trackmydog.firebaseServices.DogSettingsCallback;
+import hr.tvz.trackmydog.firebaseServices.SpinnerCallback;
 import hr.tvz.trackmydog.models.forms.DogSettingsForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
@@ -57,6 +56,7 @@ public class DogDetailsActivity extends BaseActivity {
     private CurrentUser user;
     private DogSettingsForm dogSettings;
 
+    // header info:
     @BindView(R.id.infoBanner) LinearLayout infoBanner;
     @BindView(R.id.dogImage) SimpleDraweeView dogImage;
     @BindView(R.id.sep1) View sep1;
@@ -119,51 +119,46 @@ public class DogDetailsActivity extends BaseActivity {
         // TODO - change model to get the user from previous activity
         // get user info and this dog:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                if (currentUser != null) {
-                    user = currentUser;
-                    if (currentUser.getDogs() != null) {
-                        dog = currentUser.getDogs().get(dogIndex);
-                        setDogSettingsListener();
-                        setDogInfo(dog);
+                .getCurrentUserLiveData().observe(this, currentUser -> {
+                    if (currentUser != null) {
+                        user = currentUser;
+                        if (currentUser.getDogs() != null) {
+                            dog = currentUser.getDogs().get(dogIndex);
+                            setDogSettingsListener();
+                            setDogInfo(dog);
+                        }
                     }
-                }
-            }
-        });
+                });
 
         /* options - with popup windows onClick */
 
-        locationLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        locationLayout.setOnClickListener(view -> {
+            List<String> data = user.getSafeZones().values().stream()
+                    .map(place -> place.getName())
+                    .collect(Collectors.toList());
 
-                List<String> data = Arrays.asList(
-                        getResources().getStringArray(R.array.location_intervals_array));
-                openPopupWindow(data, new DogSettingsCallback() {
-                    @Override
-                    public void saveSettings(String string) {
-                    }
-                });
-            }
+            openPopupWindow(data, true, string -> {
+                // TODO - check the first (placeholder):
+                if (!string.equals("-")) {
+                    // TODO - find data to save (from the user.safeZones)
+                    dogSettings.setLocationName(string);
+                    DogService.saveSettings(dogSettings, dog.getKey());
+                } else {
+                    dogSettings.deleteSafeZone();
+                    DogService.saveSettings(dogSettings, dog.getKey());
+                }
+            });
         });
-        intervalLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> data = Arrays.asList(
-                        getResources().getStringArray(R.array.location_intervals_array));
 
-                // open popup with data and callback
-                openPopupWindow(data, new DogSettingsCallback() {
-                    @Override
-                    public void saveSettings(String number) {
-                        dogSettings.setInterval(Integer.parseInt(number));
+        intervalLayout.setOnClickListener(view -> {
+            List<String> data = Arrays.asList(
+                    getResources().getStringArray(R.array.location_intervals_array));
 
-                        DogService.saveSettings(dogSettings, dog.getKey());
-                    }
-                });
-            }
+            // open popup with data and callback
+            openPopupWindow(data, false, number -> {
+                dogSettings.setInterval(Integer.parseInt(number));
+                DogService.saveSettings(dogSettings, dog.getKey());
+            });
         });
     }
 
@@ -207,8 +202,12 @@ public class DogDetailsActivity extends BaseActivity {
         interval.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
     }
 
-    private void openPopupWindow(final List<String> data, final DogSettingsCallback callback) {
+    private void openPopupWindow(final List<String> data, boolean firstPlaceholder,
+                                 final SpinnerCallback callback) {
         Log.d(TAG, "open popup window");
+        if (firstPlaceholder) {
+            data.add(0, "-");
+        }
 
         // inflate popup
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -233,21 +232,13 @@ public class DogDetailsActivity extends BaseActivity {
         DesignUtils.dimBackground(popup);
 
         popupView.findViewById(R.id.popupCancelButton)
-            .setOnClickListener(new View.OnClickListener() {
-                public void onClick(View popupView) {
-                    popup.dismiss();
-                }
-            });
+            .setOnClickListener(view -> popup.dismiss());
 
         popupView.findViewById(R.id.popupDoneButton)
-            .setOnClickListener(new View.OnClickListener() {
-                public void onClick(View popupView) {
-                    // TODO - save data
-                    Log.d(TAG, "picked: " + data.get(wheelPicker.getCurrentItemPosition()));
-                    // TODO - save interval to current dog (!)
-                    callback.saveSettings(data.get(wheelPicker.getCurrentItemPosition()));
-                    popup.dismiss();
-                }
+            .setOnClickListener(view -> {
+                Log.d(TAG, "spinner - picked: " + data.get(wheelPicker.getCurrentItemPosition()));
+                callback.save(data.get(wheelPicker.getCurrentItemPosition()));
+                popup.dismiss();
             });
     }
 
@@ -278,7 +269,7 @@ public class DogDetailsActivity extends BaseActivity {
                     new ColorDrawable(ResourceUtils.getDogColor(dog.getColor(), this)));
         }
 
-        // TODO - example kilometers:
+        // banner info:
         kilometersText.setText(dogKilometers);
         breedText.setText(dogBreed);
         ageText.setText(dogAge);
@@ -315,8 +306,6 @@ public class DogDetailsActivity extends BaseActivity {
         kilometersText.setTextColor(colorText);
         ageText.setTextColor(colorText);
         breedText.setTextColor(colorText);
-
-        // label = dogColor
     }
 
     /* Edit dog info menu */

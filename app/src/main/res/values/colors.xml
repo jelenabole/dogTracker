@@ -44,6 +44,7 @@
 
     <color name="full_white">#fff</color>
     <color name="transparent_white">#50ffffff</color>
-    <color name="grey">#cacaca</color>
+    <color name="light_grey">#cacaca</color>
+    <color name="grey">#616161</color>
 
 </resources>
