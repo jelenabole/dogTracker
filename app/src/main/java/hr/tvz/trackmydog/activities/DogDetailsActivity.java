@@ -40,9 +40,11 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.DogService;
 import hr.tvz.trackmydog.firebaseServices.SpinnerCallback;
-import hr.tvz.trackmydog.models.forms.DogSettingsForm;
+import hr.tvz.trackmydog.models.forms.SafeZoneForm;
+import hr.tvz.trackmydog.models.forms.ServiceSettingsForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
+import hr.tvz.trackmydog.models.userModel.SafeZone;
 import hr.tvz.trackmydog.utils.DesignUtils;
 import hr.tvz.trackmydog.utils.LabelUtils;
 import hr.tvz.trackmydog.utils.ResourceUtils;
@@ -54,7 +56,8 @@ public class DogDetailsActivity extends BaseActivity {
     // model:
     private DogInfo dog;
     private CurrentUser user;
-    private DogSettingsForm dogSettings;
+    private ServiceSettingsForm dogSettings;
+    private SafeZoneForm dogSafeZone;
 
     // header info:
     @BindView(R.id.infoBanner) LinearLayout infoBanner;
@@ -124,7 +127,7 @@ public class DogDetailsActivity extends BaseActivity {
                         user = currentUser;
                         if (currentUser.getDogs() != null) {
                             dog = currentUser.getDogs().get(dogIndex);
-                            setDogSettingsListener();
+                            setDogListeners();
                             setDogInfo(dog);
                         }
                     }
@@ -134,19 +137,20 @@ public class DogDetailsActivity extends BaseActivity {
 
         locationLayout.setOnClickListener(view -> {
             List<String> data = user.getSafeZones().values().stream()
-                    .map(place -> place.getName())
+                    .map(place -> place.getLocationName())
                     .collect(Collectors.toList());
 
             openPopupWindow(data, true, string -> {
-                // TODO - check the first (placeholder):
                 if (!string.equals("-")) {
-                    // TODO - find data to save (from the user.safeZones)
-                    dogSettings.setLocationName(string);
-                    DogService.saveSettings(dogSettings, dog.getKey());
+                    SafeZone zone = user.getSafeZones().values().stream()
+                            .filter(safeZone -> safeZone.getLocationName() == string)
+                            .findFirst().orElse(null);
+                    if (dogSafeZone == null) dogSafeZone = new SafeZoneForm();
+                    dogSafeZone.mapFrom(zone);
                 } else {
-                    dogSettings.deleteSafeZone();
-                    DogService.saveSettings(dogSettings, dog.getKey());
+                    dogSafeZone = null;
                 }
+                DogService.saveSafezone(dogSafeZone, dog.getKey());
             });
         });
 
@@ -162,7 +166,7 @@ public class DogDetailsActivity extends BaseActivity {
         });
     }
 
-    private void setDogSettingsListener() {
+    private void setDogListeners() {
         Log.d(TAG, "get dog settings from firebase");
 
         // get dogs settings:
@@ -171,35 +175,42 @@ public class DogDetailsActivity extends BaseActivity {
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        dogSettings = dataSnapshot.getValue(DogSettingsForm.class);
+                        dogSettings = dataSnapshot.getValue(ServiceSettingsForm.class);
                         Log.d(TAG, "dog settings changed: " + dogSettings);
 
-                        setDogSettings();
+                        String dogInterval = dogSettings.getInterval() + getResources().getString(R.string.seconds);
+                        interval.setText(dogInterval);
+                        interval.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.e(TAG, "error - get dog settings (FB): " + databaseError.getCode());
+                        Log.e(TAG, "error - get dog's settings (FB): " + databaseError.getCode());
                     }
                 });
-    }
 
-    private void setDogSettings() {
-        Log.d(TAG, "Get dog settings: " + dog.getIndex());
+        // get dogs settings:
+        FirebaseDatabase.getInstance().getReference("dogs/" + dog.getKey() + "/safezone")
+            .addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        dogSafeZone = dataSnapshot.getValue(SafeZoneForm.class);
+                        Log.d(TAG, "dog safezone changed: " + dogSafeZone);
 
-        // possible nulls:
-        if (dogSettings.getLocationName() != null) {
-            String dogLocation = dogSettings.getLocationName();
-            location.setText(dogLocation);
-            location.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        } else {
-            location.setText("");
-            location.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.dash, 0);
-        }
-
-        // non-null items:
-        String dogInterval = dogSettings.getInterval() + getResources().getString(R.string.seconds);
-        interval.setText(dogInterval);
-        interval.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                        if (dogSafeZone != null) {
+                            String dogLocation = dogSafeZone.getLocationName();
+                            location.setText(dogLocation);
+                            location.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                        } else {
+                            location.setText("");
+                            location.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.dash, 0);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "error - get dog's safezone (FB): " + databaseError.getCode());
+                    }
+                });
     }
 
     private void openPopupWindow(final List<String> data, boolean firstPlaceholder,
@@ -332,6 +343,8 @@ public class DogDetailsActivity extends BaseActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         Log.d(TAG, "returned from editing dog info");
         if (resultCode == RESULT_OK && requestCode == 0) {
             Toast.makeText(this, "Dog info Saved", Toast.LENGTH_SHORT).show();

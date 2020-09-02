@@ -117,7 +117,7 @@ public class DogDetailsAddActivity extends BaseActivity {
                        dogKey = dogSnaps.getKey();
 
                        // check if chip is already in use:
-                       if (dogSnaps.child("token").getValue() != null) {
+                       if (dogSnaps.child("notification/token").getValue() != null) {
                            Log.d(TAG, "chip already added to user");
                            hideProgressDialog();
                            error.setText(getString(R.string.error_chip_has_user));
@@ -180,22 +180,18 @@ public class DogDetailsAddActivity extends BaseActivity {
         // add dog to user:
         final FirebaseDatabase db = FirebaseDatabase.getInstance();
         db.getReference("users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex)
-            .setValue(dog.toMap(), new DatabaseReference.CompletionListener() {
-        @Override
-        public void onComplete(@Nullable DatabaseError databaseError,
-                               @NonNull DatabaseReference databaseReference) {
-            if (databaseError == null) {
-                Log.d(TAG, "dog successfully added to user");
-
-                // save notification token to dog
                 // TODO - find better way to save color and token number
-                db.getReference("dogs").child(dogKey).child("token").setValue(userToken);
+            .setValue(dog.toMap(), (databaseError, databaseReference) -> {
+                if (databaseError == null) {
+                    Log.d(TAG, "dog successfully added to user");
 
-                // close the activity
-                finish();
-            }
-            }
-        });
+                    // save notification token to dog
+                    db.getReference("dogs").child(dogKey).child("notification/token").setValue(userToken);
+
+                    // close the activity
+                    finish();
+                }
+                });
     }
 
     // TODO - move to helper class:

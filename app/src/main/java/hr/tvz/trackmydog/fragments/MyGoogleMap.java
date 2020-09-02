@@ -335,6 +335,9 @@ public class MyGoogleMap {
         // remove existing dog tracks:
         removeDogTracks();
 
+        // TODO - just for testing purposes (if tracks are deleted)
+        if (locations.size() == 0) return;
+
         // first location (big marker) already set:
         int index = locations.size() - 1;
         Tracks lastTrack = locations.get(index);

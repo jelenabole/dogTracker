@@ -329,7 +329,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         LatLng position = marker.getPosition();
 
         // TODO - set name for the place
-        safeZone.setName(getAddress(position, addressText.getText().toString()));
+        safeZone.setLocationName(getAddress(position, addressText.getText().toString()));
         safeZone.setLatitude(position.latitude);
         safeZone.setLongitude(position.longitude);
         safeZone.setRange(rangeSeekbar.getProgress() * rangeStep);

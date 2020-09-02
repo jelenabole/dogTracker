@@ -9,17 +9,17 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class SafeZone implements Serializable {
 
-    private String name;
+    private String locationName;
     private Double latitude;
     private Double longitude;
     private Integer range;
 
-    public String getName() {
-        return name;
+    public String getLocationName() {
+        return locationName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
     }
 
     public Double getLatitude() {
@@ -48,7 +48,7 @@ public class SafeZone implements Serializable {
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("name", name);
+        result.put("name", locationName);
         result.put("latitude", latitude);
         result.put("longitude", longitude);
         result.put("range", range);
@@ -60,7 +60,7 @@ public class SafeZone implements Serializable {
     public String toString() {
         String str = "********** \n";
 
-        str += " - " + "name: " + name;
+        str += " - " + "name: " + locationName;
         str += " - " + "latitude: " + latitude;
         str += " - " + "longitude: " + longitude;
         str += " - " + "range: " + range;

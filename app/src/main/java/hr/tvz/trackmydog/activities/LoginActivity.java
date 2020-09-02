@@ -198,23 +198,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         // TODO - additional (cause 'this' is from firebase):
         final Context context = this;
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         FBAuth.mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential: success");
-                    loginUser();
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential: failure", task.getException());
-                    // TODO - snackbar deleted:
-                    hideProgressDialog();
-                    Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                }
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential: success");
+                        loginUser();
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential: failure", task.getException());
+                        // TODO - snackbar deleted:
+                        hideProgressDialog();
+                        Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
     }
