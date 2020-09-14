@@ -24,7 +24,6 @@ public class VerticalDivider extends DividerItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         Log.d(TAG, "getItemOffsets");
-        // TODO - called for each view as it is being put inside
         outRect.set(offset, offset, 0, offset);
     }
 

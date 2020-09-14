@@ -20,7 +20,6 @@ public class UserService {
     public static void saveUser(UserForm user, final ActivityCallback callback) {
         Log.d(TAG, "save user: " + user);
 
-        // TODO - user key - change to local db
         FirebaseDatabase.getInstance().getReference(userLink + MyApplication.getUserKey())
             .updateChildren(user.toMap(), new DatabaseReference.CompletionListener() {
                 @Override

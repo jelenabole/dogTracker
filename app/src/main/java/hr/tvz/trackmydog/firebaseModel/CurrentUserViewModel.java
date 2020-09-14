@@ -56,9 +56,6 @@ public class CurrentUserViewModel extends ViewModel {
                 if (!dataSnapshot.exists()) {
                     // data not found (eg user deleted from firebase, not throught this app)
                     Log.e(TAG, " *** user Ref Listener - user not found");
-                    // TODO - notify the user about the error
-                    // error = user data was deleted
-
                     // sign out the user and delete this listener
                     FBAuth.logoutUser();
                 }

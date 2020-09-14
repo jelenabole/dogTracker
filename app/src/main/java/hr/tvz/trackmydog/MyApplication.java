@@ -14,7 +14,6 @@ public class MyApplication extends Application {
 
     private static final String TAG = "Application";
 
-    // TODO - used for testing new listeners:
     private static String userKey;
     private static MyApplication instance;
 
@@ -34,9 +33,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Log.d(TAG, " *** MyApplication - on create");
 
-        // TODO - check if needed (??)
         instance = this;
-
         Fresco.initialize(getApplicationContext());
         FlowManager.init(new FlowConfig.Builder(this).build());
 

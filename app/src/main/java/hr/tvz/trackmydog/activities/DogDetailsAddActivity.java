@@ -155,7 +155,6 @@ public class DogDetailsAddActivity extends BaseActivity {
         Log.d(TAG, "save dog info - index: " + dogIndex);
         DogForm dog = new DogForm();
 
-        // TODO - add dog index (needed ??):
         dog.setIndex(dogIndex);
         dog.setKey(dogKey);
         dog.setName(name.getText().toString());
@@ -180,7 +179,6 @@ public class DogDetailsAddActivity extends BaseActivity {
         // add dog to user:
         final FirebaseDatabase db = FirebaseDatabase.getInstance();
         db.getReference("users/" + MyApplication.getUserKey() + "/dogs/" + dogIndex)
-                // TODO - find better way to save color and token number
             .setValue(dog.toMap(), (databaseError, databaseReference) -> {
                 if (databaseError == null) {
                     Log.d(TAG, "dog successfully added to user");
@@ -194,7 +192,6 @@ public class DogDetailsAddActivity extends BaseActivity {
                 });
     }
 
-    // TODO - move to helper class:
     private String addColorBasedOnIndex() {
         switch (dogIndex % 4) {
             case 0:

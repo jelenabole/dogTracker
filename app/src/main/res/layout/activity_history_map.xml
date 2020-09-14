@@ -1,0 +1,122 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.HistoryMapActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:orientation="horizontal"
+            android:paddingStart="10sp"
+            android:paddingTop="16dp"
+            android:paddingBottom="6dp">
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                map:srcCompat="@drawable/date"
+                android:contentDescription="date" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="12sp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/dateStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start|center_horizontal"
+                    android:text="14.09. 17:03"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/dateEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="14.09. 17:58"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp">
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_weight="1"
+                android:contentDescription="time"
+                map:srcCompat="@drawable/clock" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="start"
+                android:text=" - mins"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_weight="1"
+                map:srcCompat="@drawable/distance"
+                android:contentDescription="distance" />
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="start"
+                android:text=" - m"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@android:layout/simple_gallery_item"
+            tools:context=".activities.HistoryMapActivity"
+            map:uiCompass="false"
+            map:uiRotateGestures="false"
+            map:uiTiltGestures="false"
+            map:uiZoomControls="false"
+            map:uiScrollGestures="true"
+            map:uiZoomGestures="true" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

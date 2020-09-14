@@ -226,32 +226,6 @@
             </LinearLayout>
 
 
-            <!-- medical info -->
-
-            <LinearLayout
-                android:orientation="vertical"
-                style="@style/SectionLayout">
-
-                <TextView
-                    android:id="@+id/medical_info_header"
-                    android:text="@string/medical_info"
-                    style="@style/Header" />
-
-                <!--
-                <ImageView
-                    android:id="@+id/addMedical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|end"
-                    android:contentDescription="@string/desc_add_medical_info"
-                    android:src="@drawable/add_button" />
-                -->
-
-                <!-- next vet appointment, medications, grooming, notifications -->
-
-            </LinearLayout>
-
-
             <!-- recent activity -->
 
             <LinearLayout
@@ -262,6 +236,11 @@
                     android:id="@+id/activities_header"
                     android:text="@string/recent_activity"
                     style="@style/Header" />
+
+                <LinearLayout
+                    android:id="@+id/runList"
+                    android:orientation="vertical"
+                    style="@style/SectionLayout" />
 
             </LinearLayout>
 

@@ -21,7 +21,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.dogLocationModel.DogMarker;
 import hr.tvz.trackmydog.models.dogLocationModel.Tracks;
 import hr.tvz.trackmydog.utils.ResourceUtils;
-import hr.tvz.trackmydog.utils.TimeUtils;
+import hr.tvz.trackmydog.utils.TimeDistanceUtils;
 
 public class MyGoogleMap {
 
@@ -166,19 +166,13 @@ public class MyGoogleMap {
         Log.d(TAG, "change marker location - index: " + index);
 
         if (dog.getLocation() != null) {
-            // TODO - check for problems with time zones - get it when registering user:
-
             // add new marker, or reposition existing one
             if (markers.get(index) == null) {
-                // TODO - only check time diff when its new marker (its either new dog / without location..
-                // TODO - check the time to decide to add marker:
-                // TODO - remove marker ?? - will it ever change so that we need to
                 // If first time adding marker: (either chip started-bad, or map frag started-intended):
-                long diff = TimeUtils.differenceBetweenCurrentTimeInHours(dog.getLocation().getTime());
+                long diff = TimeDistanceUtils.differenceBetweenCurrentTimeInHours(dog.getLocation().getTime());
                 Log.d(TAG, "last location before (h): " + diff);
                 if (diff > MAX_HOURS_PASSED_FOR_MARKER) {
                     // if longer than 2 hours, dont add marker
-                    // TODO - check if anything else is needed
                     return;
                 }
 
@@ -198,9 +192,8 @@ public class MyGoogleMap {
                         .icon(BitmapDescriptorFactory.fromResource(icon))
                         .alpha(opacity)
                         .title(dog.getName())
-                        .snippet("last updated: " + TimeUtils.converTimeToReadable(dog.getLocation().getTime()))
+                        .snippet("last updated: " + TimeDistanceUtils.converTimeToReadable(dog.getLocation().getTime()))
                 ));
-                // TODO - add zIndex (higher - top)
             } else {
                 Log.d(TAG + " - change marker", "marker repositioned for dog: " + dog.getKey());
                 LatLng newPosition = new LatLng(dog.getLocation().getLatitude(), dog.getLocation().getLongitude());
@@ -252,8 +245,6 @@ public class MyGoogleMap {
             return;
         }
 
-        // TODO - (error) = if map is not finished, dont reset (if all dog listeners arent set)
-
         // start building bounds
         Log.d(TAG, "reset map view - follow dog(s) index: " + followDogIndex);
 
@@ -269,7 +260,6 @@ public class MyGoogleMap {
                 }
             }
 
-            // TODO - maybe calculate padding based on the dog distance ???
             // calculate padding pixels (from display width x height):
             int width = context.getResources().getDisplayMetrics().widthPixels;
             int height = context.getResources().getDisplayMetrics().heightPixels;
@@ -309,7 +299,6 @@ public class MyGoogleMap {
     }
 
 
-
     /* SET dog tracks */
 
     /**
@@ -335,7 +324,7 @@ public class MyGoogleMap {
         // remove existing dog tracks:
         removeDogTracks();
 
-        // TODO - just for testing purposes (if tracks are deleted)
+        // just for testing purposes (if tracks are deleted)
         if (locations.size() == 0) return;
 
         // first location (big marker) already set:
@@ -346,10 +335,10 @@ public class MyGoogleMap {
         index--;
         int count = 0;
         for (; index >= 0; index--) {
-            Log.d("TAG", "tracks: " + TimeUtils.converTimeToReadable(locations.get(index).getTime()));
+            Log.d("TAG", "tracks: " + TimeDistanceUtils.converTimeToReadable(locations.get(index).getTime()));
 
             // check if the max allowed number of minutes passed between markers:
-            if (TimeUtils.convertToMinutes(lastTrack.getTime()
+            if (TimeDistanceUtils.convertToMinutes(lastTrack.getTime()
                     - locations.get(index).getTime()) > MAX_MIN_BETWEEN_MARKERS) {
                 break;
             }
@@ -388,7 +377,6 @@ public class MyGoogleMap {
      * @param maxRange - max possible value of the range (depends of opacity of main marker)
      * @return - normalized number to 0-1 range
      */
-    // TODO - correct function:
     private float normalizeDataToRange(float maxValue, float index, float maxRange) {
         // turn the values around (1 - ...)
         float max = 1 - MIN_OPACITY - 0.1f;
@@ -427,7 +415,6 @@ public class MyGoogleMap {
     }
 
     // remove dog tracks
-    // TODO - possible problems, dog tracks are checked in the listener, while user might click on something different
     void removeDogTracks() {
         for (int i = tracks.size() - 1; i >= 0; i--) {
             // check if theyre not zero:

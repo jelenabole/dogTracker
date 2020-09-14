@@ -93,7 +93,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                     InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 } catch (Exception e) {
-                    // TODO: handle exception
                     // when keyboard is not opened - ignore
                 }
 
@@ -110,7 +109,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
             }
         });
 
-        // TODO - za range, povećati ili smanjiti zoom na mapi
         // seekbar = range
         rangeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -142,14 +140,12 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         Log.d(TAG, "on Map Ready");
         map = googleMap;
 
-        // TODO - calculate map padding:
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
 
         int padding = (int) (height * 0.1);
         googleMap.setPadding(0, padding, 0, padding);
 
-        // TODO - remove map buttons and disable tilt:
         // remove tilt
         map.getUiSettings().setRotateGesturesEnabled(false);
         // disable map toolbar
@@ -167,9 +163,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 refreshMarkerInfo();
             }
             @Override public void onMarkerDragStart(Marker arg0) { }
-            @Override public void onMarkerDrag(Marker arg0) {
-                // TODO - move the circle too ??
-            }
+            @Override public void onMarkerDrag(Marker arg0) { }
         });
 
         // returns -1 when there's no permission
@@ -177,7 +171,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 Manifest.permission.ACCESS_FINE_LOCATION) != -1) {
             Log.d(TAG, "location permission enabled (1)");
 
-            // TODO - get current user location
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "location permission enabled (2) - permission granted");
@@ -188,7 +181,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                     Log.d(TAG, "location permission enabled (3) - location exists");
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-                    // TODO - current location string - ERROR
                     repositionMarkerByLocation(userLocation);
                 }
             }
@@ -211,7 +203,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         );
         marker.showInfoWindow();
 
-        // TODO - default values hardcoded = ERROR
         // range circle:
         circle = map.addCircle(new CircleOptions()
                 .center(initLocation)
@@ -234,19 +225,13 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         marker.showInfoWindow();
 
         zoomToMarker();
-        // TODO - maybe delete text bar
         // replace text from search bar:
         addressText.setText("");
         // addressText.setText(addressName);
     }
 
 
-
-
-
-
     /* functions for re-positioning of the marker */
-
 
     // change marker location and title (user location, or location search)
     public void repositionMarkerByLocation(LatLng location) {
@@ -256,8 +241,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         refreshMarkerInfo();
     }
 
-
-    // TODO - dohvatiti addresu iz ovoga, ne dohvaćati ponovno tamo ???
     // change marker location by address name (search bar)
     private void repositionMarkerByAddress(String addressName) {
         Log.d(TAG, "reposition marker - address: " + addressName);
@@ -272,7 +255,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 Log.d(TAG, "address: "
                         + getAddressOnly(addresses.get(0).getAddressLine(0)));
 
-                // TODO - traženje adrese ispočetka - error:
                 repositionMarkerByLocation(new LatLng(lat, lng));
             }
         } catch (IOException e) {
@@ -304,23 +286,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         return str.substring(0, str.indexOf(","));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // save location to user FB and close the activity
     private void saveLocationToUser() {
         errorText.setVisibility(View.GONE);
@@ -328,7 +293,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         SafeZoneForm safeZone = new SafeZoneForm();
         LatLng position = marker.getPosition();
 
-        // TODO - set name for the place
         safeZone.setLocationName(getAddress(position, addressText.getText().toString()));
         safeZone.setLatitude(position.latitude);
         safeZone.setLongitude(position.longitude);
@@ -353,7 +317,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
     }
 
 
-    // TODO - not in use - check all getters:
     // fallback = string that the user wrote, in case full address isn't found:
     private String getAddress(LatLng location, String fallbackString) {
         double latitude = location.latitude;
@@ -366,7 +329,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
 
-                // TODO - delete unnecessary info:
                 String addressLine = address.getAddressLine(0);
                 String city = address.getLocality();
                 String state = address.getAdminArea();
@@ -380,8 +342,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
             Log.e(TAG, e.getMessage());
         }
 
-        // TODO - if no address was found, or if there is an error:
-        // TODO - if theres an error, return whatever the user wrote:
+        // if no address was found, return whatever the user wrote:
         if (fallbackString.length() < 1) {
             return "(location name)";
         }

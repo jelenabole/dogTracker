@@ -63,8 +63,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
-        // TODO - configure sign in (if needed - error) ???
-        // TODO - init firebase auth
+        // init firebase auth
         configureSignIn();
         FBAuth.initializeFirebaseAuth();
     }
@@ -77,7 +76,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // check if the user is signed in
         if (FBAuth.isUserLoggedIn()) {
             Log.d(TAG, "user logged in - get info and show main activity");
-            // TODO - is the user UID same for each device ???
             loginUser();
         } else {
             Log.d(TAG, "user isn't logged - show google sign-in option");
@@ -138,8 +136,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void configureSignIn() {
         Log.d(TAG, "configure sign in (google)");
         // Configure Google Sign In
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                // TODO - what is this ID:
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
@@ -185,18 +184,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     /**
-     * TODO - check what should be here (except user log in)
      * Takes google account and get user info.
      * Start auth with google.
      * @param acct = Google Account
      */
-    // TODO - this function is not checked:
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // progress dialog:
         showProgressDialog();
 
-        // TODO - additional (cause 'this' is from firebase):
         final Context context = this;
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         FBAuth.mAuth.signInWithCredential(credential)
@@ -210,7 +206,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential: failure", task.getException());
-                        // TODO - snackbar deleted:
                         hideProgressDialog();
                         Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
                     }

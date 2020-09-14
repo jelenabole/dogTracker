@@ -1,7 +1,5 @@
 <resources>
     <!--
-    TODO: Before you run your application, you need a Google Maps API key.
-
     To get one, follow this link, follow the directions and press "Create" at the end:
 
     https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=42:4F:27:5A:63:4A:28:47:1A:77:A5:FC:6E:63:C9:0D:24:42:A5:1F%3Bhr.tvz.trackmydog

@@ -2,20 +2,54 @@ package hr.tvz.trackmydog.utils;
 
 import android.text.format.DateFormat;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import hr.tvz.trackmydog.models.dogModel.CurrentLocation;
+import hr.tvz.trackmydog.models.dogLocationModel.ShortLocation;
 
-public class TimeUtils {
+public class TimeDistanceUtils {
 
     private static final String TAG = "Time Utils";
 
+    // for history routes and runs
+    public static String convertTimestampToReadable(long timestamp) {
+        java.text.DateFormat formatter = new SimpleDateFormat("dd.MM.yy HH:mm");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String dateFormatted = formatter.format(timestamp);
+
+        return dateFormatted;
+    }
+
+    public static String formatFloatNumber(double number, int places) {
+        if (number == 0) return "0";
+
+        // return String.format("%.1f", number);
+        return new BigDecimal(number).setScale(places, BigDecimal.ROUND_HALF_UP).toString();
+    }
+
+    public static double distanceBetweenTwoGeoPoints(LatLng previous, LatLng next) {
+        double earthRadius = 6371e3; // earth's radius in metres
+
+        // values in radians
+        double prevLat = previous.latitude * Math.PI / 180;
+        double prevLong = previous.longitude * Math.PI / 180;
+        double nextLat = next.latitude * Math.PI / 180;
+        double nextLong = next.longitude * Math.PI / 180;
+
+        // approximation
+        double x = (nextLong - prevLong) * Math.cos((nextLat + prevLat) / 2);
+        double y = (nextLat - prevLat);
+        return Math.sqrt(x*x + y*y) * earthRadius;
+    }
 
     // get default pictures for dogs (if there are no dog pics)
-    public static String getLastLocationTime(CurrentLocation location) {
+    public static String getLastLocationTime(ShortLocation location) {
         if (location == null) {
             return "no location detected";
         } else {
@@ -69,10 +103,6 @@ public class TimeUtils {
     public static String converTimeToReadable(long time) {
         // check if its in the last minute:
         long diff = (new Date()).getTime() - time;
-        /*
-        System.out.println("time difference: " + diff);
-        System.out.println("minutes: " + (diff / 60000));
-        */
         // TimeUnit.MILLISECONDS.toMinutes(diff)
 
         if (diff / 60000 < 1) {
@@ -90,13 +120,6 @@ public class TimeUtils {
             long daysDifference = TimeUnit.MILLISECONDS
                     .toDays(currentDay.getTime() - lastLocationDay.getTime());
 
-            // TODO - delete this - checks:
-            /*
-            System.out.println("Current date: " + currentDay);
-            System.out.println("Dog date: " + lastLocationDay);
-            System.out.println("Difference : " + daysDifference);
-            */
-
             // ispis:
             str += getNameOfTheDay(daysDifference, lastLocationDay);
 
@@ -105,7 +128,6 @@ public class TimeUtils {
             str += new SimpleDateFormat("dd.MM.yyyy").format(date);
         }
 
-        // TODO - example formats:
         String dayOfTheWeek = (String) DateFormat.format("EEEE", date); // Thursday
         String day          = (String) DateFormat.format("dd",   date); // 20
         String monthString  = (String) DateFormat.format("MMM",  date); // Jun

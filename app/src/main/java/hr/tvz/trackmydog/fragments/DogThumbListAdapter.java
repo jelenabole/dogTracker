@@ -24,10 +24,6 @@ import hr.tvz.trackmydog.utils.ResourceUtils;
 
 public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapter.DogViewHolder> {
 
-    // TODO - add color and image
-    // TODO - calculate (from context ?) width/height to fit few (or to be 1/5 of the screen)
-    // calculate the size and put the images
-
     // class for the individual views:
     class DogViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.dogImage) SimpleDraweeView dogImage;
@@ -55,7 +51,6 @@ public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapte
     }
 
 
-    // TODO - other adapter stuff:
     private static String TAG = "Dog Thumbs Adapter";
     private List<DogInfo> dogList;
     private Context context;
@@ -77,7 +72,7 @@ public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapte
         int paddingBetween = (int) context.getResources().getDimension(R.dimen.items_margin_between);
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         int thumbWidth = screenWidth / 6;
-        // TODO - fixed buttons going over linear layout (bottom border not full) - why 6px ???
+        // workaround - fixed buttons going over linear layout (bottom border not full) - why 6px ???
         thumbWidth -= 6;
 
 
@@ -120,7 +115,7 @@ public class DogThumbListAdapter extends RecyclerView.Adapter<DogThumbListAdapte
 
     // add new data on change:
     void refreshData(List<DogInfo> dogs) {
-        // TODO - workaround = remove all nulls from the list:
+        // workaround = remove all nulls from the list:
         // deleted dogs are left as nulls in fb array
         dogs.removeAll(Collections.singleton(null));
         // while(tourists.remove(null));

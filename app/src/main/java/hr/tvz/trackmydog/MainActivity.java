@@ -42,13 +42,13 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "on Create");
 
-        // TODO - enable shared transitions (or add in style):
+        // enable shared transitions (or add in style):
         // getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         getWindow().setAllowReturnTransitionOverlap(true);
         getWindow().setAllowEnterTransitionOverlap(true);
 
-        // TODO - try transitions - explode:
+        // try transitions - explode:
         Explode explode = new Explode();
         explode.setDuration(500);
         getWindow().setExitTransition(explode);
@@ -69,9 +69,7 @@ public class MainActivity extends BaseActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
         // If the location permission has been granted, then start the TrackerService
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-            // TODO - dont do nothing (except later show current user location (map fragment)
-        } else {
+        if (permission != PackageManager.PERMISSION_GRANTED) {
             // If the app doesn’t currently have access to the user’s location, then request access
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -90,8 +88,8 @@ public class MainActivity extends BaseActivity {
 
     private void loadFragment(Fragment selectedFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        // TODO - added animations:
         /*
+        // added animations:
         transaction.setCustomAnimations(R.anim.start_fragment, R.anim.end_fragment,
                 R.anim.pop_start_fragment, R.anim.pop_end_fragment);
         */
@@ -100,26 +98,22 @@ public class MainActivity extends BaseActivity {
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+            = item -> {
+                // call different fragments:
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.navigation_map:
+                        selectedFragment = MapFragment.newInstance();
+                        break;
+                    case R.id.navigation_dashboard:
+                        selectedFragment = DogsFragment.newInstance();
+                        break;
+                    case R.id.navigation_notifications:
+                        selectedFragment = ProfileFragment.newInstance();
+                        break;
+                }
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            // call different fragments:
-            Fragment selectedFragment = null;
-            switch (item.getItemId()) {
-                case R.id.navigation_map:
-                    selectedFragment = MapFragment.newInstance();
-                    break;
-                case R.id.navigation_dashboard:
-                    selectedFragment = DogsFragment.newInstance();
-                    break;
-                case R.id.navigation_notifications:
-                    selectedFragment = ProfileFragment.newInstance();
-                    break;
-            }
-
-            loadFragment(selectedFragment);
-            return true;
-        }
-    };
+                loadFragment(selectedFragment);
+                return true;
+            };
 }

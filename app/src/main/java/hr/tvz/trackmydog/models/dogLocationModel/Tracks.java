@@ -4,7 +4,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
-import hr.tvz.trackmydog.utils.TimeUtils;
+import hr.tvz.trackmydog.utils.TimeDistanceUtils;
 
 @IgnoreExtraProperties
 public class Tracks implements Serializable {
@@ -49,7 +49,7 @@ public class Tracks implements Serializable {
         str += " - " + "latitude: " + latitude;
         str += " - " + "longitude: " + longitude;
         // str += " - " + "time: " + time;
-        str += " - " + "time: " + TimeUtils.converTimeToReadable(time);
+        str += " - " + "time: " + TimeDistanceUtils.converTimeToReadable(time);
 
         return str;
     }

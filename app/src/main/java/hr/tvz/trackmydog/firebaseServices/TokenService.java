@@ -26,8 +26,6 @@ import java.util.Map;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.localDB.Token;
 
-// TODO - token is same for multiple users on the same device
-// TODO - in case the local token is not defined = maybe wait during sign in process
 public class TokenService extends FirebaseMessagingService {
 
     private static final String TAG = "FB Notification Service";
@@ -48,18 +46,12 @@ public class TokenService extends FirebaseMessagingService {
         }
     }
 
-    // TODO - instalirat ovo na usera :D
     // get token - if there are differences on user/locally
     public static void retrieveApplicationToken() {
-        // TODO - token is changed when ...
-        // .. app deletes it's instance ID, when it is restored on new device,
-        // .. when user uninstalls/reinstalls the app, or cleans app data
-
         // Local token (or null)
         final String localToken = token;
         Log.e(TAG, "Local token: " + localToken);
 
-        // TODO - receive token from firebase, check if its the same as local
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -69,18 +61,13 @@ public class TokenService extends FirebaseMessagingService {
                 Log.w(TAG, "Application token check: \n \t" + fbToken);
                 Log.w(TAG, "Local token: \n \t" + token);
 
-                // TODO - token shouldnt be empty (ever) and they should always match
                 if (token == null) {
-                    // TODO - new token does this:
                     // saveTokenLocally(fbToken);
                 } else if (!fbToken.equals(token)) {
                     Log.e("ERROR", " - token is not the same as local");
-                    // TODO - override the local one (?)
                 } else {
                     Log.d(TAG, "Token is the same as the local one");
                 }
-                // TODO - ako postoji razlika, promijeni u firebaseu (??)
-                // TODO - test user with wrong token
             }
         });
     }
@@ -91,7 +78,7 @@ public class TokenService extends FirebaseMessagingService {
         Log.e(TAG, " *** NEW TOKEN: " + newToken);
         token = newToken;
 
-        // TODO - save new token locally:
+        // save new token locally:
         saveTokenLocally(newToken);
     }
 
@@ -105,7 +92,7 @@ public class TokenService extends FirebaseMessagingService {
     }
 
     private void sendRegistrationToServer(String newToken) {
-        // TODO - send reg token to firebase
+        // send reg token to firebase
         // save token on user (and all of its dogs, after fork)
     }
 
@@ -146,7 +133,6 @@ public class TokenService extends FirebaseMessagingService {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             public void run() {
-                // TODO - check with context (this in service)
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                 // Toast.makeText(MyApplication.getContext().getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
@@ -175,7 +161,7 @@ public class TokenService extends FirebaseMessagingService {
         snackbar.show();
     }
 
-    // TODO - get current activity
+    // get current activity from anywhere
     public static Activity getActivity() {
         try {
             Class activityThreadClass = Class.forName("android.app.ActivityThread");
@@ -201,7 +187,6 @@ public class TokenService extends FirebaseMessagingService {
 
             return null;
         } catch (Exception ex) {
-            // TODO - handle exceptions - check code
             Log.d(TAG, "Error while getting current activity");
             return null;
         }

@@ -27,7 +27,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.activities.DogDetailsActivity;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
 import hr.tvz.trackmydog.utils.ResourceUtils;
-import hr.tvz.trackmydog.utils.TimeUtils;
+import hr.tvz.trackmydog.utils.TimeDistanceUtils;
 
 public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.DogViewHolder> {
 
@@ -60,13 +60,9 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
             Intent dogDetailsIntent = new Intent(context, DogDetailsActivity.class);
             dogDetailsIntent.putExtra("dogIndex", index);
 
-            // TODO - add transition name:
             // v.setTransitionName("transitionDogImage");
             View image = ((LinearLayout)((LinearLayout) v).getChildAt(0)).getChildAt(0);
 
-            // System.out.println(((LinearLayout)((LinearLayout) v).getChildAt(0)).getChildAt(0));
-
-            // TODO - set with animation: (and shared element view and common transition name)
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                     (Activity) context, image, "transitionDogImage");
             context.startActivity(dogDetailsIntent, options.toBundle());
@@ -116,7 +112,7 @@ public class DogInfoListAdapter extends RecyclerView.Adapter<DogInfoListAdapter.
             dogName += " (" + dog.getAge() + ")";
         }
         String dogBreed = dog.getBreed() == null ? "-- unknown --" : dog.getBreed();
-        String dogLastLocationTime = TimeUtils.getLastLocationTime(null);
+        String dogLastLocationTime = TimeDistanceUtils.getLastLocationTime(null);
         int dogColor = ResourceUtils.getDogColor(dog.getColor(), context);
 
         // add dog photo (if exists):

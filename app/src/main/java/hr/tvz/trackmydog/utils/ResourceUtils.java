@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import hr.tvz.trackmydog.R;
 
-// TODO - default color is black = check this for paws and colors (border, text)
+// default color is black
 public class ResourceUtils {
 
     private static final String TAG = "Resource Utils";
@@ -46,6 +46,7 @@ public class ResourceUtils {
             case "yellow":
             case "red":
             case "green":
+            case "gray":
                 return res.getIdentifier("dot_" + color, "drawable", context.getPackageName());
             default:
                 return res.getIdentifier("dot", "drawable", context.getPackageName());
@@ -157,14 +158,9 @@ public class ResourceUtils {
      * @param scale - density of the screen
      * @return - number of pixels that it presents
      */
-    // convert dp to pixels:
-    // density = number of dps that needs
     public static int convertDpToPixels(float dp, float scale) {
-        // TODO - remove to resource utils:
-        // TODO - (+0.5) is used instead of round() when casting to int:
         // https://stackoverflow.com/questions/9685658/add-padding-on-view-programmatically
 
-        // TODO - scale from context:
         // float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }

@@ -10,7 +10,7 @@ import java.util.Map;
 public class ServiceSettingsForm implements Serializable {
 
     private int interval;
-    private boolean started;
+    private boolean start;
 
     public int getInterval() {
         return interval;
@@ -20,19 +20,19 @@ public class ServiceSettingsForm implements Serializable {
         this.interval = interval;
     }
 
-    public boolean isStarted() {
-        return started;
+    public boolean isStart() {
+        return start;
     }
 
-    public void setStarted(boolean started) {
-        this.started = started;
+    public void setStart(boolean start) {
+        this.start = start;
     }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
 
         result.put("interval", interval);
-        result.put("started", started);
+        result.put("start", start);
 
         return result;
     }
@@ -42,7 +42,7 @@ public class ServiceSettingsForm implements Serializable {
         String str = "";
 
         str += "\n " + "interval: " + interval;
-        str += " - " + "started: " + started;
+        str += " - " + "start: " + start;
 
         return str;
     }

@@ -53,8 +53,6 @@ public class FBAuth {
         Log.d(TAG, "sign out user and return to Login Activity");
         // firebase - signout
         mAuth.signOut();
-        // TODO - delete the listener, and the user key (??)
-        // .. if the key is deleted first, the user will be null ?
 
         Context context = MyApplication.getContext();
         Intent intent = new Intent(context, LoginActivity.class);

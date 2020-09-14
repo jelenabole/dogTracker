@@ -34,13 +34,11 @@ public class LabelUtils {
     }
 
     public static String getStringForEdit(Date str) {
-        // TODO - format:
         return str == null ? "" : str.toString();
     }
 
     // check if field is empty
     // used in AddNewDog (deleted), and EditDog
-    // TODO - used only in UserDetails:
     public static boolean isFieldEmpty(String str) {
         if (str == null || str.equals("")) {
             return true;

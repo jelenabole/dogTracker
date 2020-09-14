@@ -29,12 +29,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.dogLocationModel.DogMarker;
+import hr.tvz.trackmydog.models.dogLocationModel.Run;
 import hr.tvz.trackmydog.models.dogLocationModel.ShortLocation;
 import hr.tvz.trackmydog.models.dogLocationModel.Tracks;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
@@ -58,14 +60,13 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     DatabaseReference tracksRef;
     ValueEventListener tracksListener;
     // number of last locations to get from FB:
-    int NUMBER_OF_LAST_LOCATIONS = 100;
+    int NUMBER_OF_LAST_LOCATIONS = 20;
 
     public static MapFragment newInstance() {
         return new MapFragment();
     }
 
     @Override
-    // TODO - called on refresh too (changing screen orientation):
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
@@ -81,7 +82,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         ButterKnife.bind(this, v);
 
-        // TODO - check activity as a "context":
         // set adapter and recycler view (horizontal):
         dogThumbListAdapter = new DogThumbListAdapter(getActivity(), this);
         recyclerView.setAdapter(dogThumbListAdapter);
@@ -94,7 +94,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // set listener to current user and get info:
         ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+                .getCurrentUserLiveData().observe(getViewLifecycleOwner(), new Observer<CurrentUser>() {
             @Override
             public void onChanged(@Nullable CurrentUser currentUser) {
                 if (currentUser != null) {
@@ -113,11 +113,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                         // remove the dogs:
                         Log.d(TAG, "Dog list is empty");
                         dogThumbListAdapter.refreshData(new ArrayList<DogInfo>());
-                        // TODO - no dogs (nor all-button) - no need for layout animations
                         hideThumbs();
                     }
 
-                    // TODO - change map and markers:
                     startMap();
                 }
             }
@@ -135,7 +133,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
     public void startMap() {
         Log.d(TAG, "map: " + myMap.getMap());
-        // TODO - set up map if its null (first time)
         // user is ready here
         if (myMap.getMap() == null) {
             // set map fragment:
@@ -185,17 +182,13 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
         myMap.setMap(googleMap);
 
         Log.d(TAG, "setting markers for dogs");
-        // TODO - get all dogs, and set markers (individual listeners):
         // set dog reference for the marker, or add null (for deleted dog)
         if (user.getDogs() != null) {
             Log.d(TAG, "number of dogs: " + user.getDogs().size());
             for (int i = 0; i < user.getDogs().size(); i++) {
-                // TODO - null / dog = if dog check
                 if (user.getDogs().get(i) != null) {
-                    // TODO - we need dog info (key, index, name) - so sending the whole dog
                     setListenerOnDogLocation(user.getDogs().get(i));
                 }
-                // TODO - just add null, and change it with marker later:
                 myMap.addMarker(null);
             }
         }
@@ -217,7 +210,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // set dog listener (map location)
     // on change, change the marker on the map
     // recalculate the zoom level and position (same as for the user change)
-    // TODO - needed more info from the dog (key, index, name) - sending whole dog
     protected void setListenerOnDogLocation(final DogInfo usersDog) {
         FirebaseDatabase.getInstance().getReference("dogs/" + usersDog.getKey() + "/location")
                 .addValueEventListener(new ValueEventListener() {
@@ -232,7 +224,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                         dog.setKey(usersDog.getKey());
 
                         Log.d(TAG + " dog listener", "dog from listener: \n" + dog);
-                        // TODO - isAdded = checking for context
                         // ... (on some FB refreshes, fragment isnt added on activity)
                         if (isAdded()) {
                             Log.d(TAG + " dog listener", "isAdded passed");
@@ -264,30 +255,44 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
      * @param color - color of a dog for markers (dots)
      */
     private void setDogTracksListener(final String key, final String color, final float startAlpha) {
-        // TODO - basic dog for color = just in case to fix color dynamically
         Log.d(TAG, "set tracks listener - dog key: " + key);
 
         // remove dog listeners:
-        // TODO - already done (??)
         removeDogTracksListener();
-        tracksRef = FirebaseDatabase.getInstance().getReference("dogs/" + key);
 
-        // get tracks (last 100 should suffice) and reverse the list:
-        FirebaseDatabase.getInstance().getReference("dogs/" + key + "/tracks").orderByKey()
-                .limitToLast(NUMBER_OF_LAST_LOCATIONS)
-                .addValueEventListener(new ValueEventListener() {
+
+        FirebaseDatabase.getInstance().getReference("dogs/" + key + "/runs").orderByKey()
+                .limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                Log.d("TRACKS", "number of tracks: " + dataSnapshot.getChildrenCount());
-
-                // write all to list:
-                ArrayList<Tracks> tracks = new ArrayList<>();
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    tracks.add(snap.getValue(Tracks.class));
+                Map<String, Run> map = (Map) dataSnapshot.getValue();
+                String runKey = "";
+                for (Map.Entry<String, Run> entry : map.entrySet()) {
+                    runKey = entry.getKey();
                 }
 
-                myMap.setDogTracks(tracks, color);
+                Log.d("TRACKS", "run ID: " + runKey);
+                tracksRef = FirebaseDatabase.getInstance().getReference("dogs/" + key + "/tracks/" + runKey);
+
+                tracksRef.orderByKey().limitToLast(NUMBER_OF_LAST_LOCATIONS)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Log.d("TRACKS", "number of tracks: " + dataSnapshot.getChildrenCount());
+
+                            // write all to list:
+                            ArrayList<Tracks> tracks = new ArrayList<>();
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                tracks.add((Tracks) child.getValue(Tracks.class));
+                            }
+
+                            myMap.setDogTracks(tracks, color);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -319,7 +324,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     // on button click - track only this dog
     public void showOnlyThisDog(Integer index) {
         // check if marker location for that dog even exists - either send message or follow dog
-        // TODO - new function (error ???) - does that marker exists:
         if (myMap.isMarkerAtIndexEmpty(index)) {
             Toast.makeText(getContext(), "No recent location for dog: "
                     + user.getDogs().get(index).getName(), Toast.LENGTH_SHORT).show();
@@ -331,7 +335,6 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // remove previous track listeners - add new ones:
         removeDogTracksListener();
-        // TODO - alpha should be from marker: markers.get(index).getAlpha()
         setDogTracksListener(user.getDogs().get(index).getKey(), user.getDogs().get(index).getColor(),
                 1f);
 

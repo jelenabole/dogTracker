@@ -3,6 +3,7 @@ package hr.tvz.trackmydog.activities;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
@@ -29,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +43,7 @@ import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.DogService;
 import hr.tvz.trackmydog.firebaseServices.SpinnerCallback;
+import hr.tvz.trackmydog.models.dogLocationModel.Run;
 import hr.tvz.trackmydog.models.forms.SafeZoneForm;
 import hr.tvz.trackmydog.models.forms.ServiceSettingsForm;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
@@ -48,6 +52,7 @@ import hr.tvz.trackmydog.models.userModel.SafeZone;
 import hr.tvz.trackmydog.utils.DesignUtils;
 import hr.tvz.trackmydog.utils.LabelUtils;
 import hr.tvz.trackmydog.utils.ResourceUtils;
+import hr.tvz.trackmydog.utils.TimeDistanceUtils;
 
 public class DogDetailsActivity extends BaseActivity {
 
@@ -58,6 +63,7 @@ public class DogDetailsActivity extends BaseActivity {
     private CurrentUser user;
     private ServiceSettingsForm dogSettings;
     private SafeZoneForm dogSafeZone;
+    private List<Run> dogRuns = new ArrayList<>();
 
     // header info:
     @BindView(R.id.infoBanner) LinearLayout infoBanner;
@@ -80,6 +86,7 @@ public class DogDetailsActivity extends BaseActivity {
     // linear layouts for options (popup windows):
     @BindView(R.id.locationLayout) LinearLayout locationLayout;
     @BindView(R.id.intervalLayout) LinearLayout intervalLayout;
+    @BindView(R.id.runList) LinearLayout runListLayout;
     @BindView(R.id.location) TextView location;
     @BindView(R.id.interval) TextView interval;
 
@@ -96,7 +103,7 @@ public class DogDetailsActivity extends BaseActivity {
         getWindow().setAllowReturnTransitionOverlap(true);
         getWindow().setAllowEnterTransitionOverlap(true);
 
-        // TODO - set for the fresco transitions:
+        // set for the fresco transitions:
         getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(
                 ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
         // not needed:
@@ -119,7 +126,6 @@ public class DogDetailsActivity extends BaseActivity {
 
         Log.d(TAG, "show details of dog with index: " + dogIndex);
 
-        // TODO - change model to get the user from previous activity
         // get user info and this dog:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, currentUser -> {
@@ -140,10 +146,10 @@ public class DogDetailsActivity extends BaseActivity {
                     .map(place -> place.getLocationName())
                     .collect(Collectors.toList());
 
-            openPopupWindow(data, true, string -> {
-                if (!string.equals("-")) {
+            openPopupWindow(data, true, str -> {
+                if (!str.equals("-")) {
                     SafeZone zone = user.getSafeZones().values().stream()
-                            .filter(safeZone -> safeZone.getLocationName() == string)
+                            .filter(safeZone -> safeZone.getLocationName().equals(str))
                             .findFirst().orElse(null);
                     if (dogSafeZone == null) dogSafeZone = new SafeZoneForm();
                     dogSafeZone.mapFrom(zone);
@@ -166,8 +172,86 @@ public class DogDetailsActivity extends BaseActivity {
         });
     }
 
+    /** Called when the user touches the button */
+    public void showHistory(String runKey) {
+        // get ID from a run / tracks
+        // String runID = "-MH1nPsf-zzHN2LCeuKk";
+
+        // create intent with that run ID:
+        Intent intent = new Intent(this, HistoryMapActivity.class);
+        intent.putExtra("runID", runKey);
+        intent.putExtra("dogKey", dog.getKey());
+        intent.putExtra("dogColor", dog.getColor());
+        startActivity(intent);
+    }
+
+    public void showHistoryTest(View view) {
+        // get ID from a run / tracks
+        String runID = "-MH1nPsf-zzHN2LCeuKk";
+
+        // create intent with that run ID:
+        Intent intent = new Intent(this, HistoryMapActivity.class);
+        intent.putExtra("runID", runID);
+        intent.putExtra("dogKey", dog.getKey());
+        intent.putExtra("dogColor", dog.getColor());
+        startActivity(intent);
+    }
+
     private void setDogListeners() {
         Log.d(TAG, "get dog settings from firebase");
+        final Context context = this;
+
+        // get dogs runs:
+        FirebaseDatabase.getInstance().getReference("dogs/" + dog.getKey() + "/runs")
+            .addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "runs changed: " + dogRuns);
+
+                        dogRuns = new ArrayList<>();
+                        double distance = 0;
+                        for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                            Run run = snap.getValue(Run.class);
+                            run.setKey(snap.getKey());
+                            dogRuns.add(run);
+
+                            distance += run.getDistance();
+                        }
+
+                        // convert to kilometers and show:
+                        kilometersText.setText((distance == 0 ? "0" : String.format("%.1f", distance / 1000)) + getResources().getString(R.string.kilometers));
+
+                        if (dogRuns.size() == 0) runListLayout.setVisibility(View.GONE);
+                        else runListLayout.setVisibility(View.VISIBLE);
+
+                        int i = 0;
+                        runListLayout.removeAllViews();
+                        for (Run run : dogRuns) {
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                            Button btn = new Button(context);
+                            btn.setId(i);
+                            i++;
+                            final int id_ = btn.getId();
+                            String buttonText = TimeDistanceUtils.convertTimestampToReadable(dogRuns.get(id_).getTimestamp())
+                                    + " (" + TimeDistanceUtils.formatFloatNumber(dogRuns.get(id_).getDistance() / 1000, 2) + " km)";
+                            btn.setText(buttonText);
+                            btn.setTextColor(Color.GRAY);
+                            runListLayout.addView(btn, params);
+                            ((Button) findViewById(id_)).setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View view) {
+                                    showHistory(dogRuns.get(id_).getKey());
+                                }
+                            });
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "error - get dog's safezone (FB): " + databaseError.getCode());
+                    }
+                });
 
         // get dogs settings:
         FirebaseDatabase.getInstance().getReference("dogs/" + dog.getKey() + "/settings")
@@ -188,7 +272,7 @@ public class DogDetailsActivity extends BaseActivity {
                     }
                 });
 
-        // get dogs settings:
+        // get dogs safe zone:
         FirebaseDatabase.getInstance().getReference("dogs/" + dog.getKey() + "/safezone")
             .addValueEventListener(
                 new ValueEventListener() {
@@ -228,7 +312,6 @@ public class DogDetailsActivity extends BaseActivity {
         final WheelPicker wheelPicker = popupView.findViewById(R.id.wheelPicker);
         wheelPicker.setData(data);
 
-        // TODO - set height = set by xml (???)
         // get size of a screen (calc height for the popup):
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -265,9 +348,9 @@ public class DogDetailsActivity extends BaseActivity {
         String dogHeight = LabelUtils.getAsStringLabel(dog.getHeight()) +
                 getResources().getString(R.string.centimeters);
 
-        String dogKilometers = "10.2" + getResources().getString(R.string.kilometers);
+        // TODO - add kilometers passed
+        String dogKilometers = "0" + getResources().getString(R.string.kilometers);
 
-        // TODO - add some different info here (level of acitvity)
         /*
         String dogLastLocationTime = dog.getLocation() == null ? "no location detected" :
                 new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(dog.getLocation().getTime()));

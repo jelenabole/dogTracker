@@ -47,6 +47,7 @@ public class SafeZoneForm implements Serializable {
     }
 
     public void mapFrom(SafeZone zone) {
+        if (zone == null) return;
         locationName = zone.getLocationName();
         latitude = zone.getLatitude();
         longitude = zone.getLongitude();

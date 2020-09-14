@@ -55,7 +55,6 @@ public class DogsFragment extends ListFragment {
         ButterKnife.bind(this, v);
 
         // set recycler view and adapter
-        // TODO - check activity as a "context":
         dogInfoListAdapter = new DogInfoListAdapter(getActivity());
         recyclerView.setAdapter(dogInfoListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -67,7 +66,7 @@ public class DogsFragment extends ListFragment {
         // get CurrentUserViewModel from the ViewModelProvider utility class
         // set the observer on user (and dogs) and refresh adapter on data change:
         ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
+                .getCurrentUserLiveData().observe(getViewLifecycleOwner(), new Observer<CurrentUser>() {
             @Override
             public void onChanged(@Nullable CurrentUser currentUser) {
                 if (currentUser != null) {
