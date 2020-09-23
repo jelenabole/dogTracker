@@ -1,9 +1,7 @@
 package hr.tvz.trackmydog.activities;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputEditText;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +17,6 @@ import hr.tvz.trackmydog.firebaseServices.UserService;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.models.mappers.UserMapper;
 import hr.tvz.trackmydog.models.forms.UserForm;
-import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class UserDetailsEditActivity extends BaseActivity {
@@ -46,18 +43,15 @@ public class UserDetailsEditActivity extends BaseActivity {
 
         // obtain instance of CurrentUser from ViewModelProvider utility class - if exists:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                if (currentUser != null) {
-                    Log.d(TAG, "Current user data retrieved: " + currentUser);
+                .getCurrentUserLiveData().observe(this, currentUser -> {
+                    if (currentUser != null) {
+                        Log.d(TAG, "Current user data retrieved: " + currentUser);
 
-                    // update the UI with values from the snapshot
-                    user = UserMapper.mapCurretUserToForm(currentUser);
-                    setFieldValues();
-                }
-            }
-        });
+                        // update the UI with values from the snapshot
+                        user = UserMapper.mapCurretUserToForm(currentUser);
+                        setFieldValues();
+                    }
+                });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -38,6 +38,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    // design, snackbar
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
 
@@ -48,9 +49,6 @@ dependencies {
 
     // circle image view:
     implementation 'de.hdodenhof:circleimageview:2.1.0'
-
-    // design, snackbar
-    implementation 'com.google.android.material:material:1.1.0'
 
     // butterknife:
     implementation 'com.jakewharton:butterknife:10.0.0'

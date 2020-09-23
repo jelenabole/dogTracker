@@ -1,10 +1,8 @@
 package hr.tvz.trackmydog.fragments;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -94,32 +92,29 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // set listener to current user and get info:
         ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(getViewLifecycleOwner(), new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                if (currentUser != null) {
-                    user = currentUser;
+                .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
+                    if (currentUser != null) {
+                        user = currentUser;
 
-                    if (currentUser.getDogs() != null) {
-                        // update the UI with values from the snapshot
-                        Log.d(TAG, "Current user data retrieved: " + currentUser);
+                        if (currentUser.getDogs() != null) {
+                            // update the UI with values from the snapshot
+                            Log.d(TAG, "Current user data retrieved: " + currentUser);
 
-                        // allDogsButton.animate();
-                        allDogsButton.startAnimation(buttonsAnimation);
-                        recyclerView.scheduleLayoutAnimation();
-                        dogThumbListAdapter.refreshData(currentUser.getDogs());
-                        showThumbs();
-                    } else {
-                        // remove the dogs:
-                        Log.d(TAG, "Dog list is empty");
-                        dogThumbListAdapter.refreshData(new ArrayList<DogInfo>());
-                        hideThumbs();
+                            // allDogsButton.animate();
+                            allDogsButton.startAnimation(buttonsAnimation);
+                            recyclerView.scheduleLayoutAnimation();
+                            dogThumbListAdapter.refreshData(currentUser.getDogs());
+                            showThumbs();
+                        } else {
+                            // remove the dogs:
+                            Log.d(TAG, "Dog list is empty");
+                            dogThumbListAdapter.refreshData(new ArrayList<DogInfo>());
+                            hideThumbs();
+                        }
+
+                        startMap();
                     }
-
-                    startMap();
-                }
-            }
-        });
+                });
 
         allDogsButton.setOnClickListener(new View.OnClickListener(){
             @Override public void onClick(View v) {
@@ -251,18 +246,18 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
      * This method is called when the dog is clicked (user wants to follow another dog).
      * Previous listener and tracks are deleted, and new ones are set.
      *
-     * @param key - key of a dog to listen
-     * @param color - color of a dog for markers (dots)
+     * @param dogIndex - index of a dog to listen
      */
-    private void setDogTracksListener(final String key, final String color, final float startAlpha) {
+    private void setDogTracksListener(final int dogIndex, final float startAlpha) {
+        final String key = user.getDogs().get(dogIndex).getKey();
+        final String color = user.getDogs().get(dogIndex).getColor();
         Log.d(TAG, "set tracks listener - dog key: " + key);
 
         // remove dog listeners:
         removeDogTracksListener();
 
-
         FirebaseDatabase.getInstance().getReference("dogs/" + key + "/runs").orderByKey()
-                .limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Map<String, Run> map = (Map) dataSnapshot.getValue();
@@ -286,7 +281,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                                 tracks.add((Tracks) child.getValue(Tracks.class));
                             }
 
-                            myMap.setDogTracks(tracks, color);
+                            myMap.setDogTracks(tracks, dogIndex, color);
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -308,9 +303,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
     }
 
 
-    /*
-        functions for buttons = click all dogs, or only one:
-     */
+     /* functions for buttons = click all dogs, or only one */
 
     // on "all dogs" button clicked - track all dogs
     private void showAllDogs() {
@@ -335,8 +328,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
 
         // remove previous track listeners - add new ones:
         removeDogTracksListener();
-        setDogTracksListener(user.getDogs().get(index).getKey(), user.getDogs().get(index).getColor(),
-                1f);
+        setDogTracksListener(index, 1f);
 
         myMap.showOneDog(index);
     }

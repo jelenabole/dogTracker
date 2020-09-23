@@ -1,6 +1,5 @@
 package hr.tvz.trackmydog.activities;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -23,7 +22,6 @@ import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.mappers.DogMapper;
 import hr.tvz.trackmydog.models.forms.DogForm;
-import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class DogDetailsEditActivity extends BaseActivity {
@@ -54,19 +52,16 @@ public class DogDetailsEditActivity extends BaseActivity {
 
         // set listener to current user and get info:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                if (currentUser != null) {
-                    Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
-                    dog = DogMapper.mapBasicDogToForm(currentUser.getDogs().get(dogIndex));
-                    Log.d(TAG, "Dog index: " + dogIndex);
+                .getCurrentUserLiveData().observe(this, currentUser -> {
+                    if (currentUser != null) {
+                        Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
+                        dog = DogMapper.mapBasicDogToForm(currentUser.getDogs().get(dogIndex));
+                        Log.d(TAG, "Dog index: " + dogIndex);
 
-                    // set all fields to values
-                    setFieldValues();
-                }
-            }
-        });
+                        // set all fields to values
+                        setFieldValues();
+                    }
+                });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

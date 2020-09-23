@@ -1,11 +1,9 @@
 package hr.tvz.trackmydog.fragments;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +35,7 @@ public class ProfileFragment extends Fragment {
     // text views:
     @BindView(R.id.name) TextView name;
     @BindView(R.id.location) TextView location;
+    @BindView(R.id.fullName) TextView fullName;
     @BindView(R.id.email) TextView email;
     @BindView(R.id.phoneNumber) TextView phoneNumber;
     @BindView(R.id.gender) TextView gender;
@@ -58,16 +57,13 @@ public class ProfileFragment extends Fragment {
 
         // set listener to current user and get info:
         ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                if (currentUser != null) {
-                    user = currentUser;
-                    // set all text views:
-                    setAllFields();
-                }
-            }
-        });
+                .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
+                    if (currentUser != null) {
+                        user = currentUser;
+                        // set all text views:
+                        setAllFields();
+                    }
+                });
 
         // edit button listener:
         editButton.setOnClickListener(new View.OnClickListener(){
@@ -104,6 +100,7 @@ public class ProfileFragment extends Fragment {
         location.setText(LabelUtils.getAsStringLabel(user.getCity()));
         email.setText(LabelUtils.getAsStringLabel(user.getEmail()));
 
+        fullName.setText(LabelUtils.getAsStringLabel(user.getFullName()));
         phoneNumber.setText(LabelUtils.getAsStringLabel(user.getPhoneNumber()));
         gender.setText(LabelUtils.getAsStringLabel(user.getGender()));
     }

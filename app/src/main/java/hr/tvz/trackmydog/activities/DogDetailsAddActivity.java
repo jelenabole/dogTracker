@@ -1,6 +1,5 @@
 package hr.tvz.trackmydog.activities;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -25,7 +24,6 @@ import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.DogForm;
-import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.utils.LabelUtils;
 
 public class DogDetailsAddActivity extends BaseActivity {
@@ -62,21 +60,18 @@ public class DogDetailsAddActivity extends BaseActivity {
 
         // set listener to current user and get info:
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                if (currentUser != null) {
-                    // get user notification token and dog index (number of dogs):
-                    userToken = currentUser.getToken();
-                    if (currentUser.getDogs() != null) {
-                        dogIndex = currentUser.getDogs().size();
-                    } else {
-                        dogIndex = 0;
+                .getCurrentUserLiveData().observe(this, currentUser -> {
+                    if (currentUser != null) {
+                        // get user notification token and dog index (number of dogs):
+                        userToken = currentUser.getToken();
+                        if (currentUser.getDogs() != null) {
+                            dogIndex = currentUser.getDogs().size();
+                        } else {
+                            dogIndex = 0;
+                        }
+                        Log.d(TAG, "Dog index: " + dogIndex);
                     }
-                    Log.d(TAG, "Dog index: " + dogIndex);
-                }
-            }
-        });
+                });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

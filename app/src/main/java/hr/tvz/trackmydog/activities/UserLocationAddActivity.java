@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -37,7 +38,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
-import hr.tvz.trackmydog.firebaseServices.ActivityCallback;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseServices.UserService;
 import hr.tvz.trackmydog.models.forms.SafeZoneForm;
@@ -78,26 +78,21 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         // add location (safe zone) button listener:
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "hide keyboard and search");
+        searchButton.setOnClickListener(v -> {
+            Log.d(TAG, "hide keyboard and search");
 
-                String addressName = addressText.getText().toString();
-                if (addressName == null || addressName.equals("")) {
-                    return;
-                }
+            String addressName = addressText.getText().toString();
+            if (addressName.equals("")) return;
 
-                // hide keyboard:
-                try {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                } catch (Exception e) {
-                    // when keyboard is not opened - ignore
-                }
-
-                repositionMarkerByAddress(addressText.getText().toString());
+            // hide keyboard:
+            try {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+                // when keyboard is not opened - ignore
             }
+
+            repositionMarkerByAddress(addressText.getText().toString());
         });
 
         // add location (safe zone) button listener:
@@ -139,6 +134,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "on Map Ready");
         map = googleMap;
+        map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_without_transit));
 
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
@@ -298,18 +294,15 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         safeZone.setLongitude(position.longitude);
         safeZone.setRange(rangeSeekbar.getProgress() * rangeStep);
 
-        UserService.saveSafeZone(safeZone, new ActivityCallback() {
-            @Override
-            public void closeIntent(boolean error) {
-                if (!error) {
-                    Log.d(TAG, "safe location added successfully");
-                    finish();
-                } else {
-                    Log.d(TAG, "error while saving user - DB error");
-                    errorText.setText(getString(R.string.error_save_to_database));
-                    errorText.setVisibility(View.VISIBLE);
-                    hideProgressDialog();
-                }
+        UserService.saveSafeZone(safeZone, error -> {
+            if (!error) {
+                Log.d(TAG, "safe location added successfully");
+                finish();
+            } else {
+                Log.d(TAG, "error while saving user - DB error");
+                errorText.setText(getString(R.string.error_save_to_database));
+                errorText.setVisibility(View.VISIBLE);
+                hideProgressDialog();
             }
         });
 
@@ -329,14 +322,11 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
 
-                String addressLine = address.getAddressLine(0);
-                String city = address.getLocality();
-                String state = address.getAdminArea();
-                String country = address.getCountryName();
-                String postalCode = address.getPostalCode();
-                String knownName = address.getFeatureName(); // street number, or name of something
+                String street = address.getThoroughfare() == null ? "" : address.getThoroughfare();
+                street += address.getSubThoroughfare() == null ? "" : " " + address.getSubThoroughfare();
+                String city = address.getLocality() == null ? "" : address.getLocality();
 
-                return addressLine;
+                return street + (street.length() != 0 && city.length() != 0 ? ", " : "") + city;
             }
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());

@@ -148,7 +148,8 @@ public class HistoryMapActivity extends BaseActivity implements OnMapReadyCallba
                             previous = position;
                         }
 
-
+                        // if end is not the last track
+                        if (end == 0) end = start;
                         createRun(start, end, end - start, distance);
                         // saveRun();
 

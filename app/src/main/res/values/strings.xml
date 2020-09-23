@@ -123,6 +123,7 @@
     <!-- labels -->
     <string name="label_email">Email:</string>
     <string name="label_phone_number">Phone number:</string>
+    <string name="label_full_name">Full name:</string>
     <string name="label_gender">Gender:</string>
     <string name="label_date_of_birth">Date of birth:</string>
 

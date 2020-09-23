@@ -9,7 +9,7 @@ public class Run implements Serializable {
 
     private String started;
     private String ended;
-    private double time; // in seconds
+    private double duration; // in seconds
     private double distance; // in meters
 
     private long timestamp;
@@ -17,10 +17,10 @@ public class Run implements Serializable {
 
     public Run() {}
 
-    public Run(String started, String ended, long time, double distance) {
+    public Run(String started, String ended, long duration, double distance) {
         this.started = started;
         this.ended = ended;
-        this.time = time;
+        this.duration = duration;
         this.distance = distance;
     }
 
@@ -56,12 +56,12 @@ public class Run implements Serializable {
         this.distance = distance;
     }
 
-    public double getTime() {
-        return time;
+    public double getDuration() {
+        return duration;
     }
 
-    public void setTime(double time) {
-        this.time = time;
+    public void setDuration(double duration) {
+        this.duration = duration;
     }
 
     public long getTimestamp() {
@@ -79,6 +79,7 @@ public class Run implements Serializable {
         str += " - " + "started: " + started;
         str += " - " + "longitude: " + ended;
         str += " - " + "distance: " + distance;
+        str += " - " + "duration: " + duration;
 
         return str;
     }

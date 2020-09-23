@@ -1,13 +1,11 @@
 package hr.tvz.trackmydog.activities;
 
 import android.app.Activity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -35,7 +33,6 @@ import hr.tvz.trackmydog.firebaseServices.AuthService;
 import hr.tvz.trackmydog.firebaseServices.FBAuth;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.NewUserForm;
-import hr.tvz.trackmydog.models.userModel.CurrentUser;
 import hr.tvz.trackmydog.MyCallback;
 import hr.tvz.trackmydog.firebaseServices.TokenService;
 
@@ -108,27 +105,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         // get the user data form listener
         ViewModelProviders.of(this).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(this, new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                Log.d(TAG, "current user: " + currentUser);
-                if (currentUser != null) {
-                    // check if token is the same
-                    // if null or not equal, save new one to FB:
-                    if (currentUser.getToken() == null || !currentUser.getToken().equals(token)) {
-                        Log.e(TAG, "token is null or not valid - save new one on FB");
-                        AuthService.changeToken(currentUser, token);
+                .getCurrentUserLiveData().observe(this, currentUser -> {
+                    Log.d(TAG, "current user: " + currentUser);
+                    if (currentUser != null) {
+                        // check if token is the same
+                        // if null or not equal, save new one to FB:
+                        if (currentUser.getToken() == null || !currentUser.getToken().equals(token)) {
+                            if (token == null) {
+                                // TODO - get token from DB
+                            }
+                            Log.e(TAG, "token is null or not valid - save new one on FB");
+                            AuthService.changeToken(currentUser, token);
+                        }
+                    } else {
+                        // register new user:
+                        NewUserForm user = new NewUserForm(email, token);
+                        AuthService.addUser(user);
                     }
-                } else {
-                    // register new user:
-                    NewUserForm user = new NewUserForm(email, token);
-                    AuthService.addUser(user);
-                }
 
-                // continue with the app:
-                callback.startIntent(context);
-            }
-        });
+                    // continue with the app:
+                    callback.startIntent(context);
+                });
     }
 
 

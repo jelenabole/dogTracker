@@ -16,6 +16,7 @@ public class CurrentUser implements Serializable {
     private boolean follow;
 
     // additional info:
+    private String fullName;
     private String city;
     private String phoneNumber;
     private String gender;
@@ -38,6 +39,14 @@ public class CurrentUser implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {

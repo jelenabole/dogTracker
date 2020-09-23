@@ -1,11 +1,9 @@
 package hr.tvz.trackmydog.fragments;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.ListFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -25,7 +23,6 @@ import hr.tvz.trackmydog.activities.DogDetailsAddActivity;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.userModel.DogInfo;
-import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
 public class DogsFragment extends ListFragment {
 
@@ -66,25 +63,22 @@ public class DogsFragment extends ListFragment {
         // get CurrentUserViewModel from the ViewModelProvider utility class
         // set the observer on user (and dogs) and refresh adapter on data change:
         ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
-                .getCurrentUserLiveData().observe(getViewLifecycleOwner(), new Observer<CurrentUser>() {
-            @Override
-            public void onChanged(@Nullable CurrentUser currentUser) {
-                if (currentUser != null) {
-                    if (currentUser.getDogs() != null) {
-                        // update the UI with values from the snapshot
-                        Log.d(TAG, "Current user data retrieved: " + currentUser);
-                        noDogsLayout.setVisibility(View.GONE);
-                        // recyclerView.scheduleLayoutAnimation();
-                        dogInfoListAdapter.refreshData(currentUser.getDogs());
-                    } else {
-                        // remove the dogs:
-                        Log.d(TAG, "Dog list is empty");
-                        noDogsLayout.setVisibility(View.VISIBLE);
-                        dogInfoListAdapter.refreshData(new ArrayList<DogInfo>());
+                .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
+                    if (currentUser != null) {
+                        if (currentUser.getDogs() != null) {
+                            // update the UI with values from the snapshot
+                            Log.d(TAG, "Current user data retrieved: " + currentUser);
+                            noDogsLayout.setVisibility(View.GONE);
+                            // recyclerView.scheduleLayoutAnimation();
+                            dogInfoListAdapter.refreshData(currentUser.getDogs());
+                        } else {
+                            // remove the dogs:
+                            Log.d(TAG, "Dog list is empty");
+                            noDogsLayout.setVisibility(View.VISIBLE);
+                            dogInfoListAdapter.refreshData(new ArrayList<DogInfo>());
+                        }
                     }
-                }
-            }
-        });
+                });
 
         // second animation (add button animation):
         /*
