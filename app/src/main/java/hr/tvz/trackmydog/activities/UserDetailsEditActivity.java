@@ -12,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.firebaseServices.ActivityCallback;
+import hr.tvz.trackmydog.callbacks.ActivityCallback;
 import hr.tvz.trackmydog.firebaseServices.UserService;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.models.mappers.UserMapper;
@@ -53,12 +53,7 @@ public class UserDetailsEditActivity extends BaseActivity {
                     }
                 });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveUser();
-            }
-        });
+        saveButton.setOnClickListener(v -> saveUser());
     }
 
     private void setFieldValues() {

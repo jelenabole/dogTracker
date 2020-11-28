@@ -72,12 +72,7 @@ public class DogDetailsAddActivity extends BaseActivity {
                     }
                 });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveDog();
-            }
-        });
+        saveButton.setOnClickListener(v -> saveDog());
     }
 
     // on button clicked
@@ -105,7 +100,10 @@ public class DogDetailsAddActivity extends BaseActivity {
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                boolean found = false;
                for (DataSnapshot dogSnaps : dataSnapshot.getChildren()) {
-                   if (dogSnaps.child("code").getValue().equals(dogCode)) {
+                   String code = dogSnaps.child("code").getValue(String.class);
+                   assert code != null : "FB child code is null";
+
+                   if (code.equals(dogCode)) {
                        // if dog is found:
                        found = true;
                        dogKey = dogSnaps.getKey();
@@ -167,7 +165,7 @@ public class DogDetailsAddActivity extends BaseActivity {
 
         // add random color to dog:
         dog.setColor(addColorBasedOnIndex());
-        final String dogColor = dog.getColor();
+        // final String dogColor = dog.getColor();
 
         Log.d(TAG, "save dog: " + dog.toString());
         // add dog to user:

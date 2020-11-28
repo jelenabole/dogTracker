@@ -39,7 +39,7 @@ public class MyGoogleMap {
     private boolean setZoom = true;
 
     // for setting up markers:
-    private final int MAX_HOURS_PASSED_FOR_MARKER = 2700; // longer not showing
+    private final int MAX_HOURS_PASSED_FOR_MARKER = 5000; // longer not showing
     private final int MAX_MIN_BETWEEN_MARKERS = 10; // longer not showing
     private final int MAX_NUMBER_OF_LAST_TRACKS = 6; // the ones that are not the same, and not > 10 mins apart
     private final float MIN_OPACITY = 0.1f; // important for normalizing time that passed
@@ -76,55 +76,41 @@ public class MyGoogleMap {
         map.getUiSettings().setZoomControlsEnabled(true);
 
         // map listeners - if map is clicked (zoomed or moved) - stop following:
-        map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-            @Override
-            public void onCameraMoveStarted(int reason) {
-                // on user gestures or buttons clicked = hide info windows
-                if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                    // double-tap (zoom) or drag
-                    // changes user made = move, double-tap (zoom)
-                    Log.w(TAG, "MAP TOUCHED - DISABLE FOLLOW");
-                    stopFollowing();
+        map.setOnCameraMoveStartedListener(reason -> {
+            // on user gestures or buttons clicked = hide info windows
+            if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                // double-tap (zoom) or drag
+                // changes user made = move, double-tap (zoom)
+                Log.w(TAG, "MAP TOUCHED - DISABLE FOLLOW");
+                stopFollowing();
 
-                    // hide info windows on change
-                    hideInfoWindows();
-                } else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
-                    hideInfoWindows();
-                }
+                // hide info windows on change
+                hideInfoWindows();
+            } else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+                hideInfoWindows();
             }
         });
 
         // set on click listener = go to my location and stop following dogs:
-        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                stopFollowing();
+        map.setOnMyLocationButtonClickListener(() -> {
+            stopFollowing();
 
-                // false = call the super method (default behavior):
-                return false;
-            }
+            // false = call the super method (default behavior):
+            return false;
         });
 
         // set on marker click = only show the info window, dont zoom or change camera view
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                // other markers windows are hidden automatically
-                Log.d(TAG, "marker clicked - show info window");
-                marker.showInfoWindow();
+        map.setOnMarkerClickListener(marker -> {
+            // other markers windows are hidden automatically
+            Log.d(TAG, "marker clicked - show info window");
+            marker.showInfoWindow();
 
-                // false = launches default behaviour, true = does nothing
-                return true;
-            }
+            // false = launches default behaviour, true = does nothing
+            return true;
         });
 
         // click on a info window to hide it
-        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                marker.hideInfoWindow();
-            }
-        });
+        map.setOnInfoWindowClickListener(Marker::hideInfoWindow);
 
         // returns -1 when there's no permission
         if (ContextCompat.checkSelfPermission(context,

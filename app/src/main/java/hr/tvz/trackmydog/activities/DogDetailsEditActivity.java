@@ -2,18 +2,12 @@ package hr.tvz.trackmydog.activities;
 
 import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
-
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.BaseActivity;
@@ -54,7 +48,7 @@ public class DogDetailsEditActivity extends BaseActivity {
         new ViewModelProvider(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, currentUser -> {
                     if (currentUser != null) {
-                        Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
+                        int dogIndex = getIntent().getIntExtra("dogIndex", -1);
                         dog = DogMapper.mapBasicDogToForm(currentUser.getDogs().get(dogIndex));
                         Log.d(TAG, "Dog index: " + dogIndex);
 
@@ -63,12 +57,7 @@ public class DogDetailsEditActivity extends BaseActivity {
                     }
                 });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveDog();
-            }
-        });
+        saveButton.setOnClickListener(v -> saveDog());
     }
 
     private void setFieldValues() {
@@ -125,16 +114,12 @@ public class DogDetailsEditActivity extends BaseActivity {
         Log.d(TAG, "save dog: " + dog.toString());
         FirebaseDatabase.getInstance()
             .getReference("users/" + MyApplication.getUserKey() + "/dogs/" + dog.getIndex())
-            .updateChildren(dog.toMap(), new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(@Nullable DatabaseError databaseError,
-                                       @NonNull DatabaseReference databaseReference) {
-                    if (databaseError == null) {
-                        Log.d(TAG, "dog updated successfully");
-                        finish();
-                    } else {
-                        hideProgressDialog();
-                    }
+            .updateChildren(dog.toMap(), (databaseError, databaseReference) -> {
+                if (databaseError == null) {
+                    Log.d(TAG, "dog updated successfully");
+                    finish();
+                } else {
+                    hideProgressDialog();
                 }
             });
     }

@@ -43,7 +43,7 @@ import hr.tvz.trackmydog.BaseActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.DogService;
-import hr.tvz.trackmydog.firebaseServices.SpinnerCallback;
+import hr.tvz.trackmydog.callbacks.SpinnerCallback;
 import hr.tvz.trackmydog.models.dogLocationModel.Run;
 import hr.tvz.trackmydog.models.forms.SafeZoneForm;
 import hr.tvz.trackmydog.models.forms.ServiceSettingsForm;
@@ -118,7 +118,7 @@ public class DogDetailsActivity extends BaseActivity {
         /* model */
 
         // get index of a dog:
-        final Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);
+        final int dogIndex = getIntent().getIntExtra("dogIndex", -1);
 
         // dogIndex = -1;
         if (dogIndex == -1) {
@@ -144,7 +144,7 @@ public class DogDetailsActivity extends BaseActivity {
 
         locationLayout.setOnClickListener(view -> {
             List<String> data = user.getSafeZones().values().stream()
-                    .map(place -> place.getLocationName())
+                    .map(SafeZone::getLocationName)
                     .collect(Collectors.toList());
 
             openPopupWindow(data, true, str -> {
@@ -181,18 +181,6 @@ public class DogDetailsActivity extends BaseActivity {
         // create intent with that run ID:
         Intent intent = new Intent(this, HistoryMapActivity.class);
         intent.putExtra("runID", runKey);
-        intent.putExtra("dogKey", dog.getKey());
-        intent.putExtra("dogColor", dog.getColor());
-        startActivity(intent);
-    }
-
-    public void showHistoryTest(View view) {
-        // get ID from a run / tracks
-        String runID = "-MH1nPsf-zzHN2LCeuKk";
-
-        // create intent with that run ID:
-        Intent intent = new Intent(this, HistoryMapActivity.class);
-        intent.putExtra("runID", runID);
         intent.putExtra("dogKey", dog.getKey());
         intent.putExtra("dogColor", dog.getColor());
         startActivity(intent);
@@ -241,11 +229,7 @@ public class DogDetailsActivity extends BaseActivity {
                             btn.setText(buttonText);
                             btn.setTextColor(Color.GRAY);
                             runListLayout.addView(btn, params);
-                            ((Button) findViewById(id_)).setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View view) {
-                                    showHistory(dogRuns.get(id_).getKey());
-                                }
-                            });
+                            findViewById(id_).setOnClickListener(view -> showHistory(dogRuns.get(id_).getKey()));
                         }
                     }
                     @Override

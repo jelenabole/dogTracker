@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseUser;
 import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.activities.LoginActivity;
 
-public class FBAuth {
+public class FBAuthService {
 
     private static final String TAG = "FB Auth";
 

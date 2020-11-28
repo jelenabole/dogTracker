@@ -4,8 +4,6 @@ import java.util.Date;
 
 public class LabelUtils {
 
-    private static final String TAG = "Label Utils";
-
     /* CHECK EMPTY STRINGS FOR LABELS */
 
     private static String DEFAULT_EMPTY = " --- ";
@@ -40,10 +38,7 @@ public class LabelUtils {
     // check if field is empty
     // used in AddNewDog (deleted), and EditDog
     public static boolean isFieldEmpty(String str) {
-        if (str == null || str.equals("")) {
-            return true;
-        }
-        return false;
+        return str == null || str.equals("");
     }
 
 
@@ -63,7 +58,7 @@ public class LabelUtils {
     // Add new dog = return integer or null
     public static Integer getIntegerOrNull(String str) {
         if (str != null && !str.equals("")) {
-            // pretvoti u broj i vrati broj
+            // convert to number and return
             return Integer.valueOf(str);
         }
         return null;

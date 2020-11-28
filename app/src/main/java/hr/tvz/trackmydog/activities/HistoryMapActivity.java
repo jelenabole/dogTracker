@@ -88,14 +88,14 @@ public class HistoryMapActivity extends BaseActivity implements OnMapReadyCallba
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        assert mapFragment != null : "Map fragment is null";
         mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // style map:
-        boolean success = googleMap.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(this, R.raw.empty_map_silver));
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.empty_map_silver));
 
         // get dog's route info
         tracksRef.addListenerForSingleValueEvent(

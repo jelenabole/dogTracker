@@ -1,8 +1,8 @@
-package hr.tvz.trackmydog;
+package hr.tvz.trackmydog.callbacks;
 
 import android.content.Context;
 
-public interface MyCallback {
+public interface StartIntentCallback {
 
     // used:
     // LoginActivity = to show/hide part of view when loading data

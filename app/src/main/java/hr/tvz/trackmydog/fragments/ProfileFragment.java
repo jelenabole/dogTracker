@@ -18,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.UserLocationAddActivity;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
+import hr.tvz.trackmydog.firebaseServices.FBAuthService;
 import hr.tvz.trackmydog.activities.UserDetailsEditActivity;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
@@ -67,29 +67,23 @@ public class ProfileFragment extends Fragment {
                 });
 
         // edit button listener:
-        editButton.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View v) {
-                Log.d(TAG, "edit user: " + user.getName());
-                Intent profileDetailsIntent = new Intent(getActivity(), UserDetailsEditActivity.class);
-                startActivity(profileDetailsIntent);
-            }
+        editButton.setOnClickListener(v1 -> {
+            Log.d(TAG, "edit user: " + user.getName());
+            Intent profileDetailsIntent = new Intent(getActivity(), UserDetailsEditActivity.class);
+            startActivity(profileDetailsIntent);
         });
 
         // logout button listener:
-        logoutButton.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View v) {
-                Log.d(TAG, "logout user: " + user.getName());
-                FBAuth.logoutUser();
-            }
+        logoutButton.setOnClickListener(v12 -> {
+            Log.d(TAG, "logout user: " + user.getName());
+            FBAuthService.logoutUser();
         });
 
         // add location (safe zone) button listener:
-        addLocationButton.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View v) {
-                Log.d(TAG, "open AddLocation Activity");
-                Intent addLocationIntent = new Intent(getActivity(), UserLocationAddActivity.class);
-                startActivity(addLocationIntent);
-            }
+        addLocationButton.setOnClickListener(v13 -> {
+            Log.d(TAG, "open AddLocation Activity");
+            Intent addLocationIntent = new Intent(getActivity(), UserLocationAddActivity.class);
+            startActivity(addLocationIntent);
         });
 
         return v;

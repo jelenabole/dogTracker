@@ -91,7 +91,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 .loadAnimation(getContext(), R.anim.dog_buttons_item_anim);
 
         // set listener to current user and get info:
-        new ViewModelProvider(getActivity()).get(CurrentUserViewModel.class)
+        new ViewModelProvider(requireActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
                     if (currentUser != null) {
                         user = currentUser;
@@ -108,7 +108,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                         } else {
                             // remove the dogs:
                             Log.d(TAG, "Dog list is empty");
-                            dogThumbListAdapter.refreshData(new ArrayList<DogInfo>());
+                            dogThumbListAdapter.refreshData(new ArrayList<>());
                             hideThumbs();
                         }
 
@@ -116,11 +116,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                     }
                 });
 
-        allDogsButton.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View v) {
-                Log.d(TAG, "all dogs clicked");
-                showAllDogs();
-            }
+        allDogsButton.setOnClickListener(v1 -> {
+            Log.d(TAG, "all dogs clicked");
+            showAllDogs();
         });
 
         return v;
@@ -133,6 +131,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
             // set map fragment:
             SupportMapFragment mapFragment;
             mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            assert mapFragment != null : "Map fragment is null";
             mapFragment.getMapAsync(this);
         }
     }
@@ -260,7 +259,9 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Map<String, Run> map = (Map) dataSnapshot.getValue();
+                @SuppressWarnings("unchecked")
+                Map<String, Run> map = (Map<String, Run>) dataSnapshot.getValue();
+                assert map != null : "FB map of runs is null";
                 String runKey = "";
                 for (Map.Entry<String, Run> entry : map.entrySet()) {
                     runKey = entry.getKey();
@@ -278,7 +279,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                             // write all to list:
                             ArrayList<Tracks> tracks = new ArrayList<>();
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                tracks.add((Tracks) child.getValue(Tracks.class));
+                                tracks.add(child.getValue(Tracks.class));
                             }
 
                             myMap.setDogTracks(tracks, dogIndex, color);

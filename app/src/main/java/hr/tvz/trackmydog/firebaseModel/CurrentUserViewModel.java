@@ -10,7 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import hr.tvz.trackmydog.MyApplication;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
+import hr.tvz.trackmydog.firebaseServices.FBAuthService;
 import hr.tvz.trackmydog.models.userModel.CurrentUser;
 
 public class CurrentUserViewModel extends ViewModel {
@@ -52,19 +52,10 @@ public class CurrentUserViewModel extends ViewModel {
                 // data not found (eg user deleted from firebase, not throught this app)
                 Log.e(TAG, " *** user Ref Listener - user not found");
                 // sign out the user and delete this listener
-                FBAuth.logoutUser();
+                FBAuthService.logoutUser();
             }
 
-            if (dataSnapshot != null) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        currentUserLiveData.postValue(dataSnapshot.getValue(CurrentUser.class));
-                    }
-                }).start();
-            } else {
-                currentUserLiveData.setValue(null);
-            }
+            new Thread(() -> currentUserLiveData.postValue(dataSnapshot.getValue(CurrentUser.class))).start();
         });
     }
 

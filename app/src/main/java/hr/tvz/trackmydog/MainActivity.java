@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -13,7 +12,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import android.transition.Explode;
 import android.util.Log;
-import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +58,7 @@ public class MainActivity extends BaseActivity {
 
         // check if we have GPS provider:
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        assert locationManager != null : "Location Manager is null";
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Log.e(TAG, "Doesn't have GPS provider.");
         }

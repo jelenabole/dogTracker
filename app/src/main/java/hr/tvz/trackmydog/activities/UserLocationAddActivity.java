@@ -45,7 +45,7 @@ import hr.tvz.trackmydog.utils.ResourceUtils;
 
 public class UserLocationAddActivity extends BaseActivity implements OnMapReadyCallback {
 
-    private static final String TAG = "Map Range Activity";
+    private static final String TAG = "User Location Activity";
 
     // init location - Zagreb:
     private final LatLng initLocation = new LatLng(45.800007, 15.979110);
@@ -75,6 +75,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         // this is needed to call onMapReady:
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null : "User Location map is null";
         mapFragment.getMapAsync(this);
 
         // add location (safe zone) button listener:
@@ -87,6 +88,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
             // hide keyboard:
             try {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                assert imm != null : "System keyboard is null";
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             } catch (Exception e) {
                 // when keyboard is not opened - ignore
@@ -96,12 +98,9 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         });
 
         // add location (safe zone) button listener:
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "save location and close view (???)");
-                saveLocationToUser();
-            }
+        saveButton.setOnClickListener(v -> {
+            Log.d(TAG, "save location and close view (???)");
+            saveLocationToUser();
         });
 
         // seekbar = range
@@ -128,15 +127,12 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         });
     }
 
-    ;
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "on Map Ready");
         map = googleMap;
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_without_transit));
 
-        int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
 
         int padding = (int) (height * 0.1);
@@ -172,6 +168,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 Log.d(TAG, "location permission enabled (2) - permission granted");
                 LocationManager locationManager;
                 locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+                assert locationManager != null : "Location Manager is null";
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
                     Log.d(TAG, "location permission enabled (3) - location exists");
@@ -245,8 +242,8 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         try {
             List<Address> addresses = geoCoder.getFromLocationName(addressName, 5);
             if (addresses.size() > 0) {
-                Double lat = (double) addresses.get(0).getLatitude();
-                Double lng = (double) addresses.get(0).getLongitude();
+                double lat = addresses.get(0).getLatitude();
+                double lng = addresses.get(0).getLongitude();
 
                 Log.d(TAG, "address: "
                         + getAddressOnly(addresses.get(0).getAddressLine(0)));
@@ -271,7 +268,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 return getAddressOnly(addresses.get(0).getAddressLine(0));
             }
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "Converting location to address unsuccessful");
         }
 
         return "- not found -";
@@ -305,8 +302,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 hideProgressDialog();
             }
         });
-
-
     }
 
 
@@ -329,7 +324,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 return street + (street.length() != 0 && city.length() != 0 ? ", " : "") + city;
             }
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "Converting location to address unsuccessful");
         }
 
         // if no address was found, return whatever the user wrote:
@@ -338,5 +333,4 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
         }
         return fallbackString;
     }
-
 }

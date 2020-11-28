@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 import hr.tvz.trackmydog.activities.DogDetailsAddActivity;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.R;
-import hr.tvz.trackmydog.models.userModel.DogInfo;
 
 public class DogsFragment extends ListFragment {
 
@@ -62,7 +61,7 @@ public class DogsFragment extends ListFragment {
 
         // get CurrentUserViewModel from the ViewModelProvider utility class
         // set the observer on user (and dogs) and refresh adapter on data change:
-        new ViewModelProvider(getActivity()).get(CurrentUserViewModel.class)
+        new ViewModelProvider(requireActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
                     if (currentUser != null) {
                         if (currentUser.getDogs() != null) {
@@ -75,7 +74,7 @@ public class DogsFragment extends ListFragment {
                             // remove the dogs:
                             Log.d(TAG, "Dog list is empty");
                             noDogsLayout.setVisibility(View.VISIBLE);
-                            dogInfoListAdapter.refreshData(new ArrayList<DogInfo>());
+                            dogInfoListAdapter.refreshData(new ArrayList<>());
                         }
                     }
                 });
@@ -89,12 +88,9 @@ public class DogsFragment extends ListFragment {
         */
 
         // add dog floating button - starts activity
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), DogDetailsAddActivity.class);
-                startActivity(intent);
-            }
+        addButton.setOnClickListener(v1 -> {
+            Intent intent = new Intent(getContext(), DogDetailsAddActivity.class);
+            startActivity(intent);
         });
 
         return v;

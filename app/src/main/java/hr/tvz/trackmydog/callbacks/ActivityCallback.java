@@ -1,4 +1,4 @@
-package hr.tvz.trackmydog.firebaseServices;
+package hr.tvz.trackmydog.callbacks;
 
 public interface ActivityCallback {
 

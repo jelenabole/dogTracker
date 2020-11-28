@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -18,10 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import butterknife.BindView;
@@ -31,10 +28,10 @@ import hr.tvz.trackmydog.MainActivity;
 import hr.tvz.trackmydog.MyApplication;
 import hr.tvz.trackmydog.firebaseModel.CurrentUserViewModel;
 import hr.tvz.trackmydog.firebaseServices.AuthService;
-import hr.tvz.trackmydog.firebaseServices.FBAuth;
+import hr.tvz.trackmydog.firebaseServices.FBAuthService;
 import hr.tvz.trackmydog.R;
 import hr.tvz.trackmydog.models.forms.NewUserForm;
-import hr.tvz.trackmydog.MyCallback;
+import hr.tvz.trackmydog.callbacks.StartIntentCallback;
 import hr.tvz.trackmydog.firebaseServices.TokenService;
 
 /**
@@ -63,7 +60,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         // init firebase auth
         configureSignIn();
-        FBAuth.initializeFirebaseAuth();
+        FBAuthService.initializeFirebaseAuth();
     }
 
     @Override
@@ -72,7 +69,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         Log.d(TAG, "on start - check if user is logged in");
 
         // check if the user is signed in
-        if (FBAuth.isUserLoggedIn()) {
+        if (FBAuthService.isUserLoggedIn()) {
             Log.d(TAG, "user logged in - get info and show main activity");
             loginUser();
         } else {
@@ -83,24 +80,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void loginUser() {
-        setUserListener(new MyCallback() {
-            @Override
-            public void startIntent(Context context) {
-                Log.d(TAG, "user listeners set = start MainActivity");
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
+        setUserListener(context -> {
+            Log.d(TAG, "user listeners set = start MainActivity");
+            Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
 
-                // back button closes the app (doesnt return to login)
-                ((Activity) context).finish();
-            }
+            // back button closes the app (doesnt return to login)
+            ((Activity) context).finish();
         });
     }
 
-    private void setUserListener(final MyCallback callback) {
-        MyApplication.setUserKey(FBAuth.getUserKey());
-        Log.d(TAG, "set user listener: " + FBAuth.getUserEmail()
+    private void setUserListener(final StartIntentCallback callback) {
+        MyApplication.setUserKey(FBAuthService.getUserKey());
+        Log.d(TAG, "set user listener: " + FBAuthService.getUserEmail()
                 + " - key: " + MyApplication.getUserKey());
-        final String email = FBAuth.getUserEmail();
+        final String email = FBAuthService.getUserEmail();
         final String token = TokenService.getAppToken();
         final Context context = this;
 
@@ -112,9 +106,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         // check if token is the same
                         // if null or not equal, save new one to FB:
                         if (currentUser.getToken() == null || !currentUser.getToken().equals(token)) {
-                            if (token == null) {
-                                // TODO - get token from DB
-                            }
                             Log.e(TAG, "token is null or not valid - save new one on FB");
                             AuthService.changeToken(currentUser, token);
                         }
@@ -172,6 +163,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                assert account != null : "Google Account is null";
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, show message
@@ -191,22 +183,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // progress dialog:
         showProgressDialog();
 
-        final Context context = this;
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        FBAuth.mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential: success");
-                        loginUser();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential: failure", task.getException());
-                        hideProgressDialog();
-                        Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                    }
+        FBAuthService.mAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential: success");
+                    loginUser();
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential: failure", task.getException());
+                    hideProgressDialog();
+                    Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
                 }
             });
     }
