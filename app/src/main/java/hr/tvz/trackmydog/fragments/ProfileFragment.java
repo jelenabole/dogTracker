@@ -1,10 +1,11 @@
 package hr.tvz.trackmydog.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,7 @@ public class ProfileFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         // set listener to current user and get info:
-        ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
+        new ViewModelProvider(requireActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
                     if (currentUser != null) {
                         user = currentUser;

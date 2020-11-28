@@ -1,6 +1,6 @@
 package hr.tvz.trackmydog.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -62,7 +62,7 @@ public class DogsFragment extends ListFragment {
 
         // get CurrentUserViewModel from the ViewModelProvider utility class
         // set the observer on user (and dogs) and refresh adapter on data change:
-        ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
+        new ViewModelProvider(getActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
                     if (currentUser != null) {
                         if (currentUser.getDogs() != null) {

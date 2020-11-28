@@ -1,6 +1,6 @@
 package hr.tvz.trackmydog.activities;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,7 +51,7 @@ public class DogDetailsEditActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         // set listener to current user and get info:
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        new ViewModelProvider(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, currentUser -> {
                     if (currentUser != null) {
                         Integer dogIndex = getIntent().getIntExtra("dogIndex", -1);

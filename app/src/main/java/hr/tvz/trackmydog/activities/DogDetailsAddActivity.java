@@ -1,9 +1,8 @@
 package hr.tvz.trackmydog.activities;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
 import android.util.Log;
 import android.view.View;
@@ -59,7 +58,7 @@ public class DogDetailsAddActivity extends BaseActivity {
         addChipLayout.setVisibility(View.VISIBLE);
 
         // set listener to current user and get info:
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        new ViewModelProvider(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, currentUser -> {
                     if (currentUser != null) {
                         // get user notification token and dog index (number of dogs):

@@ -1,9 +1,9 @@
 package hr.tvz.trackmydog.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -91,7 +91,7 @@ public class MapFragment extends ListFragment implements OnMapReadyCallback {
                 .loadAnimation(getContext(), R.anim.dog_buttons_item_anim);
 
         // set listener to current user and get info:
-        ViewModelProviders.of(getActivity()).get(CurrentUserViewModel.class)
+        new ViewModelProvider(getActivity()).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(getViewLifecycleOwner(), currentUser -> {
                     if (currentUser != null) {
                         user = currentUser;

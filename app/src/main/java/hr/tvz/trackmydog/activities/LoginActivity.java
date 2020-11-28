@@ -1,11 +1,12 @@
 package hr.tvz.trackmydog.activities;
 
 import android.app.Activity;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -104,7 +105,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         final Context context = this;
 
         // get the user data form listener
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        new ViewModelProvider(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, currentUser -> {
                     Log.d(TAG, "current user: " + currentUser);
                     if (currentUser != null) {

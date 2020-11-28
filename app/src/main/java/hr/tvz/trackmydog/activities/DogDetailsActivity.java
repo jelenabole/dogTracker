@@ -1,6 +1,5 @@
 package hr.tvz.trackmydog.activities;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -127,7 +128,7 @@ public class DogDetailsActivity extends BaseActivity {
         Log.d(TAG, "show details of dog with index: " + dogIndex);
 
         // get user info and this dog:
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        new ViewModelProvider(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, currentUser -> {
                     if (currentUser != null) {
                         user = currentUser;
@@ -262,9 +263,11 @@ public class DogDetailsActivity extends BaseActivity {
                         dogSettings = dataSnapshot.getValue(ServiceSettingsForm.class);
                         Log.d(TAG, "dog settings changed: " + dogSettings);
 
-                        String dogInterval = dogSettings.getInterval() + getResources().getString(R.string.seconds);
-                        interval.setText(dogInterval);
-                        interval.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                        if (dogSettings != null) {
+                            String dogInterval = dogSettings.getInterval() + getResources().getString(R.string.seconds);
+                            interval.setText(dogInterval);
+                            interval.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {

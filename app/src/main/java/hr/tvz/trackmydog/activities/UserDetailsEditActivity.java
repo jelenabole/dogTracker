@@ -1,6 +1,6 @@
 package hr.tvz.trackmydog.activities;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import com.google.android.material.textfield.TextInputEditText;
 import android.util.Log;
@@ -42,7 +42,7 @@ public class UserDetailsEditActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         // obtain instance of CurrentUser from ViewModelProvider utility class - if exists:
-        ViewModelProviders.of(this).get(CurrentUserViewModel.class)
+        new ViewModelProvider(this).get(CurrentUserViewModel.class)
                 .getCurrentUserLiveData().observe(this, currentUser -> {
                     if (currentUser != null) {
                         Log.d(TAG, "Current user data retrieved: " + currentUser);
