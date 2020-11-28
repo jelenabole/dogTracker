@@ -118,8 +118,6 @@ public class DogDetailsEditActivity extends BaseActivity {
                 if (databaseError == null) {
                     Log.d(TAG, "dog updated successfully");
                     finish();
-                } else {
-                    hideProgressDialog();
                 }
             });
     }

@@ -95,7 +95,6 @@ public class UserDetailsEditActivity extends BaseActivity {
                     Log.d(TAG, "error while saving user - DB error");
                     errorText.setText(getResources().getText(R.string.error_save_to_database));
                     errorText.setVisibility(View.VISIBLE);
-                    hideProgressDialog();
                 }
             }
         });

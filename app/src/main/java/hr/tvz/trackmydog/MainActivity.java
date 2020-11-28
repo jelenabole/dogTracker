@@ -32,7 +32,6 @@ public class MainActivity extends BaseActivity {
         // starts also after create view:
         super.onResume();
         Log.d(TAG, "on Resume - hide loading dialog");
-        hideProgressDialog();
     }
 
     @Override

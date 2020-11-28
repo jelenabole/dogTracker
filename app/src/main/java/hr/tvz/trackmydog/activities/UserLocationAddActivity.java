@@ -99,7 +99,8 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
 
         // add location (safe zone) button listener:
         saveButton.setOnClickListener(v -> {
-            Log.d(TAG, "save location and close view (???)");
+            Log.d(TAG, "save location and close view");
+            showProgressDialog();
             saveLocationToUser();
         });
 
@@ -299,7 +300,6 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
                 Log.d(TAG, "error while saving user - DB error");
                 errorText.setText(getString(R.string.error_save_to_database));
                 errorText.setVisibility(View.VISIBLE);
-                hideProgressDialog();
             }
         });
     }

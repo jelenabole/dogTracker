@@ -97,7 +97,6 @@ public class DogDetailsActivity extends BaseActivity {
         Log.d(TAG, "On Create");
         setContentView(R.layout.activity_dog_details);
         ButterKnife.bind(this);
-        hideProgressDialog();
 
         /* animations */
 

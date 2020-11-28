@@ -111,7 +111,6 @@ public class DogDetailsAddActivity extends BaseActivity {
                        // check if chip is already in use:
                        if (dogSnaps.child("notification/token").getValue() != null) {
                            Log.d(TAG, "chip already added to user");
-                           hideProgressDialog();
                            error.setText(getString(R.string.error_chip_has_user));
                            error.setVisibility(View.VISIBLE);
 
@@ -126,7 +125,6 @@ public class DogDetailsAddActivity extends BaseActivity {
                // if dog is not found, send error message
                if (!found) {
                    Log.d(TAG, "dog not found FB");
-                   hideProgressDialog();
                    error.setText(getString(R.string.error_wrong_chip_number));
                    error.setVisibility(View.VISIBLE);
                }
@@ -135,7 +133,6 @@ public class DogDetailsAddActivity extends BaseActivity {
            @Override
            public void onCancelled(@NonNull DatabaseError databaseError) {
                // Toast.makeText(this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
-               hideProgressDialog();
                error.setText(getString(R.string.error_while_saving));
                error.setVisibility(View.VISIBLE);
            }
