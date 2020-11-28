@@ -186,7 +186,7 @@ public class UserLocationAddActivity extends BaseActivity implements OnMapReadyC
 
     // init marker on Zagreb
     public void initMarker() {
-        int icon = ResourceUtils.getDrawableIcon("home", getResources(), this);
+        int icon = ResourceUtils.getDrawableIcon("users_location", getResources(), this);
 
         marker = map.addMarker(new MarkerOptions()
                 .position(initLocation)

@@ -32,10 +32,7 @@
     </LinearLayout>
 
     <!-- FAB -->
-    <!--
-        ????
-            android:foregroundGravity="right|bottom"
-    -->
+    <!-- android:foregroundGravity="right|bottom" -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButton"
         android:layout_width="wrap_content"

@@ -172,10 +172,10 @@ public class MyGoogleMap {
                 Log.e(TAG, "dog - last location time: " + dog.getLocation().getTime());
                 Log.d(TAG, "opacity: " + opacity);
 
-                int icon = ResourceUtils.getPawMarker(dog.getColor(), context.getResources(), context);
+                BitmapDescriptor pawIcon = ResourceUtils.getDogMarkerIcon(dog.getColor(), R.drawable.paw, context);
                 markers.set(index, map.addMarker(new MarkerOptions()
                         .position(newPosition)
-                        .icon(BitmapDescriptorFactory.fromResource(icon))
+                        .icon(pawIcon)
                         .alpha(opacity)
                         .title(dog.getName())
                         .snippet("last updated: " + TimeDistanceUtils.converTimeToReadable(dog.getLocation().getTime()))
@@ -305,8 +305,7 @@ public class MyGoogleMap {
         Log.d(TAG, "change tracks location - color: " + color);
 
         // get track-marker icon
-        BitmapDescriptor icon = BitmapDescriptorFactory
-                .fromResource(ResourceUtils.getDotMarker(color, context.getResources(), context));
+        BitmapDescriptor icon = ResourceUtils.getDogMarkerIcon(color, R.drawable.ic_dot, context);
 
         // remove existing dog tracks:
         removeDogTracks();

@@ -94,7 +94,7 @@ public class TimeDistanceUtils {
     }
 
 
-    /* OTHER FUNCTIONS ..... ?? */
+    /* OTHER FUNCTIONS ..... */
 
     // convert date to be user friendly
     // now, today, yesterday, day of the (last) week, or date

@@ -12,7 +12,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -72,14 +71,11 @@ public class HistoryMapActivity extends BaseActivity implements OnMapReadyCallba
         String dogColor = getIntent().getStringExtra("dogColor");
 
         // get dog color and marker icon
-        color = ResourceUtils.getDogColor(dogColor, getBaseContext());
-        defaultDot = BitmapDescriptorFactory.fromResource(ResourceUtils
-                .getDotMarker("gray", getBaseContext().getResources(), getBaseContext()));
-        colorDot = BitmapDescriptorFactory.fromResource(ResourceUtils
-                .getDotMarker(dogColor, getBaseContext().getResources(), getBaseContext()));
-        marker = BitmapDescriptorFactory.fromResource(ResourceUtils
-                .getPawMarker(dogColor, getBaseContext().getResources(), getBaseContext()));
         context = getBaseContext();
+        color = ResourceUtils.getDogColor(dogColor, context);
+        defaultDot = ResourceUtils.getDogMarkerIcon("grey", R.drawable.ic_dot, context);
+        colorDot = ResourceUtils.getDogMarkerIcon(dogColor, R.drawable.ic_dot, context);
+        marker = ResourceUtils.getDogMarkerIcon(dogColor, R.drawable.paw, context);
 
         tracksRef = FirebaseDatabase.getInstance().getReference("dogs/" + dogKey + "/tracks/" + runID);
 
@@ -123,17 +119,16 @@ public class HistoryMapActivity extends BaseActivity implements OnMapReadyCallba
 
                             // add marker
                             BitmapDescriptor dogIcon;
-                            float anc = 1;
+                            float anc = 0.5f;
                             if (previous == null) {
                                 dogIcon = colorDot;
-                                anc = 0.5f;
                                 start = dogTracks.get(i).getTime();
                             } else if (i == dogTracks.size() - 1) {
                                 dogIcon = marker;
+                                anc = 1f;
                                 end = dogTracks.get(i).getTime();
                             } else {
                                 dogIcon = defaultDot;
-                                anc = 0.5f;
                             }
 
                             googleMap.addMarker(new MarkerOptions()

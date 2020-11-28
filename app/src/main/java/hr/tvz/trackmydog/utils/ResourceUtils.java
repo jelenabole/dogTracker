@@ -2,9 +2,22 @@ package hr.tvz.trackmydog.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import hr.tvz.trackmydog.R;
 
 // default color is black
@@ -14,25 +27,43 @@ public class ResourceUtils {
 
     private static final String FALLBACK_COLOR = "black";
 
-    // get paw icon (map marker) for the dogs:
-    public static int getPawMarker(String color, Resources res, Context context) {
-        // blue:    #007EAC        rgb(0, 126, 172)
-        // yellow:  #F48F00        rgb(244, 143, 0)
-        // red:     #C8492F        rgb(200, 73, 47)
-        // green:   #31AA50        rgb(49, 170, 80)
-        if (color == null) {
-            color = FALLBACK_COLOR;
+    // get color resource ID from name:
+    public static int getColorResource(String colorName) {
+        int color = R.color.grey;
+        if (colorName ==  null) return color;
+        switch (colorName) {
+            case "blue":
+                color = R.color.blue; break;
+            case "yellow":
+                color = R.color.yellow; break;
+            case "red":
+                color = R.color.red; break;
+            case "green":
+                color = R.color.green; break;
+            case "black":
+                color = R.color.black; break;
         }
 
-        switch (color) {
-            case "blue":
-            case "yellow":
-            case "red":
-            case "green":
-                return res.getIdentifier("paw_" + color, "drawable", context.getPackageName());
-            default:
-                return res.getIdentifier("paw", "drawable", context.getPackageName());
-        }
+        return color;
+    }
+
+    // get dot icon (track marker) for the dogs in specific color (default grey)
+    public static BitmapDescriptor getDogMarkerIcon(String colorName, int icon, Context context) {
+        int color = getColorResource(colorName);
+
+        Drawable mDrawable = Objects.requireNonNull(ContextCompat.getDrawable(context, icon)).mutate();
+        mDrawable.setColorFilter(new PorterDuffColorFilter(context.getResources().getColor(color, null), PorterDuff.Mode.SRC_IN));
+
+        return getMarkerFromIcon(mDrawable);
+    }
+
+    private static BitmapDescriptor getMarkerFromIcon(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     // get dot icon (track marker) for the dogs:
