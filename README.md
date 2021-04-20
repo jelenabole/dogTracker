@@ -54,9 +54,8 @@ In addition, this application will not run correctly (maps will not work, applic
 
 
 * :dog: **Dog details**
-  * displays all dogs' details, tracking settings (distance limit and frequency), and activity history
-  * displays dogs' details that user can edit (image 1)
-  * tracking settings include the Safe Zone as a parameter that triggers push notification, and frequency at which service will send location updates (pings can be less frequent to avoid draining battery)
+  * displays user-entered dogs' details that can be editet here (image 1)
+  * shows tracking settings which include the Safe Zone as a parameter that triggers push notifications and frequency at which service will send location updates (pings can be less frequent to avoid draining battery)
   * displays dogs' activity history where user can see his movements, see all tracks on the path, and its distance and duration (image 3)
 
 <p align="center">
